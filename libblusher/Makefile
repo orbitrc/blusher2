@@ -8,9 +8,9 @@ XDG_SHELL_HEADER_PATH=include/blusher/wayland-protocols/stable/$(XDG_SHELL_HEADE
 XDG_SHELL_SOURCE_PATH=src/wayland-protocols/stable/$(XDG_SHELL_SOURCE)
 XDG_SHELL_OBJECT_PATH=src/wayland-protocols/stable/xdg-shell.o
 
-BLUSHER_COLLECTIONS_LIB=blusher-collections/target/release/libblusher_collections.so
+BLUSHER_COLLECTIONS_LIB=libblusher-collections.so
 
-CFLAGS += -Lblusher-collections/target/release -lblusher_collections
+CFLAGS += -lblusher-collections
 
 C_INCLUDES := -Iinclude/blusher -I./blusher-collections/include
 

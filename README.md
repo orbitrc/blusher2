@@ -15,6 +15,14 @@ libblusher
 ----------
 Wayland client library is written in C. Blusher depends on Wayland client library, so core logic is written in C. libblusher is a C bridge of Blusher.
 
+First you need to install the `libblusher-collections.so` shared library.
+
+```sh
+$ cd libblusher-collections
+$ make
+$ sudo make install
+```
+
 You can build it with command
 ```sh
 $ make
