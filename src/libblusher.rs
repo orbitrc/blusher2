@@ -20,4 +20,13 @@ extern "C" {
     pub fn bl_window_new() -> *mut c_void;
 
     pub fn bl_window_show(window: *mut c_void);
+
+    //===============
+    // Surface
+    //===============
+    pub fn bl_surface_new(parent: *mut c_void) -> *mut c_void;
+
+    pub fn bl_surface_show(surface: *mut c_void);
+
+    pub fn bl_surface_free(surface: *mut c_void);
 }
