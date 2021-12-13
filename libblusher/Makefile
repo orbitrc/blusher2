@@ -53,6 +53,14 @@ $(XDG_SHELL_OBJECT_PATH): $(XDG_SHELL_SOURCE_PATH)
 $(BLUSHER_COLLECTIONS_LIB):
 	cd blusher-collections ; cargo build --release
 
+install:
+	rm -rf /usr/include/blusher
+	cp -r include/blusher /usr/include/blusher
+	cp libblusher.so.$(VERSION) /usr/lib/
+	cp -P libblusher.so.$(VERSION_MAJOR).$(VERSION_MINOR) /usr/lib/
+	cp -P libblusher.so.$(VERSION_MAJOR) /usr/lib/
+	cp -P libblusher.so /usr/lib/
+
 run:
 	LD_LIBRARY_PATH=blusher-collections/target/release $(CC) -I./include main.c -Lblusher-collections/target/release -L. -lblusher  -lwayland-egl -lwayland-cursor
 	LD_LIBRARY_PATH=./:blusher-collections/target/release ./a.out
