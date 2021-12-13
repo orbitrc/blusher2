@@ -13,7 +13,7 @@ Blusher 2.0 using Cairo as a 2D graphics engine and Pango for text rendering.
 
 libblusher
 ----------
-Wayland client library written in C. Blusher depends on Wayland client library, so core logic is written in C. libblusher is a C bridge of Blusher.
+Wayland client library is written in C. Blusher depends on Wayland client library, so core logic is written in C. libblusher is a C bridge of Blusher.
 
 You can build it with command
 ```sh
