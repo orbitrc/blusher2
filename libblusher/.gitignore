@@ -1,0 +1,7 @@
+include/blusher/wayland-protocols/stable/xdg-shell.h
+src/wayland-protocols/stable/xdg-shell.c
+
+src/*.o
+src/wayland-protocols/stable/*.o
+
+a.out
