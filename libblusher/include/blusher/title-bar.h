@@ -11,6 +11,8 @@ typedef struct bl_title_bar {
     bl_window *window;
 
     bl_surface *close_button;
+    bl_surface *maximize_button;
+    bl_surface *minimize_button;
 } bl_title_bar;
 
 bl_title_bar* bl_title_bar_new(bl_window *window);

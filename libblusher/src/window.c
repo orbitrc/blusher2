@@ -117,7 +117,8 @@ bl_window* bl_window_new()
     window->title = "Window";
 
     window->title_bar = NULL;
-    window->body = NULL;
+    window->decoration = bl_surface_new(window->surface);
+    window->body = bl_surface_new(window->surface);
 
     return window;
 }
@@ -212,13 +213,30 @@ void bl_window_show(bl_window *window)
     // Wait for the surface to be configured.
     wl_display_roundtrip(bl_app->display);
 
+    // Draw window decoration.
+    bl_surface_set_geometry(window->decoration,
+        0, 0,
+        window->width + (BLUSHER_WINDOW_SHADOW_WIDTH * 2),
+        window->height + (BLUSHER_WINDOW_SHADOW_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
+    );
+    bl_color decoration_color = bl_color_from_rgba(255, 170, 170, 100);
+    bl_surface_set_color(window->decoration, decoration_color);
+    bl_surface_show(window->decoration);
+    xdg_surface_set_window_geometry(window->xdg_surface,
+        BLUSHER_WINDOW_SHADOW_WIDTH, BLUSHER_WINDOW_SHADOW_WIDTH,
+        window->width, window->height + BLUSHER_TITLE_BAR_HEIGHT
+    );
+
     // Draw window surface.
     bl_surface_set_geometry(window->surface,
-        0, 0, window->width, window->height);
+        0, 0,
+        window->width, window->height);
     create_window_surface(window->surface);
+    bl_color color_transparent = bl_color_from_rgba(0, 0, 0, 0);
+    bl_surface_set_color(window->surface, color_transparent);
     fprintf(stderr, "Before paint_pixels. shm_data: %p\n", window->surface->shm_data);
-    paint_pixels(window->width * window->height, 0xffd6d1ce,
-        &(window->surface->shm_data));
+//    paint_pixels(window->width * window->height, 0x00ff0000,
+//        &(window->surface->shm_data));
 
     // Draw title bar.
     window->title_bar = bl_title_bar_new(window);
@@ -241,6 +259,22 @@ void bl_window_show(bl_window *window)
         &listener, (void*)(window->title_bar->surface));
     wl_surface_commit(window->title_bar->surface->surface);
     wl_surface_commit(window->surface->surface);
+
+    // Draw body.
+    bl_color body_color = bl_color_from_rgb(0xd6, 0xd1, 0xce); // #d6d1ce
+    bl_surface_set_color(window->body, body_color);
+    bl_surface_set_geometry(window->body,
+        BLUSHER_WINDOW_SHADOW_WIDTH,
+        BLUSHER_WINDOW_SHADOW_WIDTH + BLUSHER_TITLE_BAR_HEIGHT,
+        window->width, window->height
+    );
+    bl_surface_show(window->body);
+    bl_surface_show(window->surface);
+}
+
+bl_surface* bl_window_body(bl_window *window)
+{
+    return window->body;
 }
 
 void bl_window_free(bl_window *window)
