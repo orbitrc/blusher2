@@ -61,6 +61,11 @@ install:
 	cp -P libblusher.so.$(VERSION_MAJOR) /usr/lib/
 	cp -P libblusher.so /usr/lib/
 
+clean:
+	rm libblusher.so*
+	rm src/*.o
+	rm src/wayland-protocols/stable/*.o
+
 run:
 	LD_LIBRARY_PATH=blusher-collections/target/release $(CC) -I./include main.c -Lblusher-collections/target/release -L. -lblusher -lwayland-client
 	LD_LIBRARY_PATH=./:blusher-collections/target/release ./a.out

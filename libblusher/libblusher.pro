@@ -9,6 +9,7 @@ SOURCES += main.c \
     src/pointer-event.c
 
 HEADERS += include/blusher/utils.h \
+    include/blusher/blusher.h \
     include/blusher/application.h \
     include/blusher/surface.h \
     include/blusher/window.h \
