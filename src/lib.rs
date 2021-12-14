@@ -68,13 +68,13 @@ pub trait Surface {
     fn surface_ptr(&self) -> *mut c_void;
 }
 
+//=================
+// PlainSurface
+//=================
 pub struct PlainSurface {
     bl_surface: *mut c_void,
 }
 
-//=================
-// PlainSurface
-//=================
 impl PlainSurface {
     pub fn new(parent: Option<&dyn Surface>) -> PlainSurface {
         let bl_surface = match parent {
