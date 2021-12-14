@@ -67,9 +67,16 @@ bl_title_bar* bl_title_bar_new(bl_window *window)
 
 void bl_title_bar_show(bl_title_bar *title_bar)
 {
+    bl_surface_paint(title_bar->surface);
     bl_surface_show(title_bar->surface);
+
+    bl_surface_paint(title_bar->close_button);
     bl_surface_show(title_bar->close_button);
+
+    bl_surface_paint(title_bar->maximize_button);
     bl_surface_show(title_bar->maximize_button);
+
+    bl_surface_paint(title_bar->minimize_button);
     bl_surface_show(title_bar->minimize_button);
 }
 

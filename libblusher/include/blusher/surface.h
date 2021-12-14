@@ -36,6 +36,8 @@ void bl_surface_set_geometry(bl_surface *surface,
 
 void bl_surface_set_color(bl_surface *surface, const bl_color color);
 
+void bl_surface_paint(bl_surface *surface);
+
 void bl_surface_show(bl_surface *surface);
 
 void bl_surface_free(bl_surface *surface);

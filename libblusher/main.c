@@ -47,7 +47,17 @@ int main(int argc, char *argv[])
     bl_color rect_color = bl_color_from_rgb(0, 255, 0);
     bl_surface_set_color(rect, rect_color);
     rect->pointer_press_event = rect_pointer_press_handler;
+    bl_surface_paint(rect);
     bl_surface_show(rect);
+    // wl_surface_commit(window->body->parent->surface);
+
+    bl_surface *subrect = bl_surface_new(rect);
+    bl_surface_set_geometry(subrect, 5, 5, 30, 30);
+    rect_color = bl_color_from_rgb(255, 0, 0);
+    bl_surface_set_color(subrect, rect_color);
+    bl_surface_paint(subrect);
+    bl_surface_show(subrect);
+    wl_surface_commit(window->body->parent->surface);
 
 //    bl_label *label = bl_label_new(window->surface, "안녕!");
 //    bl_label_show(label);

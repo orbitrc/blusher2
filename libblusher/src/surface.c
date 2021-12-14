@@ -127,7 +127,7 @@ void bl_surface_set_color(bl_surface *surface, const bl_color color)
     surface->color = color;
 }
 
-void bl_surface_show(bl_surface *surface)
+void bl_surface_paint(bl_surface *surface)
 {
     // Do nothing if size is zero.
     if (surface->width == 0 || surface->height == 0) {
@@ -135,6 +135,10 @@ void bl_surface_show(bl_surface *surface)
     }
 
     paint_pixels(surface);
+}
+
+void bl_surface_show(bl_surface *surface)
+{
     wl_surface_attach(surface->surface, surface->buffer,
         0, 0);
     wl_surface_commit(surface->surface);

@@ -62,5 +62,5 @@ install:
 	cp -P libblusher.so /usr/lib/
 
 run:
-	LD_LIBRARY_PATH=blusher-collections/target/release $(CC) -I./include main.c -Lblusher-collections/target/release -L. -lblusher  -lwayland-egl -lwayland-cursor
+	LD_LIBRARY_PATH=blusher-collections/target/release $(CC) -I./include main.c -Lblusher-collections/target/release -L. -lblusher -lwayland-client
 	LD_LIBRARY_PATH=./:blusher-collections/target/release ./a.out

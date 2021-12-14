@@ -221,6 +221,7 @@ void bl_window_show(bl_window *window)
     );
     bl_color decoration_color = bl_color_from_rgba(255, 170, 170, 100);
     bl_surface_set_color(window->decoration, decoration_color);
+    bl_surface_paint(window->decoration);
     bl_surface_show(window->decoration);
     xdg_surface_set_window_geometry(window->xdg_surface,
         BLUSHER_WINDOW_SHADOW_WIDTH, BLUSHER_WINDOW_SHADOW_WIDTH,
@@ -268,6 +269,7 @@ void bl_window_show(bl_window *window)
         BLUSHER_WINDOW_SHADOW_WIDTH + BLUSHER_TITLE_BAR_HEIGHT,
         window->width, window->height
     );
+    bl_surface_paint(window->body);
     bl_surface_show(window->body);
     bl_surface_show(window->surface);
 }
