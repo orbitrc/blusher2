@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     bl_surface_set_color(subrect, rect_color);
     bl_surface_paint(subrect);
     bl_surface_show(subrect);
-    wl_surface_commit(window->body->parent->surface);
+    // wl_surface_commit(window->body->parent->surface);
 
 //    bl_label *label = bl_label_new(window->surface, "안녕!");
 //    bl_label_show(label);
