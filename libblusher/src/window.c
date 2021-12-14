@@ -43,7 +43,7 @@ static void xdg_toplevel_configure_handler(void *data,
         struct xdg_toplevel *xdg_toplevel, int32_t width, int32_t height,
         struct wl_array *states)
 {
-    // printf("TOPLEVEL Configure: %dx%d\n", width, height);
+     printf("TOPLEVEL Configure: %dx%d\n", width, height);
 }
 
 static void xdg_toplevel_close_handler(void *data,
@@ -140,6 +140,7 @@ static void frame_done_tb(void *data, struct wl_callback *callback, uint32_t tim
         &listener, (void*)(title_bar));
     wl_surface_commit(title_bar->surface);
 }
+// TEST END!!
 
 static void title_bar_pointer_move_handler(bl_surface *surface,
         bl_pointer_event *event)
@@ -159,7 +160,15 @@ static void title_bar_pointer_press_handler(bl_surface *surface,
 
     bl_pointer_event_free(event);
 }
-// TEST END!!
+
+static void resize_pointer_press_handler(bl_surface *surface,
+        bl_pointer_event *event)
+{
+    if (event->button == BTN_LEFT) {
+        xdg_toplevel_resize(bl_app->toplevel_windows[0]->xdg_toplevel,
+            bl_app->seat, event->serial, XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM);
+    }
+}
 
 //====================
 // Window Decoration
@@ -175,6 +184,7 @@ static void create_decoration(bl_window *window)
     bl_surface_set_color(window->decoration, decoration_color);
     bl_surface_paint(window->decoration);
     bl_surface_show(window->decoration);
+    // Set window geometry for only available window surface.
     xdg_surface_set_window_geometry(window->xdg_surface,
         BLUSHER_WINDOW_SHADOW_WIDTH, BLUSHER_WINDOW_SHADOW_WIDTH,
         window->width, window->height + BLUSHER_TITLE_BAR_HEIGHT
@@ -190,6 +200,7 @@ static void create_resize(bl_window *window)
         window->width + (BLUSHER_WINDOW_RESIZE_WIDTH * 2),
         window->height + (BLUSHER_WINDOW_RESIZE_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
+    window->resize->pointer_press_event = resize_pointer_press_handler;
     bl_color color_resize = bl_color_from_rgba(0, 0, 0, 100);
     bl_surface_set_color(window->resize, color_resize);
     bl_surface_paint(window->resize);
