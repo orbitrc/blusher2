@@ -227,6 +227,30 @@ void bl_window_show(bl_window *window)
         BLUSHER_WINDOW_SHADOW_WIDTH, BLUSHER_WINDOW_SHADOW_WIDTH,
         window->width, window->height + BLUSHER_TITLE_BAR_HEIGHT
     );
+    // Create window resize area.
+    window->resize = bl_surface_new(window->decoration);
+    bl_surface_set_geometry(window->resize,
+        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_RESIZE_WIDTH,
+        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_RESIZE_WIDTH,
+        window->width + (BLUSHER_WINDOW_RESIZE_WIDTH * 2),
+        window->height + (BLUSHER_WINDOW_RESIZE_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
+    );
+    bl_color color_resize = bl_color_from_rgba(0, 0, 0, 100);
+    bl_surface_set_color(window->resize, color_resize);
+    bl_surface_paint(window->resize);
+    bl_surface_show(window->resize);
+    // Draw window border.
+    window->border = bl_surface_new(window->decoration);
+    bl_surface_set_geometry(window->border,
+        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_BORDER_WIDTH,
+        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_BORDER_WIDTH,
+        window->width + (BLUSHER_WINDOW_BORDER_WIDTH * 2),
+        window->height + (BLUSHER_WINDOW_BORDER_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
+    );
+    bl_color color_border = bl_color_from_rgb(0, 0, 0);
+    bl_surface_set_color(window->border, color_border);
+    bl_surface_paint(window->border);
+    bl_surface_show(window->border);
 
     // Draw window surface.
     bl_surface_set_geometry(window->surface,

@@ -31,6 +31,8 @@ typedef struct bl_window {
     const char *title;
     bl_title_bar *title_bar;
     bl_surface *decoration;
+    bl_surface *resize;
+    bl_surface *border;
     bl_surface *body;
 } bl_window;
 
