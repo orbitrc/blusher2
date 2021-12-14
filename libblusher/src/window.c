@@ -91,38 +91,6 @@ static void create_title_bar_surface(bl_surface *title_bar)
 //    wl_buffer_destroy(buffer);
 }
 
-//=============
-// Window
-//=============
-
-bl_window* bl_window_new()
-{
-    bl_window *window = malloc(sizeof(bl_window));
-
-    window->xdg_wm_base = NULL;
-    window->xdg_surface = NULL;
-    window->xdg_toplevel = NULL;
-
-    window->xdg_wm_base_listener = xdg_wm_base_listener;
-    window->xdg_surface_listener = xdg_surface_listener;
-    window->xdg_toplevel_listener = xdg_toplevel_listener;
-
-    if (bl_app == NULL) {
-        fprintf(stderr, "bl_app is NULL.\n");
-    }
-    window->surface = bl_surface_new(NULL);
-
-    window->width = 480;
-    window->height = 360;
-    window->title = "Window";
-
-    window->title_bar = NULL;
-    window->decoration = bl_surface_new(window->surface);
-    window->body = bl_surface_new(window->surface);
-
-    return window;
-}
-
 // TEST!!
 static void frame_done(void *data, struct wl_callback *callback, uint32_t time);
 
@@ -193,6 +161,88 @@ static void title_bar_pointer_press_handler(bl_surface *surface,
 }
 // TEST END!!
 
+//====================
+// Window Decoration
+//====================
+static void create_decoration(bl_window *window)
+{
+    bl_surface_set_geometry(window->decoration,
+        0, 0,
+        window->width + (BLUSHER_WINDOW_SHADOW_WIDTH * 2),
+        window->height + (BLUSHER_WINDOW_SHADOW_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
+    );
+    bl_color decoration_color = bl_color_from_rgba(255, 170, 170, 100);
+    bl_surface_set_color(window->decoration, decoration_color);
+    bl_surface_paint(window->decoration);
+    bl_surface_show(window->decoration);
+    xdg_surface_set_window_geometry(window->xdg_surface,
+        BLUSHER_WINDOW_SHADOW_WIDTH, BLUSHER_WINDOW_SHADOW_WIDTH,
+        window->width, window->height + BLUSHER_TITLE_BAR_HEIGHT
+    );
+}
+
+static void create_resize(bl_window *window)
+{
+    window->resize = bl_surface_new(window->decoration);
+    bl_surface_set_geometry(window->resize,
+        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_RESIZE_WIDTH,
+        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_RESIZE_WIDTH,
+        window->width + (BLUSHER_WINDOW_RESIZE_WIDTH * 2),
+        window->height + (BLUSHER_WINDOW_RESIZE_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
+    );
+    bl_color color_resize = bl_color_from_rgba(0, 0, 0, 100);
+    bl_surface_set_color(window->resize, color_resize);
+    bl_surface_paint(window->resize);
+    bl_surface_show(window->resize);
+}
+
+static void create_border(bl_window *window)
+{
+    window->border = bl_surface_new(window->decoration);
+    bl_surface_set_geometry(window->border,
+        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_BORDER_WIDTH,
+        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_BORDER_WIDTH,
+        window->width + (BLUSHER_WINDOW_BORDER_WIDTH * 2),
+        window->height + (BLUSHER_WINDOW_BORDER_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
+    );
+    bl_color color_border = bl_color_from_rgb(0, 0, 0);
+    bl_surface_set_color(window->border, color_border);
+    bl_surface_paint(window->border);
+    bl_surface_show(window->border);
+}
+
+//=============
+// Window
+//=============
+
+bl_window* bl_window_new()
+{
+    bl_window *window = malloc(sizeof(bl_window));
+
+    window->xdg_wm_base = NULL;
+    window->xdg_surface = NULL;
+    window->xdg_toplevel = NULL;
+
+    window->xdg_wm_base_listener = xdg_wm_base_listener;
+    window->xdg_surface_listener = xdg_surface_listener;
+    window->xdg_toplevel_listener = xdg_toplevel_listener;
+
+    if (bl_app == NULL) {
+        fprintf(stderr, "bl_app is NULL.\n");
+    }
+    window->surface = bl_surface_new(NULL);
+
+    window->width = 480;
+    window->height = 360;
+    window->title = "Window";
+
+    window->title_bar = NULL;
+    window->decoration = bl_surface_new(window->surface);
+    window->body = bl_surface_new(window->surface);
+
+    return window;
+}
+
 void bl_window_show(bl_window *window)
 {
     xdg_wm_base_add_listener(window->xdg_wm_base,
@@ -214,43 +264,13 @@ void bl_window_show(bl_window *window)
     wl_display_roundtrip(bl_app->display);
 
     // Draw window decoration.
-    bl_surface_set_geometry(window->decoration,
-        0, 0,
-        window->width + (BLUSHER_WINDOW_SHADOW_WIDTH * 2),
-        window->height + (BLUSHER_WINDOW_SHADOW_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
-    );
-    bl_color decoration_color = bl_color_from_rgba(255, 170, 170, 100);
-    bl_surface_set_color(window->decoration, decoration_color);
-    bl_surface_paint(window->decoration);
-    bl_surface_show(window->decoration);
-    xdg_surface_set_window_geometry(window->xdg_surface,
-        BLUSHER_WINDOW_SHADOW_WIDTH, BLUSHER_WINDOW_SHADOW_WIDTH,
-        window->width, window->height + BLUSHER_TITLE_BAR_HEIGHT
-    );
+    create_decoration(window);
+
     // Create window resize area.
-    window->resize = bl_surface_new(window->decoration);
-    bl_surface_set_geometry(window->resize,
-        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_RESIZE_WIDTH,
-        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_RESIZE_WIDTH,
-        window->width + (BLUSHER_WINDOW_RESIZE_WIDTH * 2),
-        window->height + (BLUSHER_WINDOW_RESIZE_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
-    );
-    bl_color color_resize = bl_color_from_rgba(0, 0, 0, 100);
-    bl_surface_set_color(window->resize, color_resize);
-    bl_surface_paint(window->resize);
-    bl_surface_show(window->resize);
+    create_resize(window);
+
     // Draw window border.
-    window->border = bl_surface_new(window->decoration);
-    bl_surface_set_geometry(window->border,
-        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_BORDER_WIDTH,
-        BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_BORDER_WIDTH,
-        window->width + (BLUSHER_WINDOW_BORDER_WIDTH * 2),
-        window->height + (BLUSHER_WINDOW_BORDER_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
-    );
-    bl_color color_border = bl_color_from_rgb(0, 0, 0);
-    bl_surface_set_color(window->border, color_border);
-    bl_surface_paint(window->border);
-    bl_surface_show(window->border);
+    create_border(window);
 
     // Draw window surface.
     bl_surface_set_geometry(window->surface,

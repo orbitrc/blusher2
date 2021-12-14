@@ -41,6 +41,9 @@ default: $(OBJ) $(XDG_SHELL_HEADER_PATH)
 src/%.o: src/%.c
 	$(CC) -c $(C_INCLUDES) $(CFLAGS) $(PKG_CONFIGS) -fPIC -o $@ $<
 
+wayland-protocols: $(XDG_SHELL_HEADER_PATH) $(XDG_SHELL_SOURCE_PATH)
+	ls
+
 $(XDG_SHELL_HEADER_PATH):
 	wayland-scanner client-header $(WAYLAND_PROTOCOLS_STABLE_DIR)/xdg-shell/xdg-shell.xml include/blusher/wayland-protocols/stable/$(XDG_SHELL_HEADER)
 
