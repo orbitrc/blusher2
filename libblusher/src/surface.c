@@ -45,10 +45,12 @@ static struct wl_buffer* create_buffer(bl_surface *surface,
         return NULL;
     }
 
+    surface->shm_data_size = size;
     pool = wl_shm_create_pool(shm, fd, size);
     buff = wl_shm_pool_create_buffer(pool, 0, width, height, stride,
         WL_SHM_FORMAT_ARGB8888);
 
+    close(fd);
     wl_shm_pool_destroy(pool);
     return buff;
 }
