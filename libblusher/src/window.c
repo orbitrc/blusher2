@@ -48,7 +48,10 @@ static void xdg_toplevel_configure_handler(void *data,
     if (width == 0 && height == 0) {
         return;
     }
-    bl_window_set_size(window, width, height);
+    bl_window_set_size(window,
+        width,
+        height - BLUSHER_TITLE_BAR_HEIGHT
+    );
 }
 
 static void xdg_toplevel_close_handler(void *data,
@@ -217,7 +220,6 @@ static void create_resize(bl_window *window)
 
 static void create_border(bl_window *window)
 {
-    window->border = bl_surface_new(window->decoration);
     bl_surface_set_geometry(window->border,
         BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_BORDER_WIDTH,
         BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_BORDER_WIDTH,
@@ -258,7 +260,7 @@ bl_window* bl_window_new()
     window->title_bar = NULL;
     window->decoration = bl_surface_new(window->surface);
     window->resize = bl_surface_new(window->decoration);
-    window->border = NULL;
+    window->border = bl_surface_new(window->decoration);
     window->body = bl_surface_new(window->surface);
 
     window->resize_edge = XDG_TOPLEVEL_RESIZE_EDGE_NONE;
@@ -273,6 +275,7 @@ void bl_window_set_size(bl_window *window, int width, int height)
 
     create_decoration(window);
     create_resize(window);
+    create_border(window);
 }
 
 void bl_window_show(bl_window *window)
