@@ -202,7 +202,6 @@ static void create_decoration(bl_window *window)
 
 static void create_resize(bl_window *window)
 {
-    window->resize = bl_surface_new(window->decoration);
     bl_surface_set_geometry(window->resize,
         BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_RESIZE_WIDTH,
         BLUSHER_WINDOW_SHADOW_WIDTH - BLUSHER_WINDOW_RESIZE_WIDTH,
@@ -258,6 +257,8 @@ bl_window* bl_window_new()
 
     window->title_bar = NULL;
     window->decoration = bl_surface_new(window->surface);
+    window->resize = bl_surface_new(window->decoration);
+    window->border = NULL;
     window->body = bl_surface_new(window->surface);
 
     window->resize_edge = XDG_TOPLEVEL_RESIZE_EDGE_NONE;
@@ -271,6 +272,7 @@ void bl_window_set_size(bl_window *window, int width, int height)
     window->height = height;
 
     create_decoration(window);
+    create_resize(window);
 }
 
 void bl_window_show(bl_window *window)

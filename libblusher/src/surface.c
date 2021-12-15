@@ -39,6 +39,7 @@ static struct wl_buffer* create_buffer(bl_surface *surface,
         mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     fprintf(stderr, "After mmap. shm_data: %p\n", surface->shm_data);
     if (surface->shm_data == MAP_FAILED) {
+        fprintf(stderr, "MMAP_FAILED\n");
         surface->shm_data = NULL;
         close(fd);
         return NULL;
