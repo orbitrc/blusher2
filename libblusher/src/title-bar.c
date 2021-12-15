@@ -12,12 +12,12 @@
 //=================
 // Events
 //=================
-static void title_bar_pointer_press_handler(bl_surface *surface,
+static void close_button_pointer_press_handler(bl_surface *surface,
         bl_pointer_event *event)
 {
     if (event->button == BTN_LEFT) {
-//        bl_application_remove_window()
         fprintf(stderr, "Close!\n");
+        bl_application_remove_window(bl_app, bl_app->toplevel_windows[0]);
     }
 }
 
@@ -46,7 +46,7 @@ bl_title_bar* bl_title_bar_new(bl_window *window)
     color = bl_color_from_rgb(255, 0, 0);
     bl_surface_set_color(title_bar->close_button, color);
     title_bar->close_button->pointer_press_event =
-        title_bar_pointer_press_handler;
+        close_button_pointer_press_handler;
 
     // Set maximize/restore button.
     title_bar->maximize_button = bl_surface_new(title_bar->surface);
