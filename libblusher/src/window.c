@@ -48,6 +48,10 @@ static void xdg_toplevel_configure_handler(void *data,
     if (width == 0 && height == 0) {
         return;
     }
+    if (width == window->width &&
+            height == window->height - BLUSHER_TITLE_BAR_HEIGHT) {
+        return;
+    }
     bl_window_set_size(window,
         width,
         height - BLUSHER_TITLE_BAR_HEIGHT
