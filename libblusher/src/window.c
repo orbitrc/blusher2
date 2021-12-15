@@ -304,6 +304,19 @@ void bl_window_show(bl_window *window)
     // Draw window border.
     create_border(window);
 
+    // Set input region.
+    window->input_region = wl_compositor_create_region(bl_app->compositor);
+    wl_region_add(window->input_region,
+        BLUSHER_WINDOW_SHADOW_WIDTH,
+        BLUSHER_WINDOW_SHADOW_WIDTH,
+        window->width,
+        window->height + BLUSHER_TITLE_BAR_HEIGHT
+    );
+    wl_surface_set_input_region(window->surface->surface,
+        window->input_region);
+    wl_surface_set_input_region(window->decoration->surface,
+        window->input_region);
+
     // Draw window surface.
     bl_surface_set_geometry(window->surface,
         0, 0,

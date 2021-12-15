@@ -26,6 +26,8 @@ typedef struct bl_window {
     struct xdg_surface_listener xdg_surface_listener;
     struct xdg_toplevel_listener xdg_toplevel_listener;
 
+    struct wl_region *input_region;
+
     int width;
     int height;
     const char *title;
