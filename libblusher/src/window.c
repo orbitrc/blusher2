@@ -45,9 +45,11 @@ static void xdg_toplevel_configure_handler(void *data,
 {
     bl_window *window = (bl_window*)data;
     printf("TOPLEVEL Configure: %dx%d %p\n", width, height, window);
+    // Do nothing when size are zero.
     if (width == 0 && height == 0) {
         return;
     }
+    // Do nothing when size are equal.
     if (width == window->width &&
             height == window->height - BLUSHER_TITLE_BAR_HEIGHT) {
         return;
