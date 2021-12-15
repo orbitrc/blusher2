@@ -43,7 +43,12 @@ static void xdg_toplevel_configure_handler(void *data,
         struct xdg_toplevel *xdg_toplevel, int32_t width, int32_t height,
         struct wl_array *states)
 {
-     printf("TOPLEVEL Configure: %dx%d\n", width, height);
+    bl_window *window = (bl_window*)data;
+    printf("TOPLEVEL Configure: %dx%d %p\n", width, height, window);
+    if (width == 0 && height == 0) {
+        return;
+    }
+    bl_window_set_size(window, width, height);
 }
 
 static void xdg_toplevel_close_handler(void *data,
@@ -165,6 +170,10 @@ static void resize_pointer_press_handler(bl_surface *surface,
         bl_pointer_event *event)
 {
     if (event->button == BTN_LEFT) {
+        // BEGIN TEST
+        bl_window *window = bl_app->toplevel_windows[0];
+        window->resize_edge = XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM;
+        // END TEST
         xdg_toplevel_resize(bl_app->toplevel_windows[0]->xdg_toplevel,
             bl_app->seat, event->serial, XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM);
     }
@@ -251,7 +260,17 @@ bl_window* bl_window_new()
     window->decoration = bl_surface_new(window->surface);
     window->body = bl_surface_new(window->surface);
 
+    window->resize_edge = XDG_TOPLEVEL_RESIZE_EDGE_NONE;
+
     return window;
+}
+
+void bl_window_set_size(bl_window *window, int width, int height)
+{
+    window->width = width;
+    window->height = height;
+
+    create_decoration(window);
 }
 
 void bl_window_show(bl_window *window)
@@ -266,7 +285,7 @@ void bl_window_show(bl_window *window)
 
     window->xdg_toplevel = xdg_surface_get_toplevel(window->xdg_surface);
     xdg_toplevel_add_listener(window->xdg_toplevel,
-        &(window->xdg_toplevel_listener), NULL);
+        &(window->xdg_toplevel_listener), (void*)window);
 
     // Signal that the surface is ready to be configured.
     wl_surface_commit(window->surface->surface);

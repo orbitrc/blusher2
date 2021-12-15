@@ -34,9 +34,13 @@ typedef struct bl_window {
     bl_surface *resize;
     bl_surface *border;
     bl_surface *body;
+
+    uint32_t resize_edge;
 } bl_window;
 
 bl_window* bl_window_new();
+
+void bl_window_set_size(bl_window *window, int width, int height);
 
 void bl_window_show(bl_window *window);
 
