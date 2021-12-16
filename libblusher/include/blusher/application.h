@@ -6,6 +6,7 @@
 #include <wayland-client.h>
 
 typedef struct bl_window bl_window;
+typedef struct bl_resource bl_resource;
 typedef struct bl_ptr_btree bl_ptr_btree;
 
 typedef struct bl_application {
@@ -31,6 +32,8 @@ typedef struct bl_application {
     int32_t pointer_y;
     /// \brief Store pointer state when pressed or released.
     uint32_t pointer_state;
+
+    bl_resource *resource;
 } bl_application;
 
 extern bl_application *bl_app;  // Singleton object.

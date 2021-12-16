@@ -9,6 +9,7 @@
 #include "window.h"
 #include "surface.h"
 #include "pointer-event.h"
+#include "resource.h"
 #include <blusher-collections.h>
 
 //==============
@@ -318,6 +319,9 @@ bl_application* bl_application_new()
 
     application->surface_map = bl_ptr_btree_new();
     application->pointer_surface = NULL;
+
+    // Create resource.
+    application->resource = bl_resource_new();
 
     // Set singleton.
     bl_app = application;

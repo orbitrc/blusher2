@@ -6,7 +6,8 @@ SOURCES += main.c \
     src/title-bar.c \
     src/color.c \
     src/label.c \
-    src/pointer-event.c
+    src/pointer-event.c \
+    src/resource.c
 
 HEADERS += include/blusher/utils.h \
     include/blusher/blusher.h \
@@ -17,6 +18,7 @@ HEADERS += include/blusher/utils.h \
     include/blusher/color.h \
     include/blusher/label.h \
     include/blusher/pointer-event.h \
+    include/blusher/resource.h \
     blusher-collections/include/blusher-collections.h
 
 INCLUDEPATH += wayland-protocols blusher-collections/include \

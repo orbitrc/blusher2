@@ -1,0 +1,5 @@
+#!/bin/sh
+
+BASE_DIR=$(dirname "$0")
+
+$BASE_DIR/blusher.py "$@"
