@@ -55,6 +55,19 @@ static struct wl_buffer* create_buffer(bl_surface *surface,
     return buff;
 }
 
+inline static void paint_pixel(bl_surface *surface, uint32_t pixel,
+        uint64_t x, uint64_t y)
+{
+    if (x * y > surface->height * surface->width) {
+        fprintf(stderr, "paint_pixel() - position larger than surface.\n");
+        return;
+    }
+
+    uint32_t *shm_data = surface->shm_data;
+    uint64_t target = (surface->width * y) + x;
+    shm_data[target] = pixel;
+}
+
 static void paint_pixels(bl_surface *surface)
 {
     uint32_t *pixel = surface->shm_data;
@@ -138,6 +151,17 @@ void bl_surface_paint(bl_surface *surface)
     }
 
     paint_pixels(surface);
+}
+
+void bl_surface_render_pixels(bl_surface *surface, const uint32_t *pixels,
+        uint64_t width, uint64_t height)
+{
+    for (uint64_t y = 0; y < height; ++y) {
+        for (uint64_t x = 0; x < width; ++x) {
+            uint64_t target = (width * y) + x;
+            paint_pixel(surface, pixels[target], x, y);
+        }
+    }
 }
 
 void bl_surface_show(bl_surface *surface)

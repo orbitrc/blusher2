@@ -38,6 +38,9 @@ void bl_surface_set_color(bl_surface *surface, const bl_color color);
 
 void bl_surface_paint(bl_surface *surface);
 
+void bl_surface_render_pixels(bl_surface *surface, const uint32_t *pixels,
+        uint64_t width, uint64_t height);
+
 void bl_surface_show(bl_surface *surface);
 
 void bl_surface_free(bl_surface *surface);

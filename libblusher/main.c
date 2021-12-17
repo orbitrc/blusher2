@@ -13,6 +13,13 @@
 #include <blusher/blusher.h>
 
 //==================
+// Raw pixel data
+//==================
+static uint32_t pixels[] = {
+    0xff0000ff, 0xff0000ff, 0xff0000ff,
+};
+
+//==================
 // Surface events
 //==================
 static void rect_pointer_press_handler(bl_surface *surface,
@@ -56,6 +63,7 @@ int main(int argc, char *argv[])
     rect_color = bl_color_from_rgb(255, 0, 0);
     bl_surface_set_color(subrect, rect_color);
     bl_surface_paint(subrect);
+    bl_surface_render_pixels(subrect, pixels, 3, 1);
     bl_surface_show(subrect);
     // wl_surface_commit(window->body->parent->surface);
 
