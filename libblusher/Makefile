@@ -25,6 +25,7 @@ OBJ = src/application.o \
 	src/utils.o \
 	src/color.o \
 	src/label.o \
+	src/image.o \
 	src/resource.o \
 	src/pointer-event.o \
 	$(XDG_SHELL_OBJECT_PATH)
