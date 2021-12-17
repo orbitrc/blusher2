@@ -10,6 +10,8 @@ XDG_SHELL_OBJECT_PATH=src/wayland-protocols/stable/xdg-shell.o
 
 BLUSHER_COLLECTIONS_LIB=libblusher-collections.so
 
+BLUSHER_RESOURCES=resources/libresources.a
+
 CFLAGS += -lblusher-collections
 
 C_INCLUDES := -Iinclude/blusher -I./blusher-collections/include
@@ -23,6 +25,7 @@ OBJ = src/application.o \
 	src/utils.o \
 	src/color.o \
 	src/label.o \
+	src/resource.o \
 	src/pointer-event.o \
 	$(XDG_SHELL_OBJECT_PATH)
 
@@ -32,7 +35,7 @@ VERSION_PATCH = 0
 VERSION = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_PATCH)
 SONAME = libblusher.so.$(VERSION_MAJOR)
 
-default: $(OBJ) $(XDG_SHELL_HEADER_PATH)
+default: $(OBJ) $(XDG_SHELL_HEADER_PATH) $(BLUSHER_RESOURCES)
 	$(CC) -shared $(C_INCLUDES) $(CFLAGS) $^ -o libblusher.so.$(VERSION) -lwayland-client -lwayland-egl -lwayland-cursor $(PKG_CONFIGS)
 	ln -sf libblusher.so.$(VERSION) libblusher.so.$(VERSION_MAJOR).$(VERSION_MINOR)
 	ln -sf libblusher.so.$(VERSION_MAJOR).$(VERSION_MINOR) libblusher.so.$(VERSION_MAJOR)
@@ -56,6 +59,11 @@ $(XDG_SHELL_OBJECT_PATH): $(XDG_SHELL_SOURCE_PATH)
 $(BLUSHER_COLLECTIONS_LIB):
 	cd blusher-collections ; cargo build --release
 
+resources: $(BLUSHER_RESOURCES)
+
+$(BLUSHER_RESOURCES):
+	../bin/blusher rcc resources/resources.brc
+
 install:
 	rm -rf /usr/include/blusher
 	cp -r include/blusher /usr/include/blusher
@@ -68,6 +76,10 @@ clean:
 	rm libblusher.so*
 	rm src/*.o
 	rm src/wayland-protocols/stable/*.o
+	rm resources/*.h
+	rm resources/*.c
+	rm resources/*.o
+	rm resources/*.a
 
 run:
 	LD_LIBRARY_PATH=blusher-collections/target/release $(CC) -I./include main.c -Lblusher-collections/target/release -L. -lblusher -lwayland-client

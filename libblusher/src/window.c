@@ -271,6 +271,10 @@ bl_window* bl_window_new()
 
     window->resize_edge = XDG_TOPLEVEL_RESIZE_EDGE_NONE;
 
+    // Register resources.
+    #include "../resources/resources.h"
+    BL_REGISTER_RESOURCE()
+
     return window;
 }
 

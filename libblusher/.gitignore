@@ -4,4 +4,9 @@ src/wayland-protocols/stable/xdg-shell.c
 src/*.o
 src/wayland-protocols/stable/*.o
 
+resources/*.h
+resources/*.c
+resources/*.o
+resources/*.a
+
 a.out
