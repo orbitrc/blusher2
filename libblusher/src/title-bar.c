@@ -8,6 +8,7 @@
 #include "application.h"
 #include "pointer-event.h"
 #include "color.h"
+#include "resource.h"
 
 //=================
 // Events
@@ -40,6 +41,15 @@ bl_title_bar* bl_title_bar_new(bl_window *window)
     title_bar->window = window;
 
     // Set close button.
+    const bl_resource_data *hydrogen_close_data = bl_resource_resource_data(
+        bl_app->resource,
+        "/io.orbitrc.blusher/hydrogen-close.svg"
+    );
+    if (hydrogen_close_data == NULL) {
+        fprintf(stderr, "Resource data is NULL!\n");
+        exit(1);
+    }
+
     title_bar->close_button = bl_surface_new(title_bar->surface);
     bl_surface_set_geometry(title_bar->close_button, 5, 5,
         20, 20);
