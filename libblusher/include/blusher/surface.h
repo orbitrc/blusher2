@@ -4,6 +4,7 @@
 #include <wayland-client.h>
 
 #include "color.h"
+#include "image.h"
 
 typedef struct bl_pointer_event bl_pointer_event;
 
@@ -40,6 +41,9 @@ void bl_surface_paint(bl_surface *surface);
 
 void bl_surface_render_pixels(bl_surface *surface, const uint32_t *pixels,
         uint64_t width, uint64_t height);
+
+void bl_surface_render_image(bl_surface *surface, const bl_image *image,
+        bl_image_scale scale);
 
 void bl_surface_show(bl_surface *surface);
 

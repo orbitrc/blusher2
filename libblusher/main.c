@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
     bl_surface *rect = bl_surface_new(bl_window_body(window));
     // wl_surface_set_buffer_scale(rect->surface, 2);
-    bl_surface_set_geometry(rect, 10, 10, 100, 100);
+    bl_surface_set_geometry(rect, 10, 10, 200, 200);
     bl_color rect_color = bl_color_from_rgb(0, 255, 0);
     bl_surface_set_color(rect, rect_color);
     rect->pointer_press_event = rect_pointer_press_handler;
@@ -59,11 +59,19 @@ int main(int argc, char *argv[])
     // wl_surface_commit(window->body->parent->surface);
 
     bl_surface *subrect = bl_surface_new(rect);
-    bl_surface_set_geometry(subrect, 5, 5, 30, 30);
+    bl_surface_set_geometry(subrect, 5, 5, 150, 150);
     rect_color = bl_color_from_rgb(255, 0, 0);
     bl_surface_set_color(subrect, rect_color);
     bl_surface_paint(subrect);
+    bl_image *sample = bl_image_from_path("brc:/io.orbitrc.blusher/sample.png");
+    if (sample == NULL) {
+        fprintf(stderr, "sample.png is null!\n");
+        exit(1);
+    }
+    fprintf(stderr, "sample.png: size: %ldx%ld, format: %d\n",
+        sample->width, sample->height, sample->format);
     bl_surface_render_pixels(subrect, pixels, 3, 1);
+    bl_surface_render_image(subrect, sample, BL_IMAGE_SCALE_NO_SCALE);
     bl_surface_show(subrect);
     // wl_surface_commit(window->body->parent->surface);
 

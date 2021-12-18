@@ -164,6 +164,27 @@ void bl_surface_render_pixels(bl_surface *surface, const uint32_t *pixels,
     }
 }
 
+void bl_surface_render_image(bl_surface*surface, const bl_image *image,
+        bl_image_scale scale)
+{
+    uint64_t base_width = ((uint64_t)(surface->width) >= image->width) ?
+        image->width :
+        (uint64_t)(surface->width);
+    uint64_t base_height = ((uint64_t)(surface->height) >= image->height) ?
+        image->height :
+        (uint64_t)(surface->height);
+    uint64_t offset = ((uint64_t)(surface->width) >= image->width) ?
+        (uint64_t)(surface->width) - image->width :
+        image->width - (uint64_t)(surface->width);
+    const uint32_t *pixels = (const uint32_t*)(image->data);
+    for (uint64_t y = 0; y < base_height; ++y) {
+        for (uint64_t x = 0; x < base_width; ++x) {
+            uint64_t target = (base_width * y) + x + (offset * y);
+            paint_pixel(surface, pixels[target], x, y);
+        }
+    }
+}
+
 void bl_surface_show(bl_surface *surface)
 {
     wl_surface_attach(surface->surface, surface->buffer,
