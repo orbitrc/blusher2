@@ -19,8 +19,10 @@ typedef enum bl_image_file_format {
 typedef enum bl_image_scale {
     /// \brief Keep source image size.
     BL_IMAGE_SCALE_NO_SCALE = 0,
+    /// \brief Keep source image size and repeat.
+    BL_IMAGE_SCALE_NO_SCALE_REPEAT = 1,
     /// \brief Fit to new size.
-    BL_IMAGE_SCALE_FIT = 1,
+    BL_IMAGE_SCALE_FIT = 2,
 } bl_image_scale;
 
 typedef struct bl_image {
