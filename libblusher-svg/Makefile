@@ -21,12 +21,12 @@ src/%.o: src/%.c
 
 install:
 	rm -rf /usr/include/blusher/svg
-	mkdir /usr/include/blusher/svg
+	mkdir -p /usr/include/blusher/svg
 	cp include/blusher/svg/svg-core.h /usr/include/blusher/svg/
 	cp libblusher-svg.so.$(VERSION) /usr/lib
-	cp -P libblusher.so.$(VERSION_MAJOR).$(VERSION_MINOR) /usr/lib/
-	cp -p libblusher.so.$(VERSION_MAJOR) /usr/lib/
-	cp -p libblusher.so /usr/lib
+	cp -P libblusher-svg.so.$(VERSION_MAJOR).$(VERSION_MINOR) /usr/lib/
+	cp -p libblusher-svg.so.$(VERSION_MAJOR) /usr/lib/
+	cp -p libblusher-svg.so /usr/lib
 
 clean:
 	rm libblusher-svg.so*
