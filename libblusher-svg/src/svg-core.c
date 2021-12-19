@@ -52,6 +52,7 @@ bl_svg_core* bl_svg_core_from_data(const unsigned char *data, uint64_t size)
         &svg_core->width, &svg_core->height);
 
     svg_core->data_size = size;
+    svg_core->data = data;
 
     g_object_unref(handle);
 
@@ -102,4 +103,9 @@ unsigned char* bl_svg_core_png_data(bl_svg_core *svg_core,
     g_object_unref(handle);
 
     return closure.data;
+}
+
+void bl_svg_core_free(bl_svg_core *svg_core)
+{
+    free(svg_core);
 }

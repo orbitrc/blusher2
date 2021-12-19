@@ -7,6 +7,7 @@ SOURCES += main.c \
     src/color.c \
     src/label.c \
     src/image.c \
+    src/svg.c \
     src/pointer-event.c \
     src/resource.c
 
@@ -19,6 +20,7 @@ HEADERS += include/blusher/utils.h \
     include/blusher/color.h \
     include/blusher/label.h \
     include/blusher/image.h \
+    include/blusher/svg.h \
     include/blusher/pointer-event.h \
     include/blusher/resource.h \
     blusher-collections/include/blusher-collections.h

@@ -33,6 +33,8 @@ typedef struct bl_image {
 
 bl_image* bl_image_from_path(const char *path);
 
+bl_image* bl_image_from_data(const unsigned char *data, uint64_t size);
+
 uint64_t bl_image_width(const bl_image *image);
 
 uint64_t bl_image_height(const bl_image *image);

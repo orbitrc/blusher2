@@ -8,7 +8,7 @@
 #include "application.h"
 #include "pointer-event.h"
 #include "color.h"
-#include "resource.h"
+#include "svg.h"
 
 //=================
 // Events
@@ -41,13 +41,16 @@ bl_title_bar* bl_title_bar_new(bl_window *window)
     title_bar->window = window;
 
     // Set close button.
-    const bl_resource_data *hydrogen_close_data = bl_resource_resource_data(
-        bl_app->resource,
-        "/io.orbitrc.blusher/hydrogen-close.svg"
-    );
-    if (hydrogen_close_data == NULL) {
-        fprintf(stderr, "Resource data is NULL!\n");
+    bl_svg *hydrogen_close_svg = bl_svg_from_path(
+        "brc:/io.orbitrc.blusher/hydrogen-close.svg");
+    if (hydrogen_close_svg == NULL) {
+        fprintf(stderr, "Close SVG is NULL!\n");
         exit(1);
+    }
+    bl_image *hydrogen_close_image = bl_svg_to_image(hydrogen_close_svg,
+        20, 20);
+    if (hydrogen_close_image == NULL) {
+        fprintf(stderr, "Close Image is NULL!\n");
     }
 
     title_bar->close_button = bl_surface_new(title_bar->surface);
@@ -55,6 +58,8 @@ bl_title_bar* bl_title_bar_new(bl_window *window)
         20, 20);
     color = bl_color_from_rgb(255, 0, 0);
     bl_surface_set_color(title_bar->close_button, color);
+    bl_surface_render_image(title_bar->close_button, hydrogen_close_image,
+        BL_IMAGE_SCALE_NO_SCALE);
     title_bar->close_button->pointer_press_event =
         close_button_pointer_press_handler;
 
@@ -80,7 +85,7 @@ void bl_title_bar_show(bl_title_bar *title_bar)
     bl_surface_paint(title_bar->surface);
     bl_surface_show(title_bar->surface);
 
-    bl_surface_paint(title_bar->close_button);
+//    bl_surface_paint(title_bar->close_button);
     bl_surface_show(title_bar->close_button);
 
     bl_surface_paint(title_bar->maximize_button);

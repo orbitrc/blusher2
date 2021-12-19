@@ -12,7 +12,7 @@ BLUSHER_COLLECTIONS_LIB=libblusher-core.so
 
 BLUSHER_RESOURCES=resources/libresources.a
 
-CFLAGS += -lblusher-core
+CFLAGS += -lblusher-core -lblusher-svg
 
 C_INCLUDES := -Iinclude/blusher
 
@@ -27,6 +27,7 @@ OBJ = src/application.o \
 	src/label.o \
 	src/image.o \
 	src/resource.o \
+	src/svg.o \
 	src/pointer-event.o \
 	$(XDG_SHELL_OBJECT_PATH)
 
