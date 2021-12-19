@@ -1,5 +1,5 @@
-#ifndef _BLUSHER_COLLECTIONS_H
-#define _BLUSHER_COLLECTIONS_H
+#ifndef _BLUSHER_CORE_COLLECTIONS_H
+#define _BLUSHER_CORE_COLLECTIONS_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -24,4 +24,4 @@ bool bl_ptr_btree_remove(bl_ptr_btree *btree,
 
 void bl_ptr_btree_free(bl_ptr_btree *btree);
 
-#endif /* _BLUSHER_COLLECTIONS_H */
+#endif /* _BLUSHER_CORE_COLLECTIONS_H */

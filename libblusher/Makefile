@@ -8,13 +8,13 @@ XDG_SHELL_HEADER_PATH=include/blusher/wayland-protocols/stable/$(XDG_SHELL_HEADE
 XDG_SHELL_SOURCE_PATH=src/wayland-protocols/stable/$(XDG_SHELL_SOURCE)
 XDG_SHELL_OBJECT_PATH=src/wayland-protocols/stable/xdg-shell.o
 
-BLUSHER_COLLECTIONS_LIB=libblusher-collections.so
+BLUSHER_COLLECTIONS_LIB=libblusher-core.so
 
 BLUSHER_RESOURCES=resources/libresources.a
 
-CFLAGS += -lblusher-collections
+CFLAGS += -lblusher-core
 
-C_INCLUDES := -Iinclude/blusher -I./blusher-collections/include
+C_INCLUDES := -Iinclude/blusher
 
 PKG_CONFIGS = `pkg-config --cflags --libs cairo` `pkg-config --cflags --libs pango` `pkg-config --cflags --libs pangocairo`
 

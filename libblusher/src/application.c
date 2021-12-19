@@ -10,7 +10,7 @@
 #include "surface.h"
 #include "pointer-event.h"
 #include "resource.h"
-#include <blusher-collections.h>
+#include <blusher/core/collections.h>
 
 //==============
 // Seat

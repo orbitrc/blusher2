@@ -11,7 +11,7 @@
 // Blusher
 #include "application.h"
 #include "utils.h"
-#include <blusher-collections.h>
+#include <blusher/core/collections.h>
 
 //=============
 // Drawing
