@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+use std::os::raw::{c_int, c_char};
 
 #[repr(C)]
 pub struct bl_ptr_btree {
@@ -98,6 +99,17 @@ pub extern "C" fn bl_ptr_btree_free(btree: *mut bl_ptr_btree) {
     }
 }
 
+extern "C" {
+    pub fn bl_log_c(level: c_int, format: *const c_char, ...);
+}
+
+#[no_mangle]
+pub extern "C" fn bl_log(level: c_int, format: *const c_char) {
+    unsafe {
+        bl_log_c(level, format);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -112,5 +124,12 @@ mod tests {
         bl_ptr_btree_remove(map, 3);
         assert_eq!(bl_ptr_btree_contains(map, 3), false);
         bl_ptr_btree_free(map);
+    }
+
+    #[test]
+    fn log() {
+        unsafe {
+            bl_log(0, "Hello".as_ptr() as *const i8);
+        }
     }
 }
