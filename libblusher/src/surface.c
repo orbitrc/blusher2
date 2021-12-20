@@ -11,6 +11,7 @@
 // Blusher
 #include "application.h"
 #include "utils.h"
+#include <blusher/core/log.h>
 #include <blusher/core/collections.h>
 
 //=============
@@ -119,6 +120,24 @@ bl_surface* bl_surface_new(bl_surface *parent)
         (uint64_t)surface->surface, (uint64_t)surface);
 
     return surface;
+}
+
+void bl_surface_set_parent(bl_surface *surface, bl_surface *parent)
+{
+    if (surface->parent != NULL) {
+        bl_log(BL_LOG_LEVEL_WARN, "%s() - Parent already exist.\n", __func__);
+    }
+
+    surface->parent = parent;
+
+    // Create wl_subsurface if not set.
+    if (surface->subsurface == NULL) {
+        surface->subsurface = wl_subcompositor_get_subsurface(
+            bl_app->subcompositor,
+            surface->surface,
+            surface->parent->surface
+        );
+    }
 }
 
 void bl_surface_set_geometry(bl_surface *surface,

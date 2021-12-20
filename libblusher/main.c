@@ -50,6 +50,9 @@ int main(int argc, char *argv[])
     bl_window *window = bl_window_new();
     bl_application_add_window(app, window);
 
+    bl_surface *window_body = bl_surface_new(NULL);
+    bl_window_set_body(window, window_body);
+
     bl_window_show(window);
 
     bl_surface *rect = bl_surface_new(bl_window_body(window));

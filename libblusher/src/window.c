@@ -10,6 +10,7 @@
 #include "title-bar.h"
 #include "pointer-event.h"
 #include "utils.h"
+#include <blusher/core/log.h>
 
 //==============
 // Xdg
@@ -267,7 +268,7 @@ bl_window* bl_window_new()
     window->decoration = bl_surface_new(window->surface);
     window->resize = bl_surface_new(window->decoration);
     window->border = bl_surface_new(window->decoration);
-    window->body = bl_surface_new(window->surface);
+    window->body = NULL;
 
     window->resize_edge = XDG_TOPLEVEL_RESIZE_EDGE_NONE;
 
@@ -374,6 +375,16 @@ void bl_window_show(bl_window *window)
     bl_surface_paint(window->body);
     bl_surface_show(window->body);
     bl_surface_show(window->surface);
+}
+
+void bl_window_set_body(bl_window *window, bl_surface *surface)
+{
+    if (window->body != NULL) {
+        bl_log(BL_LOG_LEVEL_WARN, "%s() - Body already exist.\n", __func__);
+    }
+
+    window->body = surface;
+    bl_surface_set_parent(surface, window->surface);
 }
 
 bl_surface* bl_window_body(bl_window *window)

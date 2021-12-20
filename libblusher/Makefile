@@ -67,8 +67,8 @@ $(BLUSHER_RESOURCES):
 	../bin/blusher rcc resources/resources.brc
 
 install:
-	rm -rf /usr/include/blusher
-	cp -r include/blusher /usr/include/blusher
+	rm -f /usr/include/blusher/*.h
+	cp include/blusher/*.h /usr/include/blusher
 	cp libblusher.so.$(VERSION) /usr/lib/
 	cp -P libblusher.so.$(VERSION_MAJOR).$(VERSION_MINOR) /usr/lib/
 	cp -P libblusher.so.$(VERSION_MAJOR) /usr/lib/

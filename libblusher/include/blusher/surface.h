@@ -32,6 +32,8 @@ typedef struct bl_surface {
 
 bl_surface* bl_surface_new(bl_surface *parent);
 
+void bl_surface_set_parent(bl_surface *surface, bl_surface *parent);
+
 void bl_surface_set_geometry(bl_surface *surface,
         double x, double y, double width, double height);
 

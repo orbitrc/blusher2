@@ -46,6 +46,8 @@ void bl_window_set_size(bl_window *window, int width, int height);
 
 void bl_window_show(bl_window *window);
 
+void bl_window_set_body(bl_window *window, bl_surface *surface);
+
 bl_surface* bl_window_body(bl_window *window);
 
 /// \brief Free the window. Should not call manually.

@@ -1,4 +1,5 @@
-use std::ffi::c_void;
+use std::process;
+
 use blusher::{Surface};
 use blusher::{Application, Window, PlainSurface};
 
@@ -9,10 +10,15 @@ fn main() {
 
     window.show();
 
-    let surface = PlainSurface::new(None);
+    let mut surface = PlainSurface::new(Some(window.body()));
+    surface.set_geometry(0.0, 0.0, 100.0, 100.0);
     surface.show();
-    let surface2 = PlainSurface::new(Some(&surface));
+    let mut surface2 = PlainSurface::new(Some(&surface));
+    surface2.set_geometry(10.0, 10.0, 50.0, 50.0);
     surface2.show();
 
-    app.exec();
+    let ret = app.exec();
+    if ret != 0 {
+        process::exit(ret);
+    }
 }

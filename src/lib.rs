@@ -34,22 +34,40 @@ impl Application {
     }
 }
 
+impl Drop for Application {
+    fn drop(&mut self) {
+        unsafe {
+            libblusher::bl_application_free(self.application);
+        }
+    }
+}
+
 //=============
 // Window
 //=============
 pub struct Window {
     window: *mut c_void,
+    body: PlainSurface,
 }
 
 impl Window {
     pub fn new() -> Window {
         unsafe {
+            let bl_window = libblusher::bl_window_new();
+            let body = PlainSurface::new(None);
+            libblusher::bl_window_set_body(bl_window, body.bl_surface);
+
             let window = Window {
                 window: libblusher::bl_window_new(),
+                body: body,
             };
 
             window
         }
+    }
+
+    pub fn body(&self) -> &PlainSurface {
+        &self.body
     }
 
     pub fn show(&self) {
@@ -64,6 +82,8 @@ impl Window {
 //=================
 pub trait Surface {
     fn show(&self);
+
+    fn set_geometry(&mut self, x: f64, y: f64, width: f64, height: f64);
 
     fn surface_ptr(&self) -> *mut c_void;
 }
@@ -96,7 +116,14 @@ impl PlainSurface {
 impl Surface for PlainSurface {
     fn show(&self) {
         unsafe {
+            libblusher::bl_surface_paint(self.bl_surface);
             libblusher::bl_surface_show(self.bl_surface);
+        }
+    }
+
+    fn set_geometry(&mut self, x: f64, y: f64, width: f64, height: f64) {
+        unsafe {
+            libblusher::bl_surface_set_geometry(self.bl_surface, x, y, width, height);
         }
     }
 
