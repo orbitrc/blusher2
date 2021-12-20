@@ -192,10 +192,10 @@ void bl_surface_show(bl_surface *surface)
     wl_surface_commit(surface->surface);
 
     if (surface->parent != NULL) {
-        bl_surface_show(surface->parent);
 //        wl_surface_commit(surface->parent->surface);
         wl_subsurface_set_position(surface->subsurface,
             surface->x, surface->y);
+        bl_surface_show(surface->parent);
     }
 }
 

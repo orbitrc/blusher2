@@ -10,6 +10,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
+#include <blusher/core/log.h>
 #include <blusher/blusher.h>
 
 //==================
@@ -34,6 +35,9 @@ static void rect_pointer_press_handler(bl_surface *surface,
         surface->height
     );
     bl_surface_show(surface);
+    bl_log(BL_LOG_LEVEL_INFO, "Surface shown!");
+
+    bl_pointer_event_free(event);
 }
 
 //===========

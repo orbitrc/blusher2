@@ -84,5 +84,5 @@ clean:
 	rm resources/*.a
 
 run:
-	LD_LIBRARY_PATH=blusher-collections/target/release $(CC) -I./include main.c -Lblusher-collections/target/release -L. -lblusher -lwayland-client
-	LD_LIBRARY_PATH=./:blusher-collections/target/release ./a.out
+	$(CC) -I./include main.c -L. -lblusher -lwayland-client -lblusher-core
+	LD_LIBRARY_PATH=./: ./a.out

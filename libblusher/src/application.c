@@ -10,6 +10,7 @@
 #include "surface.h"
 #include "pointer-event.h"
 #include "resource.h"
+#include <blusher/core/log.h>
 #include <blusher/core/collections.h>
 
 //==============
@@ -25,7 +26,7 @@ static void keyboard_keymap_handler(void *data, struct wl_keyboard *keyboard,
 static void keyboard_enter_handler(void *data, struct wl_keyboard *keyboard,
         uint32_t serial, struct wl_surface *surface, struct wl_array *keys)
 {
-    fprintf(stderr, "Keyboard gained focus\n");
+    bl_log(BL_LOG_LEVEL_INFO, "Keyboard gained focus!");
 }
 
 static void keyboard_leave_handler(void *data, struct wl_keyboard *keyboard,
