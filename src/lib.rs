@@ -111,6 +111,18 @@ impl PlainSurface {
 
         surface
     }
+
+    pub fn set_color(&mut self, color: Color) {
+        unsafe {
+            let bl_color = libblusher::bl_color_from_rgba(
+                color.red() as u32,
+                color.green() as u32,
+                color.blue() as u32,
+                color.alpha() as u32
+            );
+            libblusher::bl_surface_set_color(self.bl_surface, bl_color);
+        }
+    }
 }
 
 impl Surface for PlainSurface {
@@ -137,5 +149,48 @@ impl Drop for PlainSurface {
         unsafe {
             libblusher::bl_surface_free(self.surface_ptr());
         }
+    }
+}
+
+pub struct Color {
+    red: u8,
+    green: u8,
+    blue: u8,
+    alpha: u8,
+}
+
+impl Color {
+    pub fn from_rgb(r: u8, g: u8, b: u8) -> Color {
+        Color {
+            red: r,
+            green: g,
+            blue: b,
+            alpha: 255,
+        }
+    }
+
+    pub fn from_rgba(r: u8, g: u8, b: u8, a: u8) -> Color {
+        Color {
+            red: r,
+            green: g,
+            blue: b,
+            alpha: a,
+        }
+    }
+
+    pub fn red(&self) -> u8 {
+        self.red
+    }
+
+    pub fn green(&self) -> u8 {
+        self.green
+    }
+
+    pub fn blue(&self) -> u8 {
+        self.blue
+    }
+
+    pub fn alpha(&self) -> u8 {
+        self.alpha
     }
 }

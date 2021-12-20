@@ -1,7 +1,7 @@
 use std::process;
 
 use blusher::{Surface};
-use blusher::{Application, Window, PlainSurface};
+use blusher::{Application, Window, PlainSurface, Color};
 
 fn main() {
     let app = Application::new();
@@ -15,6 +15,7 @@ fn main() {
     surface.show();
     let mut surface2 = PlainSurface::new(Some(&surface));
     surface2.set_geometry(10.0, 10.0, 50.0, 50.0);
+    surface2.set_color(Color::from_rgb(255, 0, 0));
     surface2.show();
 
     let ret = app.exec();

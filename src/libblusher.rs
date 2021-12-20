@@ -32,9 +32,29 @@ extern "C" {
 
     pub fn bl_surface_set_geometry(surface: *mut c_void, x: f64, y: f64, width: f64, height: f64);
 
+    pub fn bl_surface_set_color(surface: *mut c_void, color: bl_color);
+
     pub fn bl_surface_paint(surface: *mut c_void);
 
     pub fn bl_surface_show(surface: *mut c_void);
 
     pub fn bl_surface_free(surface: *mut c_void);
+
+    //==============
+    // Color
+    //==============
+    pub fn bl_color_from_rgb(r: u32, g: u32, b: u32) -> bl_color;
+
+    pub fn bl_color_from_rgba(r: u32, g: u32, b: u32, a: u32) -> bl_color;
+}
+
+//=============
+// Color
+//=============
+#[repr(C)]
+pub struct bl_color {
+    red: u32,
+    green: u32,
+    blue: u32,
+    alpha: u32,
 }
