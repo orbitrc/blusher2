@@ -380,11 +380,13 @@ void bl_window_show(bl_window *window)
 void bl_window_set_body(bl_window *window, bl_surface *surface)
 {
     if (window->body != NULL) {
-        bl_log(BL_LOG_LEVEL_WARN, "%s() - Body already exist.\n", __func__);
+        bl_log(BL_LOG_LEVEL_WARN, "%s() - Body already exist.", __func__);
     }
 
     window->body = surface;
     bl_surface_set_parent(surface, window->surface);
+
+    bl_log(BL_LOG_LEVEL_INFO, "%s() - Body attached to window.", __func__);
 }
 
 bl_surface* bl_window_body(bl_window *window)

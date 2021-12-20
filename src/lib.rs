@@ -58,7 +58,7 @@ impl Window {
             libblusher::bl_window_set_body(bl_window, body.bl_surface);
 
             let window = Window {
-                window: libblusher::bl_window_new(),
+                window: bl_window,
                 body: body,
             };
 
