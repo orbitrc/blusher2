@@ -218,6 +218,12 @@ void bl_surface_show(bl_surface *surface)
     }
 }
 
+void bl_surface_set_pointer_press_event(bl_surface *surface,
+        void (*event)(bl_surface*, bl_pointer_event*))
+{
+    surface->pointer_press_event = event;
+}
+
 void bl_surface_free(bl_surface *surface)
 {
     if (surface->buffer != NULL) {

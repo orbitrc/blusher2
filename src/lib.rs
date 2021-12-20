@@ -117,6 +117,12 @@ impl PlainSurface {
         let surface = PlainSurface {
             bl_surface: unsafe { libblusher::bl_surface_new(bl_surface) },
         };
+        unsafe {
+            libblusher::bl_surface_set_pointer_press_event(
+                surface.bl_surface,
+                |s, evt| Surface::pointer_press_event(s, evt)
+            );
+        }
 
         surface
     }

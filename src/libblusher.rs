@@ -38,6 +38,8 @@ extern "C" {
 
     pub fn bl_surface_show(surface: *mut c_void);
 
+    pub fn bl_surface_set_pointer_press_event(surface: *mut c_void, event: fn(&dyn super::Surface, &super::PointerEvent));
+
     pub fn bl_surface_free(surface: *mut c_void);
 
     //==============
