@@ -81,10 +81,19 @@ impl Window {
 // Trait Surface
 //=================
 pub trait Surface {
+    /// Show the surface.
     fn show(&self);
 
+    /// Set geometry of surface.
     fn set_geometry(&mut self, x: f64, y: f64, width: f64, height: f64);
 
+    fn pointer_press_event(&self, event: &PointerEvent) {
+        println!("This is Default pointer_press_event!");
+    }
+
+    /// Get underlying C pointer.
+    ///
+    /// DO NOT USE THIS METHOD IN YOUR APPLICATION!
     fn surface_ptr(&self) -> *mut c_void;
 }
 
@@ -152,6 +161,9 @@ impl Drop for PlainSurface {
     }
 }
 
+//============
+// Color
+//============
 pub struct Color {
     red: u8,
     green: u8,
@@ -192,5 +204,30 @@ impl Color {
 
     pub fn alpha(&self) -> u8 {
         self.alpha
+    }
+}
+
+//===============
+// PointerEvent
+//===============
+pub struct PointerEvent {
+    bl_pointer_event: *mut c_void,
+}
+
+impl PointerEvent {
+    pub fn new() -> PointerEvent {
+        unsafe {
+            PointerEvent {
+                bl_pointer_event: libblusher::bl_pointer_event_new(),
+            }
+        }
+    }
+}
+
+impl Drop for PointerEvent {
+    fn drop(&mut self) {
+        unsafe {
+            libblusher::bl_pointer_event_free(self.bl_pointer_event);
+        }
     }
 }

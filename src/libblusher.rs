@@ -46,6 +46,13 @@ extern "C" {
     pub fn bl_color_from_rgb(r: u32, g: u32, b: u32) -> bl_color;
 
     pub fn bl_color_from_rgba(r: u32, g: u32, b: u32, a: u32) -> bl_color;
+
+    //================
+    // Pointer Event
+    //================
+    pub fn bl_pointer_event_new() -> *mut c_void;
+
+    pub fn bl_pointer_event_free(pointer_event: *mut c_void);
 }
 
 //=============
