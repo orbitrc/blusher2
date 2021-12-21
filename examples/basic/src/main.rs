@@ -1,8 +1,8 @@
 use std::process;
 
-use blusher::{Surface};
-use blusher::{Application, Window, PlainSurface, Color};
-use blusher::{PointerEvent};
+use bl::{Surface};
+use bl::{Application, Window, PlainSurface, Color};
+use bl::{PointerEvent};
 
 struct MySurface {
     surface: PlainSurface,
