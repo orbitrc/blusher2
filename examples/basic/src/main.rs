@@ -2,6 +2,7 @@ use std::process;
 
 use blusher::{Surface};
 use blusher::{Application, Window, PlainSurface, Color};
+use blusher::{PointerEvent};
 
 struct MySurface {
     surface: PlainSurface,
@@ -12,6 +13,13 @@ impl MySurface {
         let mut my_surface = MySurface {
             surface: PlainSurface::new(parent),
         };
+
+        unsafe {
+            (*Application::instance()).register_surface(
+                my_surface.surface_ptr(),
+                &mut my_surface as *mut dyn Surface
+            );
+        }
 
         my_surface.surface.set_color(Color::from_rgb(200, 100, 0));
 
@@ -26,6 +34,11 @@ impl Surface for MySurface {
 
     fn set_geometry(&mut self, x: f64, y: f64, width: f64, height: f64) {
         self.surface.set_geometry(x, y, width, height);
+    }
+
+    fn pointer_press_event(&self, event: &PointerEvent) {
+        println!("MySurface pointer event!");
+        PlainSurface::pointer_press_event(&self.surface, event);
     }
 
     fn surface_ptr(&self) -> *mut std::os::raw::c_void {

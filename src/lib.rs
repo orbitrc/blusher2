@@ -2,20 +2,29 @@ mod libblusher;
 
 use std::ffi::c_void;
 use std::ptr::null_mut;
+use std::sync::Arc;
+use std::cell::RefCell;
+use std::collections::HashMap;
 
 //================
 // Application
 //================
 pub struct Application {
     application: *mut c_void,
+    surface_map: HashMap<*mut c_void, *mut dyn Surface>,
 }
+
+static mut BL_APP: *mut Application = null_mut();
 
 impl Application {
     pub fn new() -> Application {
         unsafe {
-            let application = Application {
+            let mut application = Application {
                 application: libblusher::bl_application_new(),
+                surface_map: HashMap::new(),
             };
+
+            BL_APP = &mut application as *mut Application;
 
             application
         }
@@ -27,9 +36,19 @@ impl Application {
         }
     }
 
+    pub fn register_surface(&mut self, bl_surface: *mut c_void, surface: *mut dyn Surface) {
+        self.surface_map.insert(bl_surface, surface);
+    }
+
     pub fn exec(&self) -> i32 {
         unsafe {
             libblusher::bl_application_exec(self.application)
+        }
+    }
+
+    pub fn instance() -> *mut Application {
+        unsafe {
+            BL_APP
         }
     }
 }
@@ -104,6 +123,20 @@ pub struct PlainSurface {
     bl_surface: *mut c_void,
 }
 
+extern "C" fn callback(surface: *mut c_void, event: *mut c_void) {
+    println!("Hello from Rust!");
+    unsafe {
+        match (*Application::instance()).surface_map.get(&surface) {
+            Some(surface) => {
+                let _surface = *surface;
+                let evt = PointerEvent::new();
+                (*_surface).pointer_press_event(&evt);
+            },
+            None => {},
+        }
+    }
+}
+
 impl PlainSurface {
     pub fn new(parent: Option<&dyn Surface>) -> PlainSurface {
         let bl_surface = match parent {
@@ -114,14 +147,17 @@ impl PlainSurface {
                 null_mut()
             }
         };
-        let surface = PlainSurface {
+        let mut surface = PlainSurface {
             bl_surface: unsafe { libblusher::bl_surface_new(bl_surface) },
         };
         unsafe {
             libblusher::bl_surface_set_pointer_press_event(
                 surface.bl_surface,
-                |s, evt| Surface::pointer_press_event(s, evt)
+                callback
             );
+        }
+        unsafe {
+            (*Application::instance()).surface_map.insert(surface.bl_surface, &mut surface as *mut dyn Surface);
         }
 
         surface
