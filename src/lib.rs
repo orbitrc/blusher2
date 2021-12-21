@@ -2,8 +2,6 @@ mod libblusher;
 
 use std::ffi::c_void;
 use std::ptr::null_mut;
-use std::sync::Arc;
-use std::cell::RefCell;
 use std::collections::HashMap;
 
 //================
@@ -36,6 +34,7 @@ impl Application {
         }
     }
 
+    /// Register a surface to application by c pointer as a key.
     pub fn register_surface(&mut self, bl_surface: *mut c_void, surface: *mut dyn Surface) {
         self.surface_map.insert(bl_surface, surface);
     }
