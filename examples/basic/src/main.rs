@@ -14,12 +14,10 @@ impl MySurface {
             surface: PlainSurface::new(parent),
         };
 
-        unsafe {
-            (*Application::instance()).register_surface(
-                my_surface.surface_ptr(),
-                &mut my_surface as *mut dyn Surface
-            );
-        }
+        Application::instance().register_surface(
+            my_surface.surface_ptr(),
+            &mut my_surface as *mut dyn Surface
+        );
 
         my_surface.surface.set_color(Color::from_rgb(200, 100, 0));
 

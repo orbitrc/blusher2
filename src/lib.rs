@@ -46,9 +46,9 @@ impl Application {
         }
     }
 
-    pub fn instance() -> *mut Application {
+    pub fn instance() -> &'static mut Application {
         unsafe {
-            BL_APP
+            &mut *BL_APP
         }
     }
 }
