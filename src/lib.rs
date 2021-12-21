@@ -39,6 +39,11 @@ impl Application {
         self.surface_map.insert(bl_surface, surface);
     }
 
+    /// Unregister a surface by c pointer as a key.
+    pub fn unregister_surface(&mut self, bl_surface: *mut c_void) {
+        self.surface_map.remove(&bl_surface);
+    }
+
     pub fn exec(&self) -> i32 {
         unsafe {
             libblusher::bl_application_exec(self.application)
@@ -153,9 +158,7 @@ impl PlainSurface {
                 callback
             );
         }
-        unsafe {
-            (*Application::instance()).surface_map.insert(surface.bl_surface, &mut surface as *mut dyn Surface);
-        }
+        Application::instance().surface_map.insert(surface.bl_surface, &mut surface as *mut dyn Surface);
 
         surface
     }
@@ -194,6 +197,7 @@ impl Surface for PlainSurface {
 
 impl Drop for PlainSurface {
     fn drop(&mut self) {
+        Application::instance().unregister_surface(self.bl_surface);
         unsafe {
             libblusher::bl_surface_free(self.c_ptr());
         }
