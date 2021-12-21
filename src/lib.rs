@@ -111,9 +111,7 @@ pub trait Surface {
     }
 
     /// Get underlying C pointer.
-    ///
-    /// DO NOT USE THIS METHOD IN YOUR APPLICATION!
-    fn surface_ptr(&self) -> *mut c_void;
+    fn c_ptr(&self) -> *mut c_void;
 }
 
 //=================
@@ -141,7 +139,7 @@ impl PlainSurface {
     pub fn new(parent: Option<&dyn Surface>) -> PlainSurface {
         let bl_surface = match parent {
             Some(surface) => {
-                surface.surface_ptr()
+                surface.c_ptr()
             }
             None => {
                 null_mut()
@@ -190,7 +188,7 @@ impl Surface for PlainSurface {
         }
     }
 
-    fn surface_ptr(&self) -> *mut c_void {
+    fn c_ptr(&self) -> *mut c_void {
         self.bl_surface
     }
 }
@@ -198,7 +196,7 @@ impl Surface for PlainSurface {
 impl Drop for PlainSurface {
     fn drop(&mut self) {
         unsafe {
-            libblusher::bl_surface_free(self.surface_ptr());
+            libblusher::bl_surface_free(self.c_ptr());
         }
     }
 }

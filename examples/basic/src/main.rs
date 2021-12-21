@@ -15,7 +15,7 @@ impl MySurface {
         };
 
         Application::instance().register_surface(
-            my_surface.surface_ptr(),
+            my_surface.c_ptr(),
             &mut my_surface as *mut dyn Surface
         );
 
@@ -39,8 +39,8 @@ impl Surface for MySurface {
         PlainSurface::pointer_press_event(&self.surface, event);
     }
 
-    fn surface_ptr(&self) -> *mut std::os::raw::c_void {
-        self.surface.surface_ptr()
+    fn c_ptr(&self) -> *mut std::os::raw::c_void {
+        self.surface.c_ptr()
     }
 }
 
