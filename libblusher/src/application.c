@@ -257,7 +257,9 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
                 id, &wl_subcompositor_interface, 1);
         }
     } else {
-        fprintf(stderr, "Interface <%s>\n", interface);
+        bl_log(BL_LOG_LEVEL_INFO,
+            "%s() - Interface <%s>, version %d", __func__, interface, version
+        );
     }
 }
 

@@ -7,6 +7,7 @@
 #include "application.h"
 #include "resource.h"
 #include "image.h"
+#include <blusher/core/log.h>
 #include <blusher/svg/svg-core.h>
 
 bl_svg* bl_svg_from_path(const char *path)
@@ -28,7 +29,8 @@ bl_svg* bl_svg_from_path(const char *path)
             svg->core = bl_svg_core_from_data(rc_data->data, rc_data->size);
         } else {
             // Path is file system path.
-            fprintf(stderr, "WARNING - %s() - NOT IMPLEMENTED!\n", __func__);
+            bl_log(BL_LOG_LEVEL_ERROR,
+                "%s() - File system path not implemented.", __func__);
         }
     }
 

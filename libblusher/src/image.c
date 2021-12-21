@@ -10,6 +10,7 @@
 
 #include "application.h"
 #include "resource.h"
+#include <blusher/core/log.h>
 
 typedef struct bl_cairo_png_closure {
     unsigned char const* data;
@@ -115,6 +116,8 @@ bl_image* bl_image_from_path(const char *path)
             }
         } else {
             // Path is file system path.
+            bl_log(BL_LOG_LEVEL_ERROR,
+                "%s() - File system path not implemented.", __func__);
         }
     }
 
