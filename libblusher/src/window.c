@@ -85,7 +85,7 @@ static void xdg_toplevel_configure_handler(void *data,
 static void xdg_toplevel_close_handler(void *data,
         struct xdg_toplevel *xdg_toplevel)
 {
-    // printf("TOPLEVEL Close %p\n", xdg_toplevel);
+    bl_log(BL_LOG_LEVEL_INFO, "%s() - Closing.\n", __func__);
 }
 
 static const struct xdg_toplevel_listener xdg_toplevel_listener = {
@@ -260,6 +260,17 @@ static void create_border(bl_window *window)
     bl_surface_show(window->border);
 }
 
+static void update_body(bl_window *window)
+{
+    bl_surface_set_geometry(window->body,
+        BLUSHER_WINDOW_SHADOW_WIDTH,
+        BLUSHER_WINDOW_SHADOW_WIDTH + BLUSHER_TITLE_BAR_HEIGHT,
+        window->width, window->height
+    );
+    bl_surface_paint(window->body);
+    bl_surface_show(window->body);
+}
+
 //=============
 // Window
 //=============
@@ -308,6 +319,7 @@ void bl_window_set_size(bl_window *window, int width, int height)
     create_decoration(window);
     create_resize(window);
     create_border(window);
+    update_body(window);
 }
 
 void bl_window_show(bl_window *window)
