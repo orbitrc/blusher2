@@ -1,5 +1,7 @@
 #include "window.h"
 
+#include <stdbool.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 #include <sys/mman.h>
@@ -11,6 +13,22 @@
 #include "pointer-event.h"
 #include "utils.h"
 #include <blusher/core/log.h>
+
+//====================
+// Utility Functions
+//====================
+bool is_resizing(struct wl_array *states)
+{
+    for (size_t i = 0; i < states->size; ++i) {
+        enum xdg_toplevel_state state =
+            ((enum xdg_toplevel_state*)(states->data))[i];
+        if (state == XDG_TOPLEVEL_STATE_RESIZING) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 //==============
 // Xdg
@@ -55,10 +73,13 @@ static void xdg_toplevel_configure_handler(void *data,
             height == window->height - BLUSHER_TITLE_BAR_HEIGHT) {
         return;
     }
-    bl_window_set_size(window,
-        width,
-        height - BLUSHER_TITLE_BAR_HEIGHT
-    );
+    // State is resizing.
+    if (is_resizing(states)) {
+        bl_window_set_size(window,
+            width,
+            height - BLUSHER_TITLE_BAR_HEIGHT
+        );
+    }
 }
 
 static void xdg_toplevel_close_handler(void *data,

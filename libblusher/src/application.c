@@ -62,7 +62,9 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
         uint32_t serial, struct wl_surface *surface,
         wl_fixed_t sx, wl_fixed_t sy)
 {
+    /*
     fprintf(stderr, "Pointer entered surface\t%p at %d %d\n", surface, sx, sy);
+    */
 
     bl_app->pointer_surface = surface;
     bl_app->pointer_x = sx;
@@ -88,7 +90,9 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
 static void pointer_leave_handler(void *data, struct wl_pointer *pointer,
         uint32_t serial, struct wl_surface *surface)
 {
+    /*
     fprintf(stderr, "Pointer left surface\t%p\n", surface);
+    */
 }
 
 static void pointer_motion_handler(void *data, struct wl_pointer *pointer,

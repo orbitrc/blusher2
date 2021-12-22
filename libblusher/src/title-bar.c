@@ -9,6 +9,7 @@
 #include "pointer-event.h"
 #include "color.h"
 #include "svg.h"
+#include <blusher/core/log.h>
 
 //=================
 // Events
@@ -17,7 +18,7 @@ static void close_button_pointer_press_handler(bl_surface *surface,
         bl_pointer_event *event)
 {
     if (event->button == BTN_LEFT) {
-        fprintf(stderr, "Close!\n");
+        bl_log(BL_LOG_LEVEL_INFO, "%s() - Closing...", __func__);
         bl_application_remove_window(bl_app, bl_app->toplevel_windows[0]);
     }
 }

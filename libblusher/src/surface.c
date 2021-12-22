@@ -164,6 +164,8 @@ void bl_surface_set_color(bl_surface *surface, const bl_color color)
 
 void bl_surface_paint(bl_surface *surface)
 {
+    bl_log(BL_LOG_LEVEL_INFO, "%s() - surface: %p", __func__, surface);
+
     // Do nothing if size is zero.
     if (surface->width == 0 || surface->height == 0) {
         return;
