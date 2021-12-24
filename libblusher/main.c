@@ -82,8 +82,8 @@ int main(int argc, char *argv[])
     bl_surface_show(subrect);
     // wl_surface_commit(window->body->parent->surface);
 
-//    bl_label *label = bl_label_new(window->surface, "안녕!");
-//    bl_label_show(label);
+    bl_label *label = bl_label_new(bl_window_body(window), "안녕! Hello!");
+    bl_label_show(label);
 
     return bl_application_exec(app);
 }

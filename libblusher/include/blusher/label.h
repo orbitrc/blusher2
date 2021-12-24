@@ -14,6 +14,10 @@ typedef struct bl_label {
 
 bl_label* bl_label_new(bl_surface *parent, const char *text);
 
+const char* bl_label_text(bl_label *label);
+
+void bl_label_set_text(bl_label *label, const char *text);
+
 void bl_label_show(bl_label *label);
 
 void bl_label_free(bl_label* label);

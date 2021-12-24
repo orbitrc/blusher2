@@ -9,6 +9,7 @@
 
 // Blusher
 #include "utils.h"
+#include <blusher/core/log.h>
 
 //=================
 // Cairo / Pango
@@ -32,11 +33,18 @@ static void draw_text(bl_label *label,
 
     cairo_save(cr);
 
+    cairo_move_to(cr, 0, 0);
+
     cairo_set_source_rgb(cr, 1.0, 0.0, 0.0);
 
     pango_cairo_update_layout(cr, layout);
 
-    // pango_layout_get_size(layout, &width, &height);
+    // Get width and height.
+    int pango_width = 0;
+    int pango_height = 0;
+    pango_layout_get_size(layout, &pango_width, &pango_height);
+    bl_log(BL_LOG_LEVEL_INFO, "%s() - pango_width: %d, pango_height: %d\n",
+        __func__, pango_width, pango_height);
     cairo_move_to(cr, 0, 0);
     pango_cairo_show_layout(cr, layout);
 
@@ -72,6 +80,21 @@ bl_label* bl_label_new(bl_surface *parent, const char *text)
     label->font_color = bl_color_from_rgb(0, 0, 0);
 
     return label;
+}
+
+const char* bl_label_text(bl_label *label)
+{
+    return label->text;
+}
+
+void bl_label_set_text(bl_label *label, const char *text)
+{
+    if (label->text != NULL) {
+        free(label->text);
+    }
+    label->text = malloc(sizeof(char) * strlen(text) + 1);
+    strncpy(label->text, text, strlen(text));
+    label->text[strlen(text)] = '\0';
 }
 
 void bl_label_show(bl_label *label)

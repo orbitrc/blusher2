@@ -23,6 +23,8 @@ typedef struct bl_surface {
     double y;
     double width;
     double height;
+    double implicit_width;
+    double implicit_height;
     bl_color color;
 
     void (*pointer_move_event)(struct bl_surface*, bl_pointer_event*);
