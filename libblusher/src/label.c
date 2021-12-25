@@ -14,6 +14,50 @@
 //=================
 // Cairo / Pango
 //=================
+static void get_surface_size_for_text(const char *text, double font_size,
+        int *width, int *height)
+{
+    PangoLayout *layout;
+    PangoFontDescription *desc;
+    cairo_surface_t *cairo_surface;
+    cairo_t *cr;
+
+    cairo_surface = cairo_image_surface_create(
+        CAIRO_FORMAT_ARGB32,
+        0,
+        0
+    );
+    cr = cairo_create(cairo_surface);
+
+    layout = pango_cairo_create_layout(cr);
+
+    pango_layout_set_text(layout, text, -1);
+
+    desc = pango_font_description_from_string("serif");
+    pango_font_description_set_size(desc,
+        pixel_to_pango_size(font_size));
+
+    pango_layout_set_font_description(layout, desc);
+    pango_font_description_free(desc);
+
+    cairo_save(cr);
+
+    cairo_move_to(cr, 0, 0);
+
+    pango_cairo_update_layout(cr, layout);
+
+    PangoRectangle ink_rect;
+    pango_layout_get_extents(layout, &ink_rect, NULL);
+    *height = ink_rect.height;
+    pango_layout_get_size(layout, width, NULL);
+    *height = *height / PANGO_SCALE;
+    *width = *width / PANGO_SCALE;
+
+    cairo_surface_destroy(cairo_surface);
+    cairo_destroy(cr);
+    g_object_unref(layout);
+}
+
 static void draw_text(bl_label *label,
         cairo_surface_t *cairo_surface, cairo_t *cr)
 {
