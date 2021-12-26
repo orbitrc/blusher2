@@ -250,7 +250,7 @@ def rcc(input_file, output=None):
 
     # Compile C source file and create a static library.
     cflags = ' -fPIC '
-    if not os.path.exists('/usr/include/blusher'):
+    if not os.path.exists('/usr/include/blusher/application.h'):
         blusher_bin_dir = os.path.dirname(os.path.realpath(__file__))
         cflags += f' -I{blusher_bin_dir}/../libblusher/include '
     c_path = brc.brc_dir() + '/' + f'{brc.name()}.c'
