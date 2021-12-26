@@ -15,7 +15,7 @@
 // Cairo / Pango
 //=================
 static void get_surface_size_for_text(const char *text, double font_size,
-        int *width, int *height)
+        int *offset_y, int *width, int *height)
 {
     PangoLayout *layout;
     PangoFontDescription *desc;
@@ -49,6 +49,7 @@ static void get_surface_size_for_text(const char *text, double font_size,
     PangoRectangle ink_rect;
     pango_layout_get_extents(layout, &ink_rect, NULL);
     *height = ink_rect.height;
+    *offset_y = ink_rect.y / PANGO_SCALE;
     pango_layout_get_size(layout, width, NULL);
     *height = *height / PANGO_SCALE;
     *width = *width / PANGO_SCALE;
