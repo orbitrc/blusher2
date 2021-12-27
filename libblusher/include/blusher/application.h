@@ -27,9 +27,9 @@ typedef struct bl_application {
     bl_ptr_btree *surface_map;
     struct wl_surface *pointer_surface;
     /// \brief Store surface local x because press event not have x.
-    int32_t pointer_x;
+    double pointer_x;
     /// \brief Store surface local y because press event not have y.
-    int32_t pointer_y;
+    double pointer_y;
     /// \brief Store pointer state when pressed or released.
     uint32_t pointer_state;
 

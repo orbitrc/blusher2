@@ -9,8 +9,8 @@ typedef struct bl_pointer_event {
     uint32_t serial;
 
     uint32_t button;
-    int32_t x;
-    int32_t y;
+    double x;
+    double y;
 } bl_pointer_event;
 
 bl_pointer_event* bl_pointer_event_new();
