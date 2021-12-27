@@ -49,12 +49,18 @@ static void keyboard_modifiers_handler(void *data, struct wl_keyboard *keyboard,
         mods_depressed, mods_latched, mods_locked, group);
 }
 
+static void keyboard_repeat_info_handler(void *data,
+        struct wl_keyboard *keyboard, int rate, int delay)
+{
+}
+
 static const struct wl_keyboard_listener keyboard_listener = {
     .keymap = keyboard_keymap_handler,
     .enter = keyboard_enter_handler,
     .leave = keyboard_leave_handler,
     .key = keyboard_key_handler,
     .modifiers = keyboard_modifiers_handler,
+    .repeat_info = keyboard_repeat_info_handler,
 };
 
 // Pointer
@@ -67,6 +73,7 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
     */
 
     bl_app->pointer_surface = surface;
+    bl_log(BL_LOG_LEVEL_INFO, "pointer_surface changed!");
     bl_app->pointer_x = sx;
     bl_app->pointer_y = sy;
 
@@ -90,9 +97,7 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
 static void pointer_leave_handler(void *data, struct wl_pointer *pointer,
         uint32_t serial, struct wl_surface *surface)
 {
-    /*
-    fprintf(stderr, "Pointer left surface\t%p\n", surface);
-    */
+    bl_log(BL_LOG_LEVEL_INFO, "Pointer left surface %p", surface);
 }
 
 static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
@@ -143,12 +148,39 @@ static void pointer_axis_handler(void *data, struct wl_pointer *wl_pointer,
     fprintf(stderr, "Pointer handle axis\n");
 }
 
+static void pointer_frame_handler(void *data, struct wl_pointer *wl_pointer)
+{
+//    bl_log(BL_LOG_LEVEL_INFO, "%s()", __func__);
+}
+
+static void pointer_axis_source_handler(void *data,
+        struct wl_pointer *wl_pointer, uint32_t axis_source)
+{
+    bl_log(BL_LOG_LEVEL_INFO, "%s()", __func__);
+}
+
+static void pointer_axis_stop_handler(void *data,
+        struct wl_pointer *wl_pointer, uint32_t time, uint32_t axis)
+{
+    bl_log(BL_LOG_LEVEL_INFO, "%s()", __func__);
+}
+
+static void pointer_axis_descrete_handler(void *data,
+        struct wl_pointer *wl_pointer, uint32_t axis, int descrete)
+{
+    bl_log(BL_LOG_LEVEL_INFO, "%s()", __func__);
+}
+
 static const struct wl_pointer_listener pointer_listener = {
     .enter = pointer_enter_handler,
     .leave = pointer_leave_handler,
     .motion = pointer_motion_handler,
     .button = pointer_button_handler,
     .axis = pointer_axis_handler,
+    .frame = pointer_frame_handler,
+    .axis_source = pointer_axis_source_handler,
+    .axis_stop = pointer_axis_stop_handler,
+    .axis_discrete = pointer_axis_descrete_handler,
 };
 
 // Capabilities
@@ -161,10 +193,11 @@ static void seat_handle_capabilities(void *data, struct wl_seat *seat,
         printf("Display has a pointer.\n");
     }
     if (caps & WL_SEAT_CAPABILITY_KEYBOARD) {
-        printf("Display has a keyboard.\n");
         application->keyboard = wl_seat_get_keyboard(seat);
+        printf("Display has a keyboard. %p\n", application->keyboard);
         wl_keyboard_add_listener(application->keyboard,
             &keyboard_listener, NULL);
+        bl_log(BL_LOG_LEVEL_INFO, "wl_keyboard_add_listener done");
     } else if (!(caps & WL_SEAT_CAPABILITY_KEYBOARD)) {
         fprintf(stderr, "Destroy keyboard.\n");
         wl_keyboard_destroy(application->keyboard);
@@ -183,8 +216,15 @@ static void seat_handle_capabilities(void *data, struct wl_seat *seat,
     }
 }
 
+// Name
+static void seat_handle_name(void *data, struct wl_seat *seat,
+        const char *name)
+{
+}
+
 static const struct wl_seat_listener seat_listener = {
-    seat_handle_capabilities,
+    .capabilities = seat_handle_capabilities,
+    .name = seat_handle_name,
 };
 
 //=============
@@ -214,7 +254,8 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
     if (strcmp(interface, "wl_seat") == 0) {
         if (application->seat == NULL) {
             application->seat = wl_registry_bind(registry,
-                id, &wl_seat_interface, 1);
+                id, &wl_seat_interface, 7);
+            fprintf(stderr, " == seat: %p\n", application->seat);
             wl_seat_add_listener(application->seat,
                 &seat_listener, (void*)application);
         }
