@@ -8,6 +8,14 @@
 
 typedef struct bl_pointer_event bl_pointer_event;
 
+typedef enum bl_surface_state {
+    BL_SURFACE_STATE_NORMAL = 0,
+    BL_SURFACE_STATE_HOVER = 1,
+    BL_SURFACE_STATE_ACTIVE = 2,
+    BL_SURFACE_STATE_ACTIVE_OUT = 3,
+    BL_SURFACE_STATE_FOCUS = 4,
+} bl_surface_state;
+
 typedef struct bl_surface {
     struct bl_surface *parent;
 
@@ -26,6 +34,7 @@ typedef struct bl_surface {
     double implicit_width;
     double implicit_height;
     bl_color color;
+    bl_surface_state state;
 
     void (*pointer_move_event)(struct bl_surface*, bl_pointer_event*);
     void (*pointer_press_event)(struct bl_surface*, bl_pointer_event*);

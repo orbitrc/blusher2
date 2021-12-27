@@ -103,6 +103,7 @@ bl_surface* bl_surface_new(bl_surface *parent)
     surface->implicit_width = 0;
     surface->implicit_height = 0;
     surface->color = bl_color_from_rgb(255, 255, 255);
+    surface->state = BL_SURFACE_STATE_NORMAL;
 
     surface->pointer_move_event = NULL;
     surface->pointer_press_event = NULL;

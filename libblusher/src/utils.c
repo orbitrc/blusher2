@@ -84,3 +84,19 @@ int os_create_anonymous_file(off_t size)
 
     return fd;
 }
+
+bool point_is_in(double x, double y, double width, double height)
+{
+    // Negative point means not in the area.
+    if (x < 0 || y < 0) {
+        return false;
+    }
+    if (x > width || y > height) {
+        return false;
+    }
+    if (x <= width && y <= height) {
+        return true;
+    }
+
+    return false;
+}

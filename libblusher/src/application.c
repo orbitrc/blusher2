@@ -10,6 +10,7 @@
 #include "surface.h"
 #include "pointer-event.h"
 #include "resource.h"
+#include "utils.h"
 #include <blusher/core/log.h>
 #include <blusher/core/collections.h>
 
@@ -103,11 +104,24 @@ static void pointer_leave_handler(void *data, struct wl_pointer *pointer,
 static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
         uint32_t time, wl_fixed_t sx, wl_fixed_t sy)
 {
-    bl_app->pointer_x = wl_fixed_to_double(sx);
-    bl_app->pointer_y = wl_fixed_to_double(sy);
-//    if (sx > 49152 && sy < 2816) {
-//        zxdg_surface_v6_destroy(xdg_surface);
-//    }
+    double x = wl_fixed_to_double(sx);
+    double y = wl_fixed_to_double(sy);
+
+    bl_app->pointer_x = x;
+    bl_app->pointer_y = y;
+    if (bl_app->pointer_surface != NULL) {
+        bl_surface *found = (bl_surface*)bl_ptr_btree_get(bl_app->surface_map,
+            (uint64_t)(bl_app->pointer_surface));
+        if (found != NULL) {
+            if (found->state == BL_SURFACE_STATE_ACTIVE &&
+                    !point_is_in(x, y, found->width, found->height)) {
+                found->state = BL_SURFACE_STATE_ACTIVE_OUT;
+            } else if (found->state == BL_SURFACE_STATE_ACTIVE_OUT &&
+                    point_is_in(x, y, found->width, found->height)) {
+                found->state = BL_SURFACE_STATE_ACTIVE;
+            }
+        }
+    }
 }
 
 static void pointer_button_handler(void *data, struct wl_pointer *wl_pointer,
