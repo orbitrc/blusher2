@@ -134,24 +134,40 @@ static void pointer_button_handler(void *data, struct wl_pointer *wl_pointer,
         (uint64_t)(bl_app->pointer_surface));
     if (found != 0) {
         // Pointer press event.
-        if (found->pointer_press_event != NULL &&
-                state == WL_POINTER_BUTTON_STATE_PRESSED) {
-            bl_pointer_event *event = bl_pointer_event_new();
-            event->serial = serial;
-            event->button = button;
-            event->x = bl_app->pointer_x;
-            event->y = bl_app->pointer_y;
-            found->pointer_press_event(found, event);
+        if (state == WL_POINTER_BUTTON_STATE_PRESSED) {
+            if (button == BTN_LEFT) {
+                found->state = BL_SURFACE_STATE_ACTIVE;
+            }
+            if (found->pointer_press_event != NULL) {
+                bl_pointer_event *event = bl_pointer_event_new();
+                event->serial = serial;
+                event->button = button;
+                event->x = bl_app->pointer_x;
+                event->y = bl_app->pointer_y;
+                found->pointer_press_event(found, event);
+            }
         }
         // Pointer relesase event.
-        if (found->pointer_release_event != NULL &&
-                state == WL_POINTER_BUTTON_STATE_RELEASED) {
-            bl_pointer_event *event = bl_pointer_event_new();
-            event->serial = serial;
-            event->button = button;
-            event->x = bl_app->pointer_x;
-            event->y = bl_app->pointer_y;
-            found->pointer_release_event(found, event);
+        if (state == WL_POINTER_BUTTON_STATE_RELEASED) {
+            if (found->pointer_release_event != NULL) {
+                bl_pointer_event *event = bl_pointer_event_new();
+                event->serial = serial;
+                event->button = button;
+                event->x = bl_app->pointer_x;
+                event->y = bl_app->pointer_y;
+                found->pointer_release_event(found, event);
+            }
+            if (found->state == BL_SURFACE_STATE_ACTIVE) {
+                if (found->pointer_click_event != NULL && button == BTN_LEFT) {
+                    bl_pointer_event *event = bl_pointer_event_new();
+                    event->serial = serial;
+                    event->button = button;
+                    event->x = bl_app->pointer_x;
+                    event->y = bl_app->pointer_y;
+                    found->pointer_click_event(found, event);
+                }
+                found->state = BL_SURFACE_STATE_NORMAL;
+            }
         }
     }
 }

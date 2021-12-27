@@ -105,6 +105,7 @@ bl_surface* bl_surface_new(bl_surface *parent)
     surface->color = bl_color_from_rgb(255, 255, 255);
     surface->state = BL_SURFACE_STATE_NORMAL;
 
+    surface->pointer_click_event = NULL;
     surface->pointer_move_event = NULL;
     surface->pointer_press_event = NULL;
     surface->pointer_release_event = NULL;

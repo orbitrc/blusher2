@@ -36,6 +36,7 @@ typedef struct bl_surface {
     bl_color color;
     bl_surface_state state;
 
+    void (*pointer_click_event)(struct bl_surface*, bl_pointer_event*);
     void (*pointer_move_event)(struct bl_surface*, bl_pointer_event*);
     void (*pointer_press_event)(struct bl_surface*, bl_pointer_event*);
     void (*pointer_release_event)(struct bl_surface*, bl_pointer_event*);
