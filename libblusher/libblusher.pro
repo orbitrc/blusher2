@@ -18,6 +18,7 @@ HEADERS += include/blusher/utils.h \
     include/blusher/window.h \
     include/blusher/title-bar.h \
     include/blusher/color.h \
+    include/blusher/cursor.h \
     include/blusher/label.h \
     include/blusher/image.h \
     include/blusher/svg.h \
