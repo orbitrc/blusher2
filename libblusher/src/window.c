@@ -186,7 +186,7 @@ static void title_bar_pointer_move_handler(bl_surface *surface,
 static void title_bar_pointer_press_handler(bl_surface *surface,
         bl_pointer_event *event)
 {
-    fprintf(stderr, "You have pressed button %d on title bar, (%d, %d)\n",
+    fprintf(stderr, "You have pressed button %d on title bar, (%f, %f)\n",
         event->button, event->x, event->y);
 
     if (event->button == BTN_LEFT) {
