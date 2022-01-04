@@ -43,6 +43,7 @@ $ sudo make install
 
 You can build it with command
 ```sh
+$ make resources
 $ make
 ```
 
