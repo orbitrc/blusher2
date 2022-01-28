@@ -5,6 +5,10 @@
 
 #include <wayland-client.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct bl_window bl_window;
 typedef struct bl_resource bl_resource;
 typedef struct bl_ptr_btree bl_ptr_btree;
@@ -48,5 +52,16 @@ void bl_application_remove_window(bl_application *application,
 int bl_application_exec(bl_application *application);
 
 void bl_application_free(bl_application *application);
+
+#ifdef __cplusplus
+}
+#endif
+
+//=============
+// C++
+//=============
+class Application
+{
+};
 
 #endif /* _BLUSHER_APPLICATION_H */

@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct bl_color {
     uint32_t red;
     uint32_t green;
@@ -15,5 +19,9 @@ bl_color bl_color_from_rgb(uint32_t r, uint32_t g, uint32_t b);
 bl_color bl_color_from_rgba(uint32_t r, uint32_t g, uint32_t b, uint32_t a);
 
 uint32_t bl_color_to_argb(bl_color color);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _BLUSHER_COLOR_H */

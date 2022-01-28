@@ -1,3 +1,5 @@
+CONFIG += c++14
+
 SOURCES += main.c \
     src/utils.c \
     src/application.c \

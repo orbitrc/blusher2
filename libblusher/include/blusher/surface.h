@@ -6,6 +6,10 @@
 #include "color.h"
 #include "image.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct bl_pointer_event bl_pointer_event;
 
 typedef enum bl_surface_state {
@@ -65,5 +69,9 @@ void bl_surface_set_pointer_press_event(bl_surface *surface,
         void (*event)(bl_surface*, bl_pointer_event*));
 
 void bl_surface_free(bl_surface *surface);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _BLUSHER_SURFACE_H */

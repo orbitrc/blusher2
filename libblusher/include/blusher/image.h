@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum bl_image_format {
     BL_IMAGE_FORMAT_INVALID = 0,
     BL_IMAGE_FORMAT_ARGB32 = 1,
@@ -42,5 +46,9 @@ uint64_t bl_image_width(const bl_image *image);
 uint64_t bl_image_height(const bl_image *image);
 
 void bl_image_free(bl_image *image);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _BLUSHER_IMAGE_H */

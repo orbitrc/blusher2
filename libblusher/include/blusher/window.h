@@ -12,6 +12,10 @@
 #define BLUSHER_WINDOW_RESIZE_WIDTH 5
 #define BLUSHER_WINDOW_BORDER_WIDTH 1
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct bl_surface bl_surface;
 typedef struct bl_title_bar bl_title_bar;
 
@@ -52,5 +56,9 @@ bl_surface* bl_window_body(bl_window *window);
 
 /// \brief Free the window. Should not call manually.
 void bl_window_free(bl_window *window);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _BLUSHER_WINDOW_H */

@@ -5,6 +5,10 @@
 
 #define BLUSHER_RESOURCE_CAPACITY_MULTIPLE 8
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct bl_resource_data {
     const char *path;
     const unsigned char *data;
@@ -25,5 +29,9 @@ const bl_resource_data* bl_resource_resource_data(bl_resource *resource,
         const char *path);
 
 void bl_resource_free(bl_resource *resource);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _BLUSHER_RESOURCE_H */
