@@ -60,8 +60,12 @@ void bl_application_free(bl_application *application);
 //=============
 // C++
 //=============
+#ifdef __cplusplus
+
 class Application
 {
 };
+
+#endif
 
 #endif /* _BLUSHER_APPLICATION_H */
