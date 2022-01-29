@@ -1,7 +1,7 @@
 Blusher 2.0
 ===========
 
-A Desktop GUI Toolkit for Linux with Wayland written in Rust.
+A Desktop GUI Toolkit for Linux with Wayland written in C++.
 
 Introduction
 ------------
