@@ -62,9 +62,19 @@ void bl_application_free(bl_application *application);
 //=============
 #ifdef __cplusplus
 
+namespace bl {
+
 class Application
 {
+public:
+    Application();
+    ~Application();
+
+private:
+    bl_application *_application;
 };
+
+} // namespace bl
 
 #endif
 

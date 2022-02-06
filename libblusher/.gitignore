@@ -3,6 +3,7 @@ src/wayland-protocols/stable/xdg-shell.c
 
 src/*.o
 src/wayland-protocols/stable/*.o
+src/cpp/*.o
 
 resources/*.h
 resources/*.c

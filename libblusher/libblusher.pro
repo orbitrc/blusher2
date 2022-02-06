@@ -11,7 +11,8 @@ SOURCES += main.c \
     src/image.c \
     src/svg.c \
     src/pointer-event.c \
-    src/resource.c
+    src/resource.c \
+    src/cpp/application.cpp
 
 HEADERS += include/blusher/utils.h \
     include/blusher/blusher.h \

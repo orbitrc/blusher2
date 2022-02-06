@@ -29,6 +29,7 @@ OBJ = src/application.o \
 	src/resource.o \
 	src/svg.o \
 	src/pointer-event.o \
+	src/cpp/application.o \
 	$(XDG_SHELL_OBJECT_PATH)
 
 VERSION_MAJOR = 2
@@ -45,6 +46,9 @@ default: $(OBJ) $(XDG_SHELL_HEADER_PATH) $(BLUSHER_RESOURCES)
 
 src/%.o: src/%.c
 	$(CC) -c $(C_INCLUDES) $(CFLAGS) $(PKG_CONFIGS) -fPIC -o $@ $<
+
+src/cpp/%.o: src/cpp/%.cpp
+	$(CXX) -c $(C_INCLUDES) $(CFLAGS) $(PKG_CONFIGS) -fPIC -o $@ $<
 
 wayland-protocols: $(XDG_SHELL_HEADER_PATH) $(XDG_SHELL_SOURCE_PATH)
 	ls
