@@ -44,7 +44,7 @@ default: $(OBJ) $(XDG_SHELL_HEADER_PATH) $(BLUSHER_RESOURCES)
 	ln -sf libblusher.so.$(VERSION_MAJOR) libblusher.so
 
 src/%.o: src/%.c
-	$(CXX) -c $(C_INCLUDES) $(CFLAGS) $(PKG_CONFIGS) -fPIC -o $@ $<
+	$(CC) -c $(C_INCLUDES) $(CFLAGS) $(PKG_CONFIGS) -fPIC -o $@ $<
 
 wayland-protocols: $(XDG_SHELL_HEADER_PATH) $(XDG_SHELL_SOURCE_PATH)
 	ls
@@ -56,7 +56,7 @@ $(XDG_SHELL_SOURCE_PATH):
 	wayland-scanner public-code $(WAYLAND_PROTOCOLS_STABLE_DIR)/xdg-shell/xdg-shell.xml src/wayland-protocols/stable/$(XDG_SHELL_SOURCE)
 
 $(XDG_SHELL_OBJECT_PATH): $(XDG_SHELL_SOURCE_PATH)
-	$(CXX) -c -fPIC $(XDG_SHELL_SOURCE_PATH) -o src/wayland-protocols/stable/xdg-shell.o
+	$(CC) -c -fPIC $(XDG_SHELL_SOURCE_PATH) -o src/wayland-protocols/stable/xdg-shell.o
 
 $(BLUSHER_COLLECTIONS_LIB):
 	cd blusher-collections ; cargo build --release
