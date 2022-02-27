@@ -64,6 +64,11 @@ int os_create_anonymous_file(off_t size)
     int fd;
 
     path = getenv("XDG_RUNTIME_DIR");
+    // Why this fails??
+    if (!path) {
+        errno = ENOENT;
+        return -1;
+    }
 
     name = malloc(strlen(path) + strlen(template) + 1);
 
