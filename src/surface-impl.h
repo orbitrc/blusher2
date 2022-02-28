@@ -1,11 +1,16 @@
 #ifndef SURFACEIMPL_H
 #define SURFACEIMPL_H
 
+// C
+#include <stdint.h>
+
 // C++
 #include <functional>
 
 // Qt
-#include <QWindow>
+#include <QObject>
+#include <QExposeEvent>
+#include <QMouseEvent>
 
 // Wayland
 #include <wayland-client.h>
@@ -22,12 +27,12 @@ static const int SurfaceImplButtonLeft = 1;
 static const int SurfaceImplButtonRight = 2;
 static const int SurfaceImplButtonMiddle = 3;
 
-class SurfaceImpl : public QWindow
+class SurfaceImpl : public QObject
 {
     Q_OBJECT
 
 public:
-    SurfaceImpl(QWindow *parent = nullptr);
+    SurfaceImpl(QObject *parent = nullptr);
 
     double x() const;
     double y() const;
@@ -41,6 +46,8 @@ public:
 
     void paint();
 
+    void show();
+
     void setColor(const Color& color);
 
     void setBlSurface(Surface *blSurface);
@@ -48,6 +55,16 @@ public:
     void setPointerLeaveHandler(void (Surface::*)());
     void setPointerPressHandler(void (Surface::*)(int button, double x, double y));
     void setPointerReleaseHandler(void (Surface::*)(int button, double x, double y));
+
+public:
+    //================
+    // Shm objects
+    //================
+    void* shmData();
+    void setShmData(void *shmData);
+
+    uint64_t shmDataSize() const;
+    void setShmDataSize(uint64_t size);
 
 signals:
     void implXChanged(double x);
@@ -63,11 +80,11 @@ private slots:
 
 protected:
     bool event(QEvent *event) override;
-    void exposeEvent(QExposeEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
+    void exposeEvent(QExposeEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void resizeEvent(QResizeEvent *event);
 
 private:
     double m_x;
@@ -75,9 +92,8 @@ private:
     double m_width;
     double m_height;
 
-    QColor m_color;
-
-    QBackingStore *m_backingStore;
+    bool m_visible;
+    Color m_color;
 
     Surface *m_blSurface;
     void (Surface::*m_pointerEnterHandler)();
@@ -92,6 +108,9 @@ private:
     struct wl_subsurface *_subsurface;
     struct wl_callback *_frame_callback;
     struct wl_buffer *_buffer;
+
+    void *_shm_data;
+    uint64_t _shm_data_size;
 };
 
 } // namespace bl

@@ -2,7 +2,12 @@
 
 *.so*
 
+a.out
+
 Cargo.lock
 target/
 
 build/
+
+wayland-protocols/stable/xdg-shell.h
+wayland-protocols/stable/xdg-shell.c

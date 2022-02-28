@@ -4,10 +4,15 @@ TEMPLATE = lib
 DEFINES += BLUSHERQT_LIBRARY
 
 CONFIG += c++14
+CONFIG += link_pkgconfig
 
 INCLUDEPATH += ./include
 
+LIBS += -lwayland-client
+
 TARGET = blusher
+
+PKGCONFIG += pango
 
 VERSION = 2.0.0
 
@@ -26,7 +31,9 @@ SOURCES += \
     src/pointer-event.cpp \
     src/application-impl.cpp \
     src/signal-impl.cpp \
-    src/surface-impl.cpp
+    src/surface-impl.cpp \
+    src/utils.cpp \
+    wayland-protocols/stable/xdg-shell.c
 
 HEADERS += \
     include/blusher/application.h \
@@ -39,7 +46,8 @@ HEADERS += \
     include/blusher/pointer-event.h \
     src/application-impl.h \
     src/signal-impl.h \
-    src/surface-impl.h
+    src/surface-impl.h \
+    include/blusher/utils.h
 
 # Default rules for deployment.
 unix {
