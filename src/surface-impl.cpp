@@ -121,6 +121,13 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
 
     this->_buffer = create_buffer(this, this->m_width, this->m_height);
 
+    if (this->toplevel() != true) {
+        this->_subsurface = wl_subcompositor_get_subsurface(app_impl->subcompositor(),
+            this->_surface,
+            static_cast<SurfaceImpl*>(this->parent())->wlSurface()
+        );
+    }
+
     //=============
     // XDG shell
     //=============
@@ -175,6 +182,10 @@ void SurfaceImpl::setX(double x)
     if (this->m_x != x) {
         this->m_x = x;
 
+        if (!this->toplevel()) {
+            wl_subsurface_set_position(this->_subsurface, x, this->y());
+        }
+
         emit this->implXChanged(x);
     }
 }
@@ -183,6 +194,10 @@ void SurfaceImpl::setY(double y)
 {
     if (this->m_y != y) {
         this->m_y = y;
+
+        if (!this->toplevel()) {
+            wl_subsurface_set_position(this->_subsurface, this->x(), y);
+        }
 
         emit this->implYChanged(y);
     }
@@ -227,9 +242,12 @@ void SurfaceImpl::show()
         this->m_visible = true;
         fprintf(stderr, "visible set to true\n");
 
-        this->paint();
         wl_surface_attach(this->_surface, this->_buffer, 0, 0);
         wl_surface_commit(this->_surface);
+
+        if (this->parent() != nullptr) {
+            wl_surface_commit(static_cast<SurfaceImpl*>(this->parent())->wlSurface());
+        }
 
         QRegion q_region;
         QExposeEvent event(q_region);
@@ -240,6 +258,11 @@ void SurfaceImpl::show()
 void SurfaceImpl::setColor(const Color &color)
 {
     this->m_color = color;
+}
+
+bool SurfaceImpl::toplevel() const
+{
+    return this->parent() == nullptr;
 }
 
 void SurfaceImpl::setBlSurface(Surface *blSurface)
@@ -265,6 +288,14 @@ void SurfaceImpl::setPointerPressHandler(void (Surface::*handler)(int, double, d
 void SurfaceImpl::setPointerReleaseHandler(void (Surface::*handler)(int, double, double))
 {
     this->m_pointerReleaseHandler = handler;
+}
+
+//==================
+// Wayland objects
+//==================
+struct wl_surface* SurfaceImpl::wlSurface() const
+{
+    return this->_surface;
 }
 
 //=================
@@ -334,6 +365,7 @@ bool SurfaceImpl::event(QEvent *event)
 {
     if (event->type() == QEvent::Expose) {
         fprintf(stderr, "event is Expose!\n");
+        this->paint();
     }
     if (event->type() == QEvent::Enter) {
         if (this->m_pointerEnterHandler != nullptr) {

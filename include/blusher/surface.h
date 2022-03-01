@@ -43,6 +43,9 @@ public:
 
     void show();
 
+    /// Returns true if this surface is a toplevel.
+    bool toplevel() const;
+
     /// Width of the surface.
     double width() const;
 

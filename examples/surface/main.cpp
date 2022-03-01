@@ -14,5 +14,11 @@ int main(int argc, char *argv[])
     // window.show();
     surface.show();
 
+    bl::Surface subsurface(&surface);
+    subsurface.set_color(bl::Color::from_rgba(255, 0, 0, 100));
+    subsurface.set_geometry(50, 50, 50, 50);
+    subsurface.show();
+    surface.show();
+
     return app.exec();
 }

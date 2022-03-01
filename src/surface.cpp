@@ -73,6 +73,11 @@ void Surface::show()
     this->_impl->show();
 }
 
+bool Surface::toplevel() const
+{
+    return this->_impl->toplevel();
+}
+
 double Surface::width() const
 {
     return this->_impl->x();

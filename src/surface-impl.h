@@ -53,11 +53,19 @@ public:
 
     void setColor(const Color& color);
 
+    bool toplevel() const;
+
     void setBlSurface(Surface *blSurface);
     void setPointerEnterHandler(void (Surface::*)());
     void setPointerLeaveHandler(void (Surface::*)());
     void setPointerPressHandler(void (Surface::*)(int button, double x, double y));
     void setPointerReleaseHandler(void (Surface::*)(int button, double x, double y));
+
+public:
+    //==================
+    // Wayland objects
+    //==================
+    struct wl_surface* wlSurface() const;
 
 public:
     //================

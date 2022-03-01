@@ -45,6 +45,11 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
             application_impl->setCompositor(static_cast<struct wl_compositor*>(
                 wl_registry_bind(registry, id, &wl_compositor_interface, 3)));
         }
+    } else if (strcmp(interface, "wl_subcompositor") == 0) {
+        if (application_impl->subcompositor() == NULL) {
+            application_impl->setSubcompositor(static_cast<struct wl_subcompositor*>(
+                wl_registry_bind(registry, id, &wl_subcompositor_interface, 1)));
+        }
     } else if (strcmp(interface, "wl_shm") == 0) {
         if (application_impl->shm() == NULL) {
             application_impl->setShm(static_cast<struct wl_shm*>(
