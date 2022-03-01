@@ -116,13 +116,11 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     app_impl = this;
 
     this->_q_core_application = new QCoreApplication(this->_argc, argv);
-    this->_q_gui_application = new QGuiApplication(this->_argc, argv);
 }
 
 ApplicationImpl::~ApplicationImpl()
 {
     delete this->_q_core_application;
-    delete this->_q_gui_application;
 }
 
 int ApplicationImpl::exec()

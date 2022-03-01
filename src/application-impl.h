@@ -4,7 +4,6 @@
 #include <wayland-client.h>
 
 #include <QCoreApplication>
-#include <QGuiApplication>
 #include <QThread>
 
 // Wayland protocols
@@ -70,7 +69,6 @@ private:
     struct xdg_wm_base *_xdg_wm_base;
 
     QCoreApplication *_q_core_application;
-    QGuiApplication *_q_gui_application;
 
     DisplayDispatchThread _display_dispatch;
 };
