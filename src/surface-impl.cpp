@@ -16,6 +16,40 @@
 
 #include "application-impl.h"
 
+//=========
+// XDG
+//=========
+
+// XDG surface
+static void xdg_surface_configure_handler(void *data,
+        struct xdg_surface *xdg_surface, uint32_t serial)
+{
+    xdg_surface_ack_configure(xdg_surface, serial);
+}
+
+static const struct xdg_surface_listener xdg_surface_listener = {
+    .configure = xdg_surface_configure_handler,
+};
+
+// XDG toplevel
+static void xdg_toplevel_configure_handler(void *data,
+        struct xdg_toplevel *xdg_toplevel, int32_t width, int32_t height,
+        struct wl_array *states)
+{
+    // TODO: implement
+}
+
+static void xdg_toplevel_close_handler(void *data,
+        struct xdg_toplevel *xdg_toplevel)
+{
+    fprintf(stderr, "Closing...\n");
+}
+
+static const struct xdg_toplevel_listener xdg_toplevel_listener = {
+    .configure = xdg_toplevel_configure_handler,
+    .close = xdg_toplevel_close_handler,
+};
+
 //=============
 // Drawing
 //=============

@@ -18,6 +18,9 @@
 // Blusher
 #include <blusher/color.h>
 
+// Wayland protocols
+#include <wayland-protocols/stable/xdg-shell.h>
+
 namespace bl {
 
 class Surface;
@@ -108,6 +111,12 @@ private:
     struct wl_subsurface *_subsurface;
     struct wl_callback *_frame_callback;
     struct wl_buffer *_buffer;
+
+    //============================
+    // Wayland XDG shell objects
+    //============================
+    struct xdg_surface *_xdg_surface;
+    struct xdg_toplevel *_xdg_toplevel;
 
     void *_shm_data;
     uint64_t _shm_data_size;
