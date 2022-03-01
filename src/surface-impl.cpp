@@ -121,6 +121,23 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
 
     this->_buffer = create_buffer(this, this->m_width, this->m_height);
 
+    //=============
+    // XDG shell
+    //=============
+    if (this->parent() == nullptr) {
+        this->_xdg_surface = xdg_wm_base_get_xdg_surface(app_impl->xdgWmBase(),
+            this->_surface);
+        xdg_surface_add_listener(this->_xdg_surface, &xdg_surface_listener, NULL);
+
+        this->_xdg_toplevel = xdg_surface_get_toplevel(this->_xdg_surface);
+        xdg_toplevel_add_listener(this->_xdg_toplevel, &xdg_toplevel_listener, NULL);
+
+        // Signal that the surface is ready to be configured.
+        wl_surface_commit(this->_surface);
+        // Wait for the surface to be configured.
+        wl_display_roundtrip(app_impl->display());
+    }
+
 //    this->setGeometry(this->m_x, this->m_y, this->m_width, this->m_height);
 
     QObject::connect(this, &SurfaceImpl::implXChanged, this, &SurfaceImpl::onImplXChanged);

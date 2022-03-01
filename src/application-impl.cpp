@@ -1,5 +1,7 @@
 #include "application-impl.h"
 
+#include <stdio.h>
+
 //==============
 // Shm
 //==============
@@ -35,6 +37,7 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
     bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
         data);
 
+    fprintf(stderr, "<%s %d>\n", interface, version);
     if (strcmp(interface, "wl_seat") == 0) {
         // TODO
     } else if (strcmp(interface, "wl_compositor") == 0) {
@@ -50,7 +53,7 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
     } else if (strcmp(interface, "xdg_wm_base") == 0) {
         if (application_impl->xdgWmBase() == NULL) {
             application_impl->setXdgWmBase(static_cast<struct xdg_wm_base*>(
-                wl_registry_bind(registry, id, &xdg_wm_base_interface, 4)));
+                wl_registry_bind(registry, id, &xdg_wm_base_interface, 3)));
         }
     }
 }
@@ -97,14 +100,18 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     this->_registry = NULL;
     this->_shm = NULL;
 
+    this->_xdg_wm_base = NULL;
+
     this->setRegistry(wl_display_get_registry(this->_display));
+
     wl_registry_add_listener(this->_registry,
         &registry_listener, (void*)this);
-    xdg_wm_base_add_listener(this->_xdg_wm_base,
-        &xdg_wm_base_listener, (void*)this);
 
     wl_display_dispatch(this->_display);
     wl_display_roundtrip(this->_display);
+
+    xdg_wm_base_add_listener(this->_xdg_wm_base,
+        &xdg_wm_base_listener, (void*)this);
 
     app_impl = this;
 
