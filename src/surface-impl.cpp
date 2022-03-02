@@ -50,19 +50,17 @@ static const struct xdg_toplevel_listener xdg_toplevel_listener = {
     .close = xdg_toplevel_close_handler,
 };
 
-//=============
-// Drawing
-//=============
-static struct wl_buffer* create_buffer(bl::SurfaceImpl *surface_impl,
+//================
+// Manage buffers
+//================
+static struct wl_shm_pool* create_shm_pool(bl::SurfaceImpl *surface_impl,
         int width, int height)
 {
-    fprintf(stderr, "create_buffer: %dx%d\n", width, height);
     struct wl_shm *shm = bl::app_impl->shm();
     struct wl_shm_pool *pool;
     int stride = width * 4; // 4 bytes per pixel.
     int size = stride * height;
     int fd;
-    struct wl_buffer *buff;
 
     fd = os_create_anonymous_file(size);
     if (fd < 0) {
@@ -82,11 +80,40 @@ static struct wl_buffer* create_buffer(bl::SurfaceImpl *surface_impl,
     surface_impl->setShmDataSize(size);
 
     pool = wl_shm_create_pool(shm, fd, size);
+
+    close(fd);
+
+    return pool;
+}
+
+static void resize_shm_pool(bl::SurfaceImpl *surface_impl,
+        int width, int height)
+{
+    int origin_size = surface_impl->shmDataSize();
+    int stride = width * 4;
+    int size = stride * height;
+
+    if (size > origin_size) {
+        surface_impl->setShmData(
+            mremap(surface_impl->shmData(), origin_size, size, MREMAP_MAYMOVE)
+        );
+        surface_impl->setShmDataSize(size);
+        wl_shm_pool_resize(surface_impl->shmPool(), size);
+    }
+}
+
+static struct wl_buffer* create_buffer(bl::SurfaceImpl *surface_impl,
+        int width, int height)
+{
+    fprintf(stderr, "create_buffer: %dx%d\n", width, height);
+    struct wl_shm_pool *pool = surface_impl->shmPool();
+    int stride = width * 4; // 4 bytes per pixel.
+    struct wl_buffer *buff;
+
     buff = wl_shm_pool_create_buffer(pool, 0, width, height, stride,
         WL_SHM_FORMAT_ARGB8888);
 
-    close(fd);
-    wl_shm_pool_destroy(pool);
+//    wl_shm_pool_destroy(pool);
 
     return buff;
 }
@@ -114,11 +141,13 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     this->_surface = wl_compositor_create_surface(bl::app_impl->compositor());
     this->_subsurface = NULL;
     this->_frame_callback = NULL;
+    this->_shm_pool = NULL;
     this->_buffer = NULL;
 
     this->_shm_data = NULL;
     this->_shm_data_size = 0;
 
+    this->_shm_pool = create_shm_pool(this, this->m_width, this->m_height);
     this->_buffer = create_buffer(this, this->m_width, this->m_height);
 
     if (this->toplevel() != true) {
@@ -151,6 +180,11 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     QObject::connect(this, &SurfaceImpl::implYChanged, this, &SurfaceImpl::onImplYChanged);
     QObject::connect(this, &SurfaceImpl::implWidthChanged, this, &SurfaceImpl::onImplWidthChanged);
     QObject::connect(this, &SurfaceImpl::implHeightChanged, this, &SurfaceImpl::onImplHeightChanged);
+}
+
+SurfaceImpl::~SurfaceImpl()
+{
+    wl_shm_pool_destroy(this->_shm_pool);
 }
 
 //===================
@@ -219,6 +253,20 @@ void SurfaceImpl::setHeight(double height)
 
         emit this->implHeightChanged(height);
     }
+}
+
+void SurfaceImpl::setSize(double width, double height)
+{
+    if (this->m_width != width) {
+        this->m_width = width;
+    }
+    if (this->m_height != height) {
+        this->m_height = height;
+    }
+
+    resize_shm_pool(this, width, height);
+    wl_buffer_destroy(this->_buffer);
+    this->_buffer = create_buffer(this, width, height);
 }
 
 void SurfaceImpl::paint()
@@ -301,6 +349,16 @@ struct wl_surface* SurfaceImpl::wlSurface() const
 //=================
 // Shm objects
 //=================
+struct wl_shm_pool* SurfaceImpl::shmPool()
+{
+    return this->_shm_pool;
+}
+
+void SurfaceImpl::setShmPool(struct wl_shm_pool *shmPool)
+{
+    this->_shm_pool = shmPool;
+}
+
 void* SurfaceImpl::shmData()
 {
     return this->_shm_data;
@@ -308,10 +366,6 @@ void* SurfaceImpl::shmData()
 
 void SurfaceImpl::setShmData(void *shmData)
 {
-    if (this->_shm_data != NULL) {
-        munmap(this->_shm_data, this->_shm_data_size);
-    }
-
     this->_shm_data = shmData;
 }
 

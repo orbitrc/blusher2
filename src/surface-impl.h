@@ -36,6 +36,7 @@ class SurfaceImpl : public QObject
 
 public:
     SurfaceImpl(QObject *parent = nullptr);
+    ~SurfaceImpl();
 
     double x() const;
     double y() const;
@@ -46,6 +47,7 @@ public:
     void setY(double y);
     void setWidth(double width);
     void setHeight(double height);
+    void setSize(double width, double height);
 
     void paint();
 
@@ -71,6 +73,9 @@ public:
     //================
     // Shm objects
     //================
+    struct wl_shm_pool* shmPool();
+    void setShmPool(struct wl_shm_pool *shmPool);
+
     void* shmData();
     void setShmData(void *shmData);
 
@@ -118,6 +123,7 @@ private:
     struct wl_surface *_surface;
     struct wl_subsurface *_subsurface;
     struct wl_callback *_frame_callback;
+    struct wl_shm_pool *_shm_pool;
     struct wl_buffer *_buffer;
 
     //============================
