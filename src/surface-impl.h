@@ -49,6 +49,14 @@ public:
     void setHeight(double height);
     void setSize(double width, double height);
 
+    bool clip() const;
+    void setClip(bool clip);
+
+    double clipX() const;
+    double clipY() const;
+    double clipWidth() const;
+    double clipHeight() const;
+
     void paint();
 
     void show();
@@ -110,6 +118,15 @@ private:
 
     bool m_visible;
     Color m_color;
+
+    //===========
+    // Clipping
+    //===========
+    bool m_clip;
+    double m_clipX;
+    double m_clipY;
+    double m_clipWidth;
+    double m_clipHeight;
 
     Surface *m_blSurface;
     void (Surface::*m_pointerEnterHandler)();

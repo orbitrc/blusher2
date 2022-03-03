@@ -128,6 +128,18 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     this->m_width = 100.0;
     this->m_height = 100.0;
 
+    if (parent != nullptr) {
+        this->m_clipX = 0;
+        this->m_clipY = 0;
+        this->m_clipWidth = this->m_width;
+        this->m_clipHeight = this->m_height;
+    } else {
+        this->m_clipX = 0;
+        this->m_clipY = 0;
+        this->m_clipWidth = this->m_width;
+        this->m_clipHeight = this->m_height;
+    }
+
     this->m_visible = false;
     this->m_color = Color::from_rgb(255, 255, 255);
 
@@ -267,6 +279,36 @@ void SurfaceImpl::setSize(double width, double height)
     resize_shm_pool(this, width, height);
     wl_buffer_destroy(this->_buffer);
     this->_buffer = create_buffer(this, width, height);
+}
+
+bool SurfaceImpl::clip() const
+{
+    return this->m_clip;
+}
+
+void SurfaceImpl::setClip(bool clip)
+{
+    this->m_clip = clip;
+}
+
+double SurfaceImpl::clipX() const
+{
+    return this->m_clipX;
+}
+
+double SurfaceImpl::clipY() const
+{
+    return this->m_clipY;
+}
+
+double SurfaceImpl::clipWidth() const
+{
+    return this->m_clipWidth;
+}
+
+double SurfaceImpl::clipHeight() const
+{
+    return this->m_clipHeight;
 }
 
 void SurfaceImpl::paint()

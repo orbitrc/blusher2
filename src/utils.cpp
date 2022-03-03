@@ -105,3 +105,32 @@ bool point_is_in(double x, double y, double width, double height)
 
     return false;
 }
+
+void get_clip_geometry(double parent_clip_x, double parent_clip_y,
+        double parent_clip_width, double parent_clip_height,
+        double x, double y,
+        double width, double height,
+        double *clip_x, double *clip_y,
+        double *clip_width, double *clip_height)
+{
+    *clip_x = (x > parent_clip_x) ? x : parent_clip_x - x;
+    *clip_y = (y > parent_clip_y) ? y : parent_clip_y - y;
+
+    // If contains, do not clip.
+    if ((x + width) < parent_clip_width && (y + height) < parent_clip_height) {
+        *clip_width = width;
+        *clip_height = height;
+
+        return;
+    }
+
+    *clip_width = width - *clip_x;
+    *clip_height = height - *clip_y;
+
+    if (*clip_width > parent_clip_width) {
+        *clip_width = parent_clip_width;
+    }
+    if (*clip_height > parent_clip_height) {
+        *clip_height = parent_clip_height;
+    }
+}
