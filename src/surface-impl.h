@@ -81,6 +81,9 @@ public:
     //================
     // Shm objects
     //================
+    int shmFd() const;
+    void setShmFd(int fd);
+
     struct wl_shm_pool* shmPool();
     void setShmPool(struct wl_shm_pool *shmPool);
 
@@ -149,6 +152,7 @@ private:
     struct xdg_surface *_xdg_surface;
     struct xdg_toplevel *_xdg_toplevel;
 
+    int _shm_fd;
     void *_shm_data;
     uint64_t _shm_data_size;
 };

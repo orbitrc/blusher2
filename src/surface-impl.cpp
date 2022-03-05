@@ -81,7 +81,8 @@ static struct wl_shm_pool* create_shm_pool(bl::SurfaceImpl *surface_impl,
 
     pool = wl_shm_create_pool(shm, fd, size);
 
-    close(fd);
+    surface_impl->setShmFd(fd);
+//    close(fd);
 
     return pool;
 }
@@ -93,7 +94,12 @@ static void resize_shm_pool(bl::SurfaceImpl *surface_impl,
     int stride = width * 4;
     int size = stride * height;
 
+    fprintf(stderr, "resize_shm_pool() - origin_size: %d, size: %d\n", origin_size, size);
+
     if (size > origin_size) {
+        fprintf(stderr, "resize_shm_pool() - size is greater than origin size.\n");
+        truncate_fd(surface_impl->shmFd(), size);
+
         surface_impl->setShmData(
             mremap(surface_impl->shmData(), origin_size, size, MREMAP_MAYMOVE)
         );
@@ -391,6 +397,16 @@ struct wl_surface* SurfaceImpl::wlSurface() const
 //=================
 // Shm objects
 //=================
+int SurfaceImpl::shmFd() const
+{
+    return this->_shm_fd;
+}
+
+void SurfaceImpl::setShmFd(int fd)
+{
+    this->_shm_fd = fd;
+}
+
 struct wl_shm_pool* SurfaceImpl::shmPool()
 {
     return this->_shm_pool;

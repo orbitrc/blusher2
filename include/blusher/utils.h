@@ -16,6 +16,8 @@ int create_tmpfile_cloexec(char *tmpname);
 
 int os_create_anonymous_file(off_t size);
 
+void truncate_fd(int fd, off_t size);
+
 bool point_is_in(double x, double y, double width, double height);
 
 void get_clip_geometry(double parent_clip_x, double parent_clip_y,

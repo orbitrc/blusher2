@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
     bl::Surface subsurface(&surface);
     subsurface.set_color(bl::Color::from_rgba(255, 0, 0, 100));
-    subsurface.set_geometry(50, 50, 50, 50);
+    subsurface.set_geometry(50, 50, 150, 150);
     subsurface.show();
     surface.show();
 

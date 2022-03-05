@@ -90,6 +90,13 @@ int os_create_anonymous_file(off_t size)
     return fd;
 }
 
+void truncate_fd(int fd, off_t size)
+{
+    if (ftruncate(fd, size) < 0) {
+        fprintf(stderr, "WARN: ftruncate error!\n");
+    }
+}
+
 bool point_is_in(double x, double y, double width, double height)
 {
     // Negative point means not in the area.
