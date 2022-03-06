@@ -45,6 +45,15 @@ public:
     struct wl_shm* shm() const;
     void setShm(struct wl_shm*);
 
+    struct wl_seat* seat() const;
+    void setSeat(struct wl_seat*);
+
+    struct wl_keyboard* keyboard() const;
+    void setKeyboard(struct wl_keyboard*);
+
+    struct wl_pointer* pointer() const;
+    void setPointer(struct wl_pointer*);
+
     //============================
     // Wayland XDG shell objects
     //============================
@@ -62,6 +71,9 @@ private:
     struct wl_subcompositor *_subcompositor;
     struct wl_registry *_registry;
     struct wl_shm *_shm;
+    struct wl_seat *_seat;
+    struct wl_keyboard *_keyboard;
+    struct wl_pointer *_pointer;
 
     //====================
     // Wayland XDG shell
