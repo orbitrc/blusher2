@@ -2,6 +2,10 @@
 
 #include <stdio.h>
 
+#include <QEnterEvent>
+
+#include "surface-impl.h"
+
 //==============
 // Shm
 //==============
@@ -38,7 +42,20 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
         uint32_t serial, struct wl_surface *surface,
         wl_fixed_t sx, wl_fixed_t sy)
 {
-    fprintf(stderr, "pointer_enter_handler\n");
+    fprintf(stderr, "pointer_enter_handler()\n");
+    bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
+        data);
+
+    bl::SurfaceImpl *surface_impl =
+        application_impl->surfaceImplForWlSurface(surface);
+
+    if (surface_impl != nullptr) {
+        QPointF pos;
+        QPointF winPos;
+        QPointF scrPos;
+        QEnterEvent event(pos, winPos, scrPos);
+        QCoreApplication::sendEvent(surface_impl, &event);
+    }
 }
 
 static void pointer_leave_handler(void *data, struct wl_pointer *pointer,
@@ -106,7 +123,7 @@ static void seat_capabilities_handler(void *data, struct wl_seat *seat,
         application_impl->setPointer(
             wl_seat_get_pointer(application_impl->seat()));
         wl_pointer_add_listener(application_impl->pointer(),
-            &pointer_listener, nullptr);
+            &pointer_listener, (void*)application_impl);
     } else if (caps & WL_SEAT_CAPABILITY_KEYBOARD &&
             application_impl->keyboard() == nullptr) {
         application_impl->setKeyboard(
@@ -349,6 +366,48 @@ struct xdg_wm_base* ApplicationImpl::xdgWmBase() const
 void ApplicationImpl::setXdgWmBase(struct xdg_wm_base *base)
 {
     this->_xdg_wm_base = base;
+}
+
+
+bool ApplicationImpl::addSurfaceImpl(SurfaceImpl *impl)
+{
+    this->_surface_impl_list.push_back(impl);
+
+    return true;
+}
+
+bool ApplicationImpl::removeSurfaceImpl(SurfaceImpl *impl)
+{
+    bool ret = false;
+    auto begin = this->_surface_impl_list.begin();
+    auto end = this->_surface_impl_list.end();
+
+    for (auto it = begin; it != end; ++it) {
+        if (*it == impl) {
+            ret = true;
+            this->_surface_impl_list.erase(it);
+            break;
+        }
+    }
+
+    return ret;
+}
+
+SurfaceImpl* ApplicationImpl::surfaceImplForWlSurface(
+        struct wl_surface *wl_surface)
+{
+    SurfaceImpl *ret = nullptr;
+    auto begin = this->_surface_impl_list.begin();
+    auto end = this->_surface_impl_list.end();
+
+    for (auto it = begin; it != end; ++it) {
+        if ((*it)->wlSurface() == wl_surface) {
+            ret = *it;
+            break;
+        }
+    }
+
+    return ret;
 }
 
 } // namespace bl

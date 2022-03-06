@@ -3,6 +3,8 @@
 
 #include <wayland-client.h>
 
+#include <vector>
+
 #include <QCoreApplication>
 #include <QThread>
 
@@ -10,6 +12,8 @@
 #include <wayland-protocols/stable/xdg-shell.h>
 
 namespace bl {
+
+class SurfaceImpl;
 
 class DisplayDispatchThread : public QThread
 {
@@ -60,6 +64,11 @@ public:
     struct xdg_wm_base* xdgWmBase() const;
     void setXdgWmBase(struct xdg_wm_base*);
 
+
+    bool addSurfaceImpl(SurfaceImpl*);
+    bool removeSurfaceImpl(SurfaceImpl*);
+    SurfaceImpl* surfaceImplForWlSurface(struct wl_surface*);
+
 private:
     int _argc;
 
@@ -79,6 +88,8 @@ private:
     // Wayland XDG shell
     //====================
     struct xdg_wm_base *_xdg_wm_base;
+
+    std::vector<SurfaceImpl*> _surface_impl_list;
 
     QCoreApplication *_q_core_application;
 

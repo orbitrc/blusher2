@@ -194,6 +194,8 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
 
 //    this->setGeometry(this->m_x, this->m_y, this->m_width, this->m_height);
 
+    app_impl->addSurfaceImpl(this);
+
     QObject::connect(this, &SurfaceImpl::implXChanged, this, &SurfaceImpl::onImplXChanged);
     QObject::connect(this, &SurfaceImpl::implYChanged, this, &SurfaceImpl::onImplYChanged);
     QObject::connect(this, &SurfaceImpl::implWidthChanged, this, &SurfaceImpl::onImplWidthChanged);
@@ -203,6 +205,8 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
 SurfaceImpl::~SurfaceImpl()
 {
     wl_shm_pool_destroy(this->_shm_pool);
+
+    app_impl->removeSurfaceImpl(this);
 }
 
 //===================
