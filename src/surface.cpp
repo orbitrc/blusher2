@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 
+#include <linux/input.h>
+
 #ifdef emit
     #undef emit
 #endif
@@ -148,19 +150,19 @@ void Surface::pointer_leave_handler()
     this->pointer_leave_event(event);
 }
 
-void Surface::pointer_press_handler(int impl_button, double x, double y)
+void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
 {
     PointerEvent::Button button;
     switch (impl_button) {
-    case SurfaceImplButtonLeft:
+    case BTN_LEFT:
         button = PointerEvent::Button::Left;
         // Set surface state to active.
         this->_state = State::Active;
         break;
-    case SurfaceImplButtonRight:
+    case BTN_RIGHT:
         button = PointerEvent::Button::Right;
         break;
-    case SurfaceImplButtonMiddle:
+    case BTN_MIDDLE:
         button = PointerEvent::Button::Middle;
         break;
     default:
@@ -172,17 +174,17 @@ void Surface::pointer_press_handler(int impl_button, double x, double y)
     this->pointer_press_event(event);
 }
 
-void Surface::pointer_release_handler(int impl_button, double x, double y)
+void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
 {
     PointerEvent::Button button;
     switch (impl_button) {
-    case SurfaceImplButtonLeft:
+    case BTN_LEFT:
         button = PointerEvent::Button::Left;
         break;
-    case SurfaceImplButtonRight:
+    case BTN_RIGHT:
         button = PointerEvent::Button::Right;
         break;
-    case SurfaceImplButtonMiddle:
+    case BTN_MIDDLE:
         button = PointerEvent::Button::Middle;
         break;
     default:

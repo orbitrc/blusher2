@@ -73,8 +73,8 @@ private:
     void on_clicked();
     void pointer_enter_handler();
     void pointer_leave_handler();
-    void pointer_press_handler(int impl_button, double x, double y);
-    void pointer_release_handler(int impl_button, double x, double y);
+    void pointer_press_handler(uint32_t impl_button, double x, double y);
+    void pointer_release_handler(uint32_t impl_button, double x, double y);
 
 private:
     SurfaceImpl *_impl;

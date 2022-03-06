@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+#include <linux/input.h>
+
 #include <QEnterEvent>
 
 #include "surface-impl.h"
@@ -46,6 +48,9 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
     bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
         data);
 
+    // Set pointer surface.
+    application_impl->setPointerSurface(surface);
+
     bl::SurfaceImpl *surface_impl =
         application_impl->surfaceImplForWlSurface(surface);
 
@@ -61,6 +66,19 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
 static void pointer_leave_handler(void *data, struct wl_pointer *pointer,
         uint32_t serial, struct wl_surface *surface)
 {
+    bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
+        data);
+
+    // Pop pointer surface.
+    application_impl->setPointerSurface(nullptr);
+
+    bl::SurfaceImpl *surface_impl =
+        application_impl->surfaceImplForWlSurface(surface);
+
+    if (surface_impl != nullptr) {
+        QEvent event(QEvent::Type::Leave);
+        QCoreApplication::sendEvent(surface_impl, &event);
+    }
 }
 
 static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
@@ -71,6 +89,25 @@ static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
 static void pointer_button_handler(void *data, struct wl_pointer *pointer,
         uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
 {
+    bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
+        data);
+
+    struct wl_surface *surface = application_impl->pointerSurface();
+    if (surface != nullptr) {
+        bl::SurfaceImpl *surface_impl =
+            application_impl->surfaceImplForWlSurface(surface);
+        if (surface_impl != nullptr) {
+            // Pointer press event.
+            if (state == WL_POINTER_BUTTON_STATE_PRESSED) {
+                surface_impl->callPointerPressHandler(button, 0, 0);
+            }
+            // Pointer release event.
+            if (state == WL_POINTER_BUTTON_STATE_RELEASED) {
+                surface_impl->callPointerReleaseHandler(0, 0, 0);
+            }
+        }
+//        QMouseEvent event(QEvent::Type::MouseButtonPress, pos, )
+    }
 }
 
 static void pointer_axis_handler(void *data, struct wl_pointer *wl_pointer,
@@ -408,6 +445,16 @@ SurfaceImpl* ApplicationImpl::surfaceImplForWlSurface(
     }
 
     return ret;
+}
+
+struct wl_surface* ApplicationImpl::pointerSurface() const
+{
+    return this->_pointer_surface;
+}
+
+void ApplicationImpl::setPointerSurface(struct wl_surface *surface)
+{
+    this->_pointer_surface = surface;
 }
 
 } // namespace bl

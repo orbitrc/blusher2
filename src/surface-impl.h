@@ -25,11 +25,6 @@ namespace bl {
 
 class Surface;
 
-static const int SurfaceImplButtonNone = 0;
-static const int SurfaceImplButtonLeft = 1;
-static const int SurfaceImplButtonRight = 2;
-static const int SurfaceImplButtonMiddle = 3;
-
 class SurfaceImpl : public QObject
 {
     Q_OBJECT
@@ -68,8 +63,13 @@ public:
     void setBlSurface(Surface *blSurface);
     void setPointerEnterHandler(void (Surface::*)());
     void setPointerLeaveHandler(void (Surface::*)());
-    void setPointerPressHandler(void (Surface::*)(int button, double x, double y));
-    void setPointerReleaseHandler(void (Surface::*)(int button, double x, double y));
+    void setPointerPressHandler(void (Surface::*)(uint32_t button, double x, double y));
+    void setPointerReleaseHandler(void (Surface::*)(uint32_t button, double x, double y));
+
+    void callPointerEnterHandler();
+    void callPointerLeaveHandler();
+    void callPointerPressHandler(uint32_t button, double x, double y);
+    void callPointerReleaseHandler(uint32_t button, double x, double y);
 
 public:
     //==================
@@ -134,8 +134,8 @@ private:
     Surface *m_blSurface;
     void (Surface::*m_pointerEnterHandler)();
     void (Surface::*m_pointerLeaveHandler)();
-    void (Surface::*m_pointerPressHandler)(int button, double x, double y);
-    void (Surface::*m_pointerReleaseHandler)(int button, double x, double y);
+    void (Surface::*m_pointerPressHandler)(uint32_t button, double x, double y);
+    void (Surface::*m_pointerReleaseHandler)(uint32_t button, double x, double y);
 
     //=================
     // Wayland client

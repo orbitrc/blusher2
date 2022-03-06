@@ -68,6 +68,8 @@ public:
     bool addSurfaceImpl(SurfaceImpl*);
     bool removeSurfaceImpl(SurfaceImpl*);
     SurfaceImpl* surfaceImplForWlSurface(struct wl_surface*);
+    struct wl_surface* pointerSurface() const;
+    void setPointerSurface(struct wl_surface*);
 
 private:
     int _argc;
@@ -90,6 +92,9 @@ private:
     struct xdg_wm_base *_xdg_wm_base;
 
     std::vector<SurfaceImpl*> _surface_impl_list;
+    /// Some pointer handlers has not surface info. So store it when enter
+    /// and pop when leave.
+    struct wl_surface *_pointer_surface;
 
     QCoreApplication *_q_core_application;
 

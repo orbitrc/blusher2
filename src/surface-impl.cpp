@@ -6,6 +6,9 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
+// libinput
+#include <linux/input.h>
+
 #include <QBackingStore>
 #include <QPainter>
 #include <QMouseEvent>
@@ -370,6 +373,9 @@ void SurfaceImpl::setBlSurface(Surface *blSurface)
     this->m_blSurface = blSurface;
 }
 
+//===================
+// Event handlers
+//===================
 void SurfaceImpl::setPointerEnterHandler(void (Surface::*handler)())
 {
     this->m_pointerEnterHandler = handler;
@@ -380,14 +386,46 @@ void SurfaceImpl::setPointerLeaveHandler(void (Surface::*handler)())
     this->m_pointerLeaveHandler = handler;
 }
 
-void SurfaceImpl::setPointerPressHandler(void (Surface::*handler)(int, double, double))
+void SurfaceImpl::setPointerPressHandler(void (Surface::*handler)(uint32_t, double, double))
 {
     this->m_pointerPressHandler = handler;
 }
 
-void SurfaceImpl::setPointerReleaseHandler(void (Surface::*handler)(int, double, double))
+void SurfaceImpl::setPointerReleaseHandler(void (Surface::*handler)(uint32_t, double, double))
 {
     this->m_pointerReleaseHandler = handler;
+}
+
+void SurfaceImpl::callPointerEnterHandler()
+{
+    if (this->m_pointerEnterHandler != nullptr) {
+        auto handler = this->m_pointerEnterHandler;
+        (this->m_blSurface->*handler)();
+    }
+}
+
+void SurfaceImpl::callPointerLeaveHandler()
+{
+    if (this->m_pointerLeaveHandler != nullptr) {
+        auto handler = this->m_pointerLeaveHandler;
+        (this->m_blSurface->*handler)();
+    }
+}
+
+void SurfaceImpl::callPointerPressHandler(uint32_t button, double x, double y)
+{
+    if (this->m_pointerPressHandler != nullptr) {
+        auto handler = this->m_pointerPressHandler;
+        (this->m_blSurface->*handler)(button, x, y);
+    }
+}
+
+void SurfaceImpl::callPointerReleaseHandler(uint32_t button, double x, double y)
+{
+    if (this->m_pointerReleaseHandler != nullptr) {
+        auto handler = this->m_pointerReleaseHandler;
+        (this->m_blSurface->*handler)(button, x, y);
+    }
 }
 
 //==================
@@ -523,13 +561,13 @@ void SurfaceImpl::mousePressEvent(QMouseEvent *event)
         int button = 0;
         switch (event->button()) {
         case Qt::LeftButton:
-            button = SurfaceImplButtonLeft;
+            button = BTN_LEFT;
             break;
         case Qt::RightButton:
-            button = SurfaceImplButtonRight;
+            button = BTN_RIGHT;
             break;
         case Qt::MiddleButton:
-            button = SurfaceImplButtonMiddle;
+            button = BTN_MIDDLE;
             break;
         default:
             break;
@@ -548,13 +586,13 @@ void SurfaceImpl::mouseReleaseEvent(QMouseEvent *event)
         int button = 0;
         switch (event->button()) {
         case Qt::LeftButton:
-            button = SurfaceImplButtonLeft;
+            button = BTN_LEFT;
             break;
         case Qt::RightButton:
-            button = SurfaceImplButtonRight;
+            button = BTN_RIGHT;
             break;
         case Qt::MiddleButton:
-            button = SurfaceImplButtonMiddle;
+            button = BTN_MIDDLE;
             break;
         default:
             break;
