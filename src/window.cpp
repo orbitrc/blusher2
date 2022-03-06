@@ -21,10 +21,15 @@ Window::Window()
     this->_body->set_geometry(0, 0, this->_width, this->_height);
 
     this->_title_bar = new TitleBar(this->_body);
+
     this->_border = new Surface(this->_body);
     this->_border->place_below(this->_body);
+
     this->_resize = new Surface(this->_body);
+    this->_resize->place_below(this->_border);
+
     this->_decoration = new Surface(this->_body);
+    this->_decoration->place_below(this->_resize);
 
     // Init title bar.
     this->update_title_bar();
@@ -82,8 +87,8 @@ void Window::move()
 void Window::update_decoration()
 {
     this->_decoration->set_geometry(
-        0,
-        0,
+        0 - BLUSHER_SHADOW_WIDTH,
+        0 - BLUSHER_TITLE_BAR_HEIGHT - BLUSHER_SHADOW_WIDTH,
         this->_width + (BLUSHER_SHADOW_WIDTH * 2),
         this->_height + (BLUSHER_SHADOW_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
@@ -93,8 +98,8 @@ void Window::update_decoration()
 void Window::update_resize()
 {
     this->_resize->set_geometry(
-        BLUSHER_SHADOW_WIDTH - BLUSHER_RESIZE_WIDTH,
-        BLUSHER_SHADOW_WIDTH - BLUSHER_RESIZE_WIDTH,
+        0 - BLUSHER_RESIZE_WIDTH,
+        0 - BLUSHER_TITLE_BAR_HEIGHT - BLUSHER_RESIZE_WIDTH,
         this->_width + (BLUSHER_RESIZE_WIDTH * 2),
         this->_height + (BLUSHER_RESIZE_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
