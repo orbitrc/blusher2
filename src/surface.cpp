@@ -89,6 +89,7 @@ void Surface::move_if_window()
     fprintf(stderr, "Surface::move_if_window() - parent: %p\n", this->_parent);
     if (this->_parent == nullptr) {
 //        this->_impl->startSystemMove();
+        this->_impl->moveIfToplevel();
     }
 }
 

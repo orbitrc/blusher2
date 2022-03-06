@@ -99,6 +99,7 @@ static void pointer_button_handler(void *data, struct wl_pointer *pointer,
         if (surface_impl != nullptr) {
             // Pointer press event.
             if (state == WL_POINTER_BUTTON_STATE_PRESSED) {
+                application_impl->setPointerPressSerial(serial);
                 surface_impl->callPointerPressHandler(button, 0, 0);
             }
             // Pointer release event.
@@ -455,6 +456,16 @@ struct wl_surface* ApplicationImpl::pointerSurface() const
 void ApplicationImpl::setPointerSurface(struct wl_surface *surface)
 {
     this->_pointer_surface = surface;
+}
+
+uint32_t ApplicationImpl::pointerPressSerial() const
+{
+    return this->_pointer_press_serial;
+}
+
+void ApplicationImpl::setPointerPressSerial(uint32_t serial)
+{
+    this->_pointer_press_serial = serial;
 }
 
 } // namespace bl

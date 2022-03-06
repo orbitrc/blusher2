@@ -70,6 +70,8 @@ public:
     SurfaceImpl* surfaceImplForWlSurface(struct wl_surface*);
     struct wl_surface* pointerSurface() const;
     void setPointerSurface(struct wl_surface*);
+    uint32_t pointerPressSerial() const;
+    void setPointerPressSerial(uint32_t serial);
 
 private:
     int _argc;
@@ -95,6 +97,7 @@ private:
     /// Some pointer handlers has not surface info. So store it when enter
     /// and pop when leave.
     struct wl_surface *_pointer_surface;
+    uint32_t _pointer_press_serial;
 
     QCoreApplication *_q_core_application;
 

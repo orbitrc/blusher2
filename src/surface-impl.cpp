@@ -373,6 +373,14 @@ void SurfaceImpl::setBlSurface(Surface *blSurface)
     this->m_blSurface = blSurface;
 }
 
+void SurfaceImpl::moveIfToplevel()
+{
+    if (this->parent() == nullptr) {
+        xdg_toplevel_move(this->_xdg_toplevel,
+            app_impl->seat(), app_impl->pointerPressSerial());
+    }
+}
+
 //===================
 // Event handlers
 //===================

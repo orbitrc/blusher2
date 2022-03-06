@@ -60,6 +60,8 @@ public:
 
     bool toplevel() const;
 
+    void moveIfToplevel();
+
     void setBlSurface(Surface *blSurface);
     void setPointerEnterHandler(void (Surface::*)());
     void setPointerLeaveHandler(void (Surface::*)());
