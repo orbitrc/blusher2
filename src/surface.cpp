@@ -79,7 +79,7 @@ bool Surface::toplevel() const
 
 double Surface::width() const
 {
-    return this->_impl->x();
+    return this->_impl->width();
 }
 
 void Surface::move_if_window()

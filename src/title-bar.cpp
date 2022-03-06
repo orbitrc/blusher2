@@ -9,6 +9,7 @@ namespace bl {
 TitleBar::TitleBar(Surface *parent)
     : Surface(parent)
 {
+    fprintf(stderr, "TitleBar::TitleBar() - parent width: %f\n", parent->width());
     this->set_geometry(0, 0, parent->width(), 30);
 }
 
