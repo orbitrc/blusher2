@@ -58,6 +58,9 @@ public:
 
     void setColor(const Color& color);
 
+    void placeAbove(SurfaceImpl*);
+    void placeBelow(SurfaceImpl*);
+
     bool toplevel() const;
 
     void moveIfToplevel();

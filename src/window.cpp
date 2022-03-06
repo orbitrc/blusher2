@@ -22,6 +22,7 @@ Window::Window()
 
     this->_title_bar = new TitleBar(this->_body);
     this->_border = new Surface(this->_body);
+    this->_border->place_below(this->_body);
     this->_resize = new Surface(this->_body);
     this->_decoration = new Surface(this->_body);
 
@@ -103,8 +104,8 @@ void Window::update_resize()
 void Window::update_border()
 {
     this->_border->set_geometry(
-        BLUSHER_RESIZE_WIDTH - BLUSHER_BORDER_WIDTH,
-        BLUSHER_RESIZE_WIDTH - BLUSHER_BORDER_WIDTH,
+        0 - BLUSHER_BORDER_WIDTH,
+        0 - BLUSHER_TITLE_BAR_HEIGHT - BLUSHER_BORDER_WIDTH,
         this->_width + (BLUSHER_BORDER_WIDTH * 2),
         this->_height + (BLUSHER_BORDER_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );

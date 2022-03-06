@@ -55,6 +55,16 @@ Surface* Surface::parent()
     return this->_parent;
 }
 
+void Surface::place_above(Surface *surface)
+{
+    this->_impl->placeAbove(surface->_impl);
+}
+
+void Surface::place_below(Surface *surface)
+{
+    this->_impl->placeBelow(surface->_impl);
+}
+
 void Surface::set_color(const Color &color)
 {
     this->_color = color;

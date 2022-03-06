@@ -37,6 +37,10 @@ public:
 
     Surface* parent();
 
+    void place_above(Surface *surface);
+
+    void place_below(Surface *surface);
+
     void set_color(const Color& color);
 
     void set_geometry(double x, double y, double width, double height);

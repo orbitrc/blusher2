@@ -363,6 +363,22 @@ void SurfaceImpl::setColor(const Color &color)
     this->m_color = color;
 }
 
+void SurfaceImpl::placeAbove(SurfaceImpl *surface_impl)
+{
+    if (this->_subsurface != nullptr) {
+        wl_subsurface_place_above(this->_subsurface,
+            surface_impl->wlSurface());
+    }
+}
+
+void SurfaceImpl::placeBelow(SurfaceImpl *surface_impl)
+{
+    if (this->_subsurface != nullptr) {
+        wl_subsurface_place_below(this->_subsurface,
+            surface_impl->wlSurface());
+    }
+}
+
 bool SurfaceImpl::toplevel() const
 {
     return this->parent() == nullptr;
