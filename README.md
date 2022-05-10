@@ -7,7 +7,8 @@ Introduction
 ------------
 
 Blusher 2.0 is a new desktop GUI toolkit built on Wayland. An old version is
-written in Qt/QML but this project not using Qt.
+written in Qt/QML but this project not using QML. It only using Qt for signal/slot
+and event driven programming.
 
 Blusher 2.0 using Cairo as a 2D graphics engine and Pango for text rendering.
 
