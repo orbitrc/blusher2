@@ -9,6 +9,7 @@
 
 // Blusher
 #include <blusher/wl-output.h>
+#include <blusher/wl-compositor.h>
 
 namespace bl {
 
@@ -35,7 +36,7 @@ public:
         WlOutput,
         typename std::conditional<
             type == WlInterfaceType::Compositor,
-            bool,
+            WlCompositor,
             bool
         >::type
     >::type;

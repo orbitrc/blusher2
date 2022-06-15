@@ -36,6 +36,7 @@ SOURCES += \
     src/wl-display.cpp \
     src/wl-registry.cpp \
     src/wl-interface.cpp \
+    src/wl-compositor.cpp \
     src/wl-output.cpp \
     wayland-protocols/stable/xdg-shell.c
 
@@ -54,6 +55,7 @@ HEADERS += \
     include/blusher/wl-display.h \
     include/blusher/wl-registry.h \
     include/blusher/wl-interface.h \
+    include/blusher/wl-compositor.h \
     include/blusher/wl-output.h \
     include/blusher/utils.h
 

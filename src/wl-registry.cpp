@@ -8,6 +8,7 @@
 
 // Blusher
 #include <blusher/wl-output.h>
+#include <blusher/wl-compositor.h>
 
 namespace bl {
 
@@ -82,6 +83,23 @@ WlInterface<WlInterfaceType::Output>::BindType WlRegistry::bind(uint32_t id,
     WlOutput output(wl_output);
 
     return output;
+}
+
+WlInterface<WlInterfaceType::Compositor>::BindType WlRegistry::bind(uint32_t id,
+        WlInterface<WlInterfaceType::Compositor> *interface,
+        uint32_t version)
+{
+    struct wl_compositor *wl_compositor =
+        static_cast<struct wl_compositor*>(
+            wl_registry_bind(
+                this->_wl_registry,
+                id,
+                interface->wl_interface(),
+                version
+            ));
+    WlCompositor compositor(wl_compositor);
+
+    return compositor;
 }
 
 WlRegistry* WlRegistry::instance()
