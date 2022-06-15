@@ -1,4 +1,4 @@
-#include <blusher/wl-compositor.h>
+#include <blusher/wayland/wl-compositor.h>
 
 // C
 #include <assert.h>

@@ -1,4 +1,4 @@
-#include <blusher/wl-output.h>
+#include <blusher/wayland/wl-output.h>
 
 namespace bl {
 

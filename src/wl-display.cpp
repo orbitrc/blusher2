@@ -1,4 +1,4 @@
-#include <blusher/wl-display.h>
+#include <blusher/wayland/wl-display.h>
 
 // C
 #include <assert.h>

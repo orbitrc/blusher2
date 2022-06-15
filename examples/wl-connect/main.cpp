@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <blusher/wl-display.h>
-#include <blusher/wl-output.h>
+#include <blusher/wayland/wl-display.h>
+#include <blusher/wayland/wl-output.h>
 
 static void global_registry_handler(void *data, struct wl_registry *registry,
         uint32_t id, const char *interface, uint32_t version)

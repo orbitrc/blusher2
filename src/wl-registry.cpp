@@ -1,4 +1,4 @@
-#include <blusher/wl-registry.h>
+#include <blusher/wayland/wl-registry.h>
 
 // C
 #include <assert.h>
@@ -7,8 +7,8 @@
 #include <wayland-client.h>
 
 // Blusher
-#include <blusher/wl-output.h>
-#include <blusher/wl-compositor.h>
+#include <blusher/wayland/wl-output.h>
+#include <blusher/wayland/wl-compositor.h>
 
 namespace bl {
 

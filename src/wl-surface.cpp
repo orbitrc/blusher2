@@ -1,4 +1,4 @@
-#include <blusher/wl-surface.h>
+#include <blusher/wayland/wl-surface.h>
 
 namespace bl {
 

@@ -8,7 +8,7 @@
 #include <primer/string.h>
 
 // Blusher
-#include <blusher/wl-registry.h>
+#include <blusher/wayland/wl-registry.h>
 
 namespace bl {
 

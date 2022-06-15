@@ -8,8 +8,8 @@
 #include <wayland-client.h>
 
 // Blusher
-#include <blusher/wl-output.h>
-#include <blusher/wl-compositor.h>
+#include <blusher/wayland/wl-output.h>
+#include <blusher/wayland/wl-compositor.h>
 
 namespace bl {
 

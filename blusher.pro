@@ -39,6 +39,7 @@ SOURCES += \
     src/wl-compositor.cpp \
     src/wl-surface.cpp \
     src/wl-output.cpp \
+    src/xdg-wm-base.cpp \
     wayland-protocols/stable/xdg-shell.c
 
 HEADERS += \
@@ -53,12 +54,13 @@ HEADERS += \
     src/application-impl.h \
     src/signal-impl.h \
     src/surface-impl.h \
-    include/blusher/wl-display.h \
-    include/blusher/wl-registry.h \
-    include/blusher/wl-interface.h \
-    include/blusher/wl-compositor.h \
-    include/blusher/wl-surface.h \
-    include/blusher/wl-output.h \
+    include/blusher/wayland/wl-display.h \
+    include/blusher/wayland/wl-registry.h \
+    include/blusher/wayland/wl-interface.h \
+    include/blusher/wayland/wl-compositor.h \
+    include/blusher/wayland/wl-surface.h \
+    include/blusher/wayland/wl-output.h \
+    include/blusher/wayland/xdg-wm-base.h \
     include/blusher/utils.h
 
 # Default rules for deployment.
