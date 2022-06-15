@@ -3,12 +3,12 @@ QT += gui
 TEMPLATE = lib
 DEFINES += BLUSHERQT_LIBRARY
 
-CONFIG += c++14
+CONFIG += c++17
 CONFIG += link_pkgconfig
 
 INCLUDEPATH += ./include
 
-LIBS += -lwayland-client
+LIBS += -lwayland-client -lprimer
 
 TARGET = blusher
 
@@ -33,6 +33,10 @@ SOURCES += \
     src/signal-impl.cpp \
     src/surface-impl.cpp \
     src/utils.cpp \
+    src/wl-display.cpp \
+    src/wl-registry.cpp \
+    src/wl-interface.cpp \
+    src/wl-output.cpp \
     wayland-protocols/stable/xdg-shell.c
 
 HEADERS += \
@@ -47,6 +51,10 @@ HEADERS += \
     src/application-impl.h \
     src/signal-impl.h \
     src/surface-impl.h \
+    include/blusher/wl-display.h \
+    include/blusher/wl-registry.h \
+    include/blusher/wl-interface.h \
+    include/blusher/wl-output.h \
     include/blusher/utils.h
 
 # Default rules for deployment.
