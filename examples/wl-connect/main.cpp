@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include <blusher/wl-display.h>
 #include <blusher/wl-output.h>
@@ -8,6 +9,15 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
 {
     printf("Got a registry event for <%s>, id %d, version %d.\n",
         interface, id, version);
+
+    if (strcmp(interface, "wl_compositor") == 0) {
+        auto registry = bl::WlRegistry::instance();
+        auto interface = bl::WlInterface<bl::WlInterfaceType::Compositor>();
+        registry->bind(id,
+            interface,
+            version
+        );
+    }
 }
 
 static void global_registry_remove_handler(void *data,

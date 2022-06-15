@@ -21,6 +21,16 @@ struct wl_compositor* WlCompositor::wl_compositor()
     return this->_wl_compositor;
 }
 
+WlSurface WlCompositor::create_surface()
+{
+    struct wl_surface *wl_surface =
+        wl_compositor_create_surface(this->_wl_compositor);
+
+    WlSurface surface(wl_surface);
+
+    return surface;
+}
+
 WlCompositor* WlCompositor::instance()
 {
     return wl_compositor_singleton;

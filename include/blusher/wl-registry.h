@@ -55,11 +55,11 @@ public:
     void add_listener(const WlRegistry::Listener& listener);
 
     WlInterface<WlInterfaceType::Output>::BindType bind(uint32_t id,
-            WlInterface<WlInterfaceType::Output> *interface,
+            WlInterface<WlInterfaceType::Output>& interface,
             uint32_t version);
 
     WlInterface<WlInterfaceType::Compositor>::BindType bind(uint32_t id,
-            WlInterface<WlInterfaceType::Compositor> *interface,
+            WlInterface<WlInterfaceType::Compositor>& interface,
             uint32_t version);
 
     /// Returns singleton instance.

@@ -69,7 +69,7 @@ void WlRegistry::add_listener(const WlRegistry::Listener& listener)
 // Binds
 //==========
 WlInterface<WlInterfaceType::Output>::BindType WlRegistry::bind(uint32_t id,
-        WlInterface<WlInterfaceType::Output> *interface,
+        WlInterface<WlInterfaceType::Output>& interface,
         uint32_t version)
 {
     struct wl_output *wl_output =
@@ -77,7 +77,7 @@ WlInterface<WlInterfaceType::Output>::BindType WlRegistry::bind(uint32_t id,
             wl_registry_bind(
                 this->_wl_registry,
                 id,
-                interface->wl_interface(),
+                interface.wl_interface(),
                 version
             ));
     WlOutput output(wl_output);
@@ -86,7 +86,7 @@ WlInterface<WlInterfaceType::Output>::BindType WlRegistry::bind(uint32_t id,
 }
 
 WlInterface<WlInterfaceType::Compositor>::BindType WlRegistry::bind(uint32_t id,
-        WlInterface<WlInterfaceType::Compositor> *interface,
+        WlInterface<WlInterfaceType::Compositor>& interface,
         uint32_t version)
 {
     struct wl_compositor *wl_compositor =
@@ -94,7 +94,7 @@ WlInterface<WlInterfaceType::Compositor>::BindType WlRegistry::bind(uint32_t id,
             wl_registry_bind(
                 this->_wl_registry,
                 id,
-                interface->wl_interface(),
+                interface.wl_interface(),
                 version
             ));
     WlCompositor compositor(wl_compositor);

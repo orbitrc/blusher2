@@ -3,6 +3,8 @@
 
 #include <wayland-client.h>
 
+#include <blusher/wl-surface.h>
+
 namespace bl {
 
 extern class WlCompositor *wl_compositor_singleton;
@@ -14,7 +16,7 @@ public:
 
     struct wl_compositor* wl_compositor();
 
-    // WlSurface get_surface();
+    WlSurface create_surface();
 
     /// Returns singleton instance.
     static WlCompositor* instance();

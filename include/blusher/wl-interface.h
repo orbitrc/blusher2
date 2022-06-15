@@ -24,13 +24,6 @@ template <WlInterfaceType type>
 class WlInterface
 {
 public:
-    enum class Type {
-        Output,
-        Compositor,
-        Subcompositor,
-        XdgWmBase,
-    };
-
     using BindType = typename std::conditional<
         type == WlInterfaceType::Output,
         WlOutput,
