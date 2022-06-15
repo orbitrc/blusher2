@@ -9,6 +9,7 @@ namespace bl {
 
 extern class WlCompositor *wl_compositor_singleton;
 
+/// WlCompositor is a singleton object.
 class WlCompositor
 {
 public:

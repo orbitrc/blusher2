@@ -34,6 +34,7 @@ WlRegistry::Listener::Listener(
     };
 }
 
+using Listener = WlRegistry::Listener;
 const struct wl_registry_listener& WlRegistry::Listener::wl_registry_listener() const
 {
     return this->_listener;
