@@ -1,6 +1,10 @@
 #ifndef _BL_XDG_WM_BASE_H
 #define _BL_XDG_WM_BASE_H
 
+// Blusher
+#include <blusher/wayland/xdg-surface.h>
+
+// Wayland Protocol
 #include <wayland-protocols/stable/xdg-shell.h>
 
 namespace bl {
@@ -33,6 +37,10 @@ public:
     struct xdg_wm_base* xdg_wm_base();
 
     void add_listener(const XdgWmBase::Listener& listener);
+
+    XdgSurface get_xdg_surface(WlSurface& surface);
+
+    void pong(uint32_t serial);
 
 private:
     struct xdg_wm_base *_xdg_wm_base;

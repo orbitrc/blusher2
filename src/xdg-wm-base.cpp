@@ -51,4 +51,19 @@ void XdgWmBase::add_listener(const XdgWmBase::Listener& listener)
         &listener.xdg_wm_base_listener(), NULL);
 }
 
+XdgSurface XdgWmBase::get_xdg_surface(WlSurface& surface)
+{
+    struct xdg_surface *xdg_surface =
+        xdg_wm_base_get_xdg_surface(this->_xdg_wm_base, surface.wl_surface());
+
+    XdgSurface bl_xdg_surface = XdgSurface(xdg_surface, &surface);
+
+    return bl_xdg_surface;
+}
+
+void XdgWmBase::pong(uint32_t serial)
+{
+    xdg_wm_base_pong(this->_xdg_wm_base, serial);
+}
+
 } // namespace bl
