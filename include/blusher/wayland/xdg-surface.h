@@ -8,8 +8,7 @@
 #include <blusher/wayland/wl-surface.h>
 #include <blusher/wayland/xdg-toplevel.h>
 
-// Wayland Protocol
-#include <wayland-protocols/stable/xdg-shell.h>
+struct xdg_surface;
 
 namespace bl {
 

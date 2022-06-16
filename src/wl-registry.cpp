@@ -35,9 +35,9 @@ WlRegistry::Listener::Listener(
 }
 
 using Listener = WlRegistry::Listener;
-const struct wl_registry_listener& WlRegistry::Listener::wl_registry_listener() const
+const struct wl_registry_listener* WlRegistry::Listener::wl_registry_listener() const
 {
-    return this->_listener;
+    return &this->_listener;
 }
 
 //===============
@@ -62,7 +62,7 @@ void WlRegistry::add_listener(const WlRegistry::Listener& listener)
 {
     this->_listener = listener;
     wl_registry_add_listener(this->_wl_registry,
-        &listener.wl_registry_listener(),
+        listener.wl_registry_listener(),
         NULL);
 }
 

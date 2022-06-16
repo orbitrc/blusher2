@@ -39,7 +39,7 @@ public:
 
         Listener(GlobalHandler global, GlobalRemoveHandler remove);
 
-        const struct wl_registry_listener& wl_registry_listener() const;
+        const struct wl_registry_listener* wl_registry_listener() const;
 
     private:
         struct wl_registry_listener _listener;

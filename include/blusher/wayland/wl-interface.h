@@ -10,6 +10,7 @@
 // Blusher
 #include <blusher/wayland/wl-output.h>
 #include <blusher/wayland/wl-compositor.h>
+#include <blusher/wayland/xdg-wm-base.h>
 
 namespace bl {
 
@@ -30,7 +31,11 @@ public:
         typename std::conditional<
             type == WlInterfaceType::Compositor,
             WlCompositor,
-            bool
+            typename std::conditional<
+                type == WlInterfaceType::XdgWmBase,
+                XdgWmBase,
+                bool
+            >::type
         >::type
     >::type;
 

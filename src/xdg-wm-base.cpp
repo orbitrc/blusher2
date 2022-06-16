@@ -1,5 +1,8 @@
 #include <blusher/wayland/xdg-wm-base.h>
 
+// Wayland Protocol
+#include <wayland-protocols/stable/xdg-shell.h>
+
 namespace bl {
 
 //=======================
@@ -7,20 +10,27 @@ namespace bl {
 //=======================
 XdgWmBase::Listener::Listener()
 {
-    this->_xdg_wm_base_listener = {
-        nullptr,
-    };
+    struct xdg_wm_base_listener *listener = new struct xdg_wm_base_listener();
+    listener->ping = nullptr;
+
+    this->_xdg_wm_base_listener = listener;
 }
 
 XdgWmBase::Listener::Listener(XdgWmBase::Listener::PingHandler ping)
 {
-    this->_xdg_wm_base_listener = {
-        ping,
-    };
+    struct xdg_wm_base_listener *listener = new struct xdg_wm_base_listener();
+    listener->ping = ping;
+
+    this->_xdg_wm_base_listener = listener;
+}
+
+XdgWmBase::Listener::~Listener()
+{
+    delete this->_xdg_wm_base_listener;
 }
 
 using Listener = XdgWmBase::Listener;
-const struct xdg_wm_base_listener& Listener::xdg_wm_base_listener() const
+const struct xdg_wm_base_listener* Listener::xdg_wm_base_listener() const
 {
     return this->_xdg_wm_base_listener;
 }
@@ -48,7 +58,7 @@ void XdgWmBase::add_listener(const XdgWmBase::Listener& listener)
 {
     this->_listener = listener;
     xdg_wm_base_add_listener(this->_xdg_wm_base,
-        &listener.xdg_wm_base_listener(), NULL);
+        listener.xdg_wm_base_listener(), NULL);
 }
 
 XdgSurface XdgWmBase::get_xdg_surface(WlSurface& surface)

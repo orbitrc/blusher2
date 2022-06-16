@@ -1,8 +1,7 @@
 #ifndef _BL_XDG_TOPLEVEL_H
 #define _BL_XDG_TOPLEVEL_H
 
-// Wayland Protocol
-#include <wayland-protocols/stable/xdg-shell.h>
+struct xdg_toplevel;
 
 namespace bl {
 

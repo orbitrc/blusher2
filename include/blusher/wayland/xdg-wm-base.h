@@ -4,8 +4,8 @@
 // Blusher
 #include <blusher/wayland/xdg-surface.h>
 
-// Wayland Protocol
-#include <wayland-protocols/stable/xdg-shell.h>
+struct xdg_wm_base;
+struct xdg_wm_base_listener;
 
 namespace bl {
 
@@ -23,10 +23,12 @@ public:
 
         Listener(PingHandler ping);
 
-        const struct xdg_wm_base_listener& xdg_wm_base_listener() const;
+        ~Listener();
+
+        const struct xdg_wm_base_listener* xdg_wm_base_listener() const;
 
     private:
-        struct xdg_wm_base_listener _xdg_wm_base_listener;
+        struct xdg_wm_base_listener *_xdg_wm_base_listener;
     };
 
 public:

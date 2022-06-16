@@ -1,5 +1,8 @@
 #include <blusher/wayland/xdg-surface.h>
 
+// Wayland Protocol
+#include <wayland-protocols/stable/xdg-shell.h>
+
 namespace bl {
 
 XdgSurface::XdgSurface(struct xdg_surface *xdg_surface,
