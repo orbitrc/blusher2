@@ -62,6 +62,10 @@ public:
             WlInterface<WlInterfaceType::Compositor>& interface,
             uint32_t version);
 
+    WlInterface<WlInterfaceType::XdgWmBase>::BindType bind(uint32_t id,
+            WlInterface<WlInterfaceType::XdgWmBase>& interface,
+            uint32_t version);
+
     /// Returns singleton instance.
     static WlRegistry* instance();
 

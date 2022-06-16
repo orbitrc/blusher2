@@ -103,6 +103,23 @@ WlInterface<WlInterfaceType::Compositor>::BindType WlRegistry::bind(uint32_t id,
     return compositor;
 }
 
+WlInterface<WlInterfaceType::XdgWmBase>::BindType WlRegistry::bind(uint32_t id,
+        WlInterface<WlInterfaceType::XdgWmBase>& interface,
+        uint32_t version)
+{
+    struct xdg_wm_base *xdg_wm_base =
+        static_cast<struct xdg_wm_base*>(
+            wl_registry_bind(
+                this->_wl_registry,
+                id,
+                interface.wl_interface(),
+                version
+            ));
+    XdgWmBase base(xdg_wm_base);
+
+    return base;
+}
+
 WlRegistry* WlRegistry::instance()
 {
     return wl_registry_singleton;

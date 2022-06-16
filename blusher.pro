@@ -67,6 +67,9 @@ HEADERS += \
     include/blusher/wayland/xdg-toplevel.h \
     include/blusher/utils.h
 
+# Examples
+SOURCES += examples/wl-show-surface/main.cpp
+
 # Default rules for deployment.
 unix {
     target.path = /usr/lib

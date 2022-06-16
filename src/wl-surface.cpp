@@ -17,5 +17,10 @@ struct wl_surface* WlSurface::wl_surface()
     return this->_wl_surface;
 }
 
+void WlSurface::commit()
+{
+    wl_surface_commit(this->_wl_surface);
+}
+
 } // namespace bl
 

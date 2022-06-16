@@ -13,7 +13,11 @@ extern class WlCompositor *wl_compositor_singleton;
 class WlCompositor
 {
 public:
+    WlCompositor();
+
     WlCompositor(struct wl_compositor *compositor);
+
+    ~WlCompositor();
 
     struct wl_compositor* wl_compositor();
 
@@ -21,6 +25,11 @@ public:
 
     /// Returns singleton instance.
     static WlCompositor* instance();
+
+    //==============
+    // Operators
+    //==============
+    WlCompositor& operator=(const WlCompositor& other);
 
 private:
     struct wl_compositor *_wl_compositor;

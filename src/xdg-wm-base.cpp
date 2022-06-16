@@ -1,5 +1,8 @@
 #include <blusher/wayland/xdg-wm-base.h>
 
+// C
+#include <assert.h>
+
 // Wayland Protocol
 #include <wayland-protocols/stable/xdg-shell.h>
 
@@ -46,7 +49,10 @@ XdgWmBase::XdgWmBase(struct xdg_wm_base *base)
 
 XdgWmBase::~XdgWmBase()
 {
-    xdg_wm_base_destroy(this->_xdg_wm_base);
+    if (this->_xdg_wm_base != nullptr) {
+        // FIXME: Temporary disable next line.
+        // xdg_wm_base_destroy(this->_xdg_wm_base);
+    }
 }
 
 struct xdg_wm_base* XdgWmBase::xdg_wm_base()
@@ -65,6 +71,7 @@ XdgSurface XdgWmBase::get_xdg_surface(WlSurface& surface)
 {
     struct xdg_surface *xdg_surface =
         xdg_wm_base_get_xdg_surface(this->_xdg_wm_base, surface.wl_surface());
+    assert(xdg_surface != NULL);
 
     XdgSurface bl_xdg_surface = XdgSurface(xdg_surface, &surface);
 

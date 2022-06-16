@@ -14,6 +14,8 @@ public:
 
     struct wl_surface* wl_surface();
 
+    void commit();
+
 private:
     struct wl_surface *_wl_surface;
 };
