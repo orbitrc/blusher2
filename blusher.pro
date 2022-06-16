@@ -41,6 +41,7 @@ SOURCES += \
     src/wl-output.cpp \
     src/xdg-wm-base.cpp \
     src/xdg-surface.cpp \
+    src/xdg-toplevel.cpp \
     wayland-protocols/stable/xdg-shell.c
 
 HEADERS += \
@@ -63,6 +64,7 @@ HEADERS += \
     include/blusher/wayland/wl-output.h \
     include/blusher/wayland/xdg-wm-base.h \
     include/blusher/wayland/xdg-surface.h \
+    include/blusher/wayland/xdg-toplevel.h \
     include/blusher/utils.h
 
 # Default rules for deployment.
