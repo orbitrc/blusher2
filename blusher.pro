@@ -27,6 +27,7 @@ SOURCES += \
     src/title-bar.cpp \
     src/signal.cpp \
     src/color.cpp \
+    src/image.cpp \
     src/resource.cpp \
     src/pointer-event.cpp \
     src/application-impl.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     include/blusher/title-bar.h \
     include/blusher/signal.h \
     include/blusher/color.h \
+    include/blusher/image.h \
     include/blusher/resource.h \
     include/blusher/pointer-event.h \
     src/application-impl.h \
@@ -68,7 +70,7 @@ HEADERS += \
     include/blusher/utils.h
 
 # Examples
-SOURCES += examples/wl-show-surface/main.cpp
+DISTFILES += examples/wl-show-surface/main.cpp
 
 # Default rules for deployment.
 unix {

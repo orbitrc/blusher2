@@ -2,6 +2,11 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <wayland-egl.h>
+#include <EGL/egl.h>
+#include <GLES3/gl3.h>
+
+#include <blusher/image.h>
 #include <blusher/wayland/wl-display.h>
 #include <blusher/wayland/wl-compositor.h>
 #include <blusher/wayland/wl-surface.h>
@@ -11,6 +16,18 @@
 
 bl::WlCompositor compositor;
 bl::XdgWmBase xdg_wm_base(nullptr);
+
+struct wl_egl_window *egl_window = nullptr;
+
+EGLDisplay egl_display;
+EGLConfig egl_config;
+EGLSurface egl_surface;
+EGLContext egl_context;
+GLuint program_object;
+
+//=============
+// EGL
+//=============
 
 //======================
 // XDG Shell Handlers
