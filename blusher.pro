@@ -12,7 +12,7 @@ LIBS += -lwayland-client -lprimer
 
 TARGET = blusher
 
-PKGCONFIG += pango
+PKGCONFIG += cairo pango
 
 VERSION = 2.0.0
 
