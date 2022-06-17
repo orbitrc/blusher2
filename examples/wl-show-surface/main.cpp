@@ -286,6 +286,7 @@ static void xdg_wm_base_ping_handler(void *data,
         struct xdg_wm_base *xdg_wm_base, uint32_t serial)
 {
     fprintf(stderr, "Ping!\n");
+    ::xdg_wm_base.pong(serial);
 }
 
 static const bl::XdgWmBase::Listener xdg_wm_base_listener =
@@ -426,6 +427,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Error init program!\n");
         exit(1);
     }
+    draw_function();
 
     while (true) {
         display.dispatch();
