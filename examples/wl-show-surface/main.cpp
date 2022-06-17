@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -29,9 +29,254 @@ GLuint program_object;
 
 bl::Image image("sample.png"_S);
 
+#define WINDOW_WIDTH 480
+#define WINDOW_HEIGHT 360
+
 //=============
-// EGL
+// GL/EGL
 //=============
+
+GLuint load_shader(const char *shader_src, GLenum type)
+{
+    GLuint shader;
+    GLint compiled;
+
+    // Create the shader object.
+    shader = glCreateShader(type);
+    if (shader == 0) {
+        return 0;
+    }
+
+    // Load the shader source.
+    glShaderSource(shader, 1, &shader_src, NULL);
+
+    // Compile the shader.
+    glCompileShader(shader);
+
+    // Check the compile status.
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+    if (!compiled) {
+        GLint info_len = 0;
+
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &info_len);
+        if (info_len > 1) {
+            char *info_log = (char*)malloc(sizeof(char));
+            glGetShaderInfoLog(shader, info_len, NULL, info_log);
+            fprintf(stderr, "Error compiling shader: %s\n", info_log);
+            free(info_log);
+        }
+
+        glDeleteShader(shader);
+        return 0;
+    }
+
+    return shader;
+}
+
+int init_program(GLuint *program_object)
+{
+    GLbyte vertex_shader_str[] =
+        "#version 300 es \n"
+        "layout (location = 0) in vec3 aPos; \n"
+        "layout (location = 1) in vec3 aColor; \n"
+        "layout (location = 2) in vec2 aTexCoord; \n"
+        "out vec3 ourColor; \n"
+        "out vec2 TexCoord; \n"
+        "void main()                         \n"
+        "{                                   \n"
+        "    gl_Position = vec4(aPos, 1.0);  \n"
+        "    ourColor = aColor;              \n"
+        "    TexCoord = aTexCoord;           \n"
+        "}                                   \n";
+
+    GLbyte fragment_shader_str[] =
+        "#version 300 es  \n"
+        "precision mediump float; \n"
+        "out vec4 fragColor;      \n"
+        "in vec3 ourColor;        \n"
+        "in vec2 TexCoord;        \n"
+        "uniform sampler2D ourTexture; \n"
+        "void main()              \n"
+        "{                        \n"
+        "    fragColor = texture(ourTexture, TexCoord); \n"
+        "}                        \n";
+
+    GLuint vertex_shader;
+    GLuint fragment_shader;
+    GLint linked;
+
+    vertex_shader = load_shader((const char*)vertex_shader_str, GL_VERTEX_SHADER);
+    fragment_shader = load_shader((const char*)fragment_shader_str, GL_FRAGMENT_SHADER);
+
+    *program_object = glCreateProgram();
+    if (*program_object == 0) {
+        fprintf(stderr, "glCreateProgram() - program_object is 0.\n");
+        return 0;
+    }
+
+    glAttachShader(*program_object, vertex_shader);
+    glAttachShader(*program_object, fragment_shader);
+
+    // Link the program.
+    glLinkProgram(*program_object);
+
+    // Check the link status.
+    glGetProgramiv(*program_object, GL_LINK_STATUS, &linked);
+    if (!linked) {
+        GLint info_len = 0;
+        glGetProgramiv(*program_object, GL_INFO_LOG_LENGTH, &info_len);
+        if (info_len > 1) {
+            char *info_log = (char*)malloc(sizeof(char) * info_len);
+
+            glGetProgramInfoLog(*program_object, info_len, NULL, info_log);
+            fprintf(stderr, "Error linking program: %s\n", info_log);
+            free(info_log);
+        }
+
+        glDeleteProgram(*program_object);
+        return 0;
+    }
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    return 1;
+}
+
+static void draw_function()
+{
+    GLfloat vVertices[] = {
+         0.5f,  0.5f,  0.0f,    0.0f, 0.0f, 0.0f,   1.0f, 1.0f,     // Top right
+         0.5f, -0.5f,  0.0f,    0.0f, 0.0f, 0.0f,   1.0f, 0.0f,     // Bottom right
+        -0.5f, -0.5f,  0.0f,    0.0f, 0.0f, 0.0f,   0.0f, 0.0f,     // Bottom left
+        -0.5f,  0.5f,  0.0f,    0.0f, 0.0f, 0.0f,   0.0f, 1.0f,     // Top left
+    };
+    GLuint indices[] = {
+        0, 1, 3,    // First triangle
+        1, 2, 3,    // Second triangle
+    };
+
+    eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
+
+    // Set the viewport.
+    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    // Clear the color buffer.
+    glClearColor(0.5, 0.5, 0.5, 0.8);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Use the program object.
+    glUseProgram(program_object);
+
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    GLuint ebo;
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+        GL_STATIC_DRAW);
+
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vVertices), vVertices,
+        GL_STATIC_DRAW);
+
+    // Position attribute.
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)0);
+    glEnableVertexAttribArray(0);
+    // Color attribute.
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+    // Texture coord attribute.
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGBA,
+        image.width(),
+        image.height(),
+        0,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        image.data()
+    );
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+
+    eglSwapBuffers(egl_display, egl_surface);
+}
+
+static void init_egl()
+{
+    EGLint major, minor, count, n, size;
+    EGLConfig *configs;
+    EGLint config_attribs[] = {
+        EGL_SURFACE_TYPE,
+        EGL_WINDOW_BIT,
+        EGL_RED_SIZE,
+        8,
+        EGL_GREEN_SIZE,
+        8,
+        EGL_BLUE_SIZE,
+        8,
+        EGL_ALPHA_SIZE,
+        8,
+        EGL_RENDERABLE_TYPE,
+        EGL_OPENGL_ES2_BIT,
+        EGL_NONE,
+    };
+
+    static const EGLint context_attribs[] = {
+        EGL_CONTEXT_CLIENT_VERSION,
+        2,
+        EGL_NONE,
+    };
+
+    egl_display = eglGetDisplay(
+        (EGLNativeDisplayType)bl::WlDisplay::instance()->wl_display()
+    );
+    if (egl_display == EGL_NO_DISPLAY) {
+        fprintf(stderr, "Can't create egl display.\n");
+        exit(1);
+    }
+
+    if (eglInitialize(egl_display, &major, &minor) != EGL_TRUE) {
+        fprintf(stderr, "Can't initialise egl display.\n");
+        exit(1);
+    }
+    printf("EGL major: %d, minor %d\n", major, minor);
+
+    eglGetConfigs(egl_display, NULL, 0, &count);
+
+    configs = (EGLConfig*)calloc(count, sizeof *configs);
+
+    eglChooseConfig(egl_display, config_attribs, configs, count, &n);
+
+    for (int i = 0; i < n; ++i) {
+        eglGetConfigAttrib(egl_display, configs[i], EGL_BUFFER_SIZE, &size);
+        eglGetConfigAttrib(egl_display, configs[i], EGL_RED_SIZE, &size);
+
+        // Just choose the first one.
+        egl_config = configs[i];
+        break;
+    }
+
+    egl_context = eglCreateContext(egl_display, egl_config, EGL_NO_CONTEXT,
+        context_attribs);
+}
 
 //======================
 // XDG Shell Handlers
@@ -163,6 +408,24 @@ int main(int argc, char *argv[])
 
     // Commit the surface.
     surface.commit();
+
+    // GL/EGL
+    init_egl();
+    //== CREATE WINDOW ==//
+    egl_window = wl_egl_window_create(surface.wl_surface(),
+        WINDOW_WIDTH, WINDOW_HEIGHT);
+    egl_surface = eglCreateWindowSurface(egl_display, egl_config, egl_window,
+        NULL);
+    eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
+    glClearColor(1.0, 1.0, 0.0, 0.5);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glFlush();
+    eglSwapBuffers(egl_display, egl_surface);
+    //===================//
+    if (init_program(&program_object) == 0) {
+        fprintf(stderr, "Error init program!\n");
+        exit(1);
+    }
 
     while (true) {
         display.dispatch();
