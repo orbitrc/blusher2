@@ -27,12 +27,14 @@ struct wl_shm_listener shm_listener = {
 static void xdg_wm_base_ping_handler(void *data,
         struct xdg_wm_base *xdg_wm_base, uint32_t serial)
 {
+    (void)data;
     xdg_wm_base_pong(xdg_wm_base, serial);
 }
 
-static const struct xdg_wm_base_listener xdg_wm_base_listener = {
-    .ping = xdg_wm_base_ping_handler,
-};
+static const bl::XdgWmBase::Listener xdg_wm_base_listener =
+    bl::XdgWmBase::Listener(
+        xdg_wm_base_ping_handler
+    );
 
 //=============
 // Seat
@@ -281,8 +283,7 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     this->_display.dispatch();
     this->_display.roundtrip();
 
-    xdg_wm_base_add_listener(this->_xdg_wm_base->xdg_wm_base(),
-        &xdg_wm_base_listener, (void*)this);
+    this->_xdg_wm_base->add_listener(xdg_wm_base_listener);
 
 //    wl_seat_add_listener(this->_seat,
 //        &seat_listener, (void*)this);
