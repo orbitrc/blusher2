@@ -4,12 +4,14 @@
 #include <wayland-client.h>
 
 #include <vector>
+#include <memory>
 
 #include <QCoreApplication>
 #include <QThread>
 
 #include <blusher/wayland/wl-display.h>
 #include <blusher/wayland/wl-registry.h>
+#include <blusher/wayland/xdg-wm-base.h>
 
 // Wayland protocols
 #include <wayland-protocols/stable/xdg-shell.h>
@@ -62,8 +64,8 @@ public:
     //============================
     // Wayland XDG shell objects
     //============================
-    struct xdg_wm_base* xdgWmBase() const;
-    void setXdgWmBase(struct xdg_wm_base*);
+    std::shared_ptr<XdgWmBase> xdgWmBase();
+    void setXdgWmBase(std::shared_ptr<XdgWmBase> xdg_wm_base);
 
 
     bool addSurfaceImpl(SurfaceImpl*);
@@ -92,7 +94,7 @@ private:
     //====================
     // Wayland XDG shell
     //====================
-    struct xdg_wm_base *_xdg_wm_base;
+    std::shared_ptr<XdgWmBase> _xdg_wm_base;
 
     std::vector<SurfaceImpl*> _surface_impl_list;
     /// Some pointer handlers has not surface info. So store it when enter

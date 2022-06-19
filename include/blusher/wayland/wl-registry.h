@@ -77,6 +77,9 @@ public:
     static WlRegistry* instance();
 
 private:
+    WlRegistry(struct wl_registry *wl_registry);
+
+private:
     struct wl_registry *_wl_registry;
     WlRegistry::Listener _listener;
 };

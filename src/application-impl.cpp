@@ -1,6 +1,7 @@
 #include "application-impl.h"
 
 #include <stdio.h>
+#include <assert.h>
 
 #include <linux/input.h>
 
@@ -190,6 +191,10 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
     bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
         data);
 
+    bl::WlRegistry *reg = bl::WlRegistry::instance();
+    // Check singleton registry is correct.
+    assert(reg->wl_registry() == registry);
+
     fprintf(stderr, "<%s %d>\n", interface, version);
     if (strcmp(interface, "wl_seat") == 0) {
         if (application_impl->seat() == NULL) {
@@ -214,9 +219,9 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
                 wl_registry_bind(registry, id, &wl_shm_interface, 1)));
         }
     } else if (strcmp(interface, "xdg_wm_base") == 0) {
-        if (application_impl->xdgWmBase() == NULL) {
-            application_impl->setXdgWmBase(static_cast<struct xdg_wm_base*>(
-                wl_registry_bind(registry, id, &xdg_wm_base_interface, 3)));
+        if (application_impl->xdgWmBase() == nullptr) {
+            auto interface = bl::WlInterface<bl::WlInterfaceType::XdgWmBase>();
+            application_impl->setXdgWmBase(reg->bind(id, interface, 3));
         }
     }
 }
@@ -265,8 +270,9 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     this->_keyboard = NULL;
     this->_pointer = NULL;
 
-    this->_xdg_wm_base = NULL;
+    this->_xdg_wm_base = nullptr;
 
+    fprintf(stderr, "!!! get_registry()\n");
     this->_registry = this->_display.get_registry();
 
     wl_registry_add_listener(this->_registry.wl_registry(),
@@ -275,7 +281,7 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     this->_display.dispatch();
     this->_display.roundtrip();
 
-    xdg_wm_base_add_listener(this->_xdg_wm_base,
+    xdg_wm_base_add_listener(this->_xdg_wm_base->xdg_wm_base(),
         &xdg_wm_base_listener, (void*)this);
 
 //    wl_seat_add_listener(this->_seat,
@@ -385,14 +391,15 @@ void ApplicationImpl::setPointer(struct wl_pointer *pointer)
 //===========================
 
 // Xdg wm base
-struct xdg_wm_base* ApplicationImpl::xdgWmBase() const
+
+std::shared_ptr<XdgWmBase> ApplicationImpl::xdgWmBase()
 {
     return this->_xdg_wm_base;
 }
 
-void ApplicationImpl::setXdgWmBase(struct xdg_wm_base *base)
+void ApplicationImpl::setXdgWmBase(std::shared_ptr<XdgWmBase> xdg_wm_base)
 {
-    this->_xdg_wm_base = base;
+    this->_xdg_wm_base = xdg_wm_base;
 }
 
 

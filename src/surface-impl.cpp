@@ -182,7 +182,7 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     // XDG shell
     //=============
     if (this->parent() == nullptr) {
-        this->_xdg_surface = xdg_wm_base_get_xdg_surface(app_impl->xdgWmBase(),
+        this->_xdg_surface = xdg_wm_base_get_xdg_surface(app_impl->xdgWmBase()->xdg_wm_base(),
             this->_surface);
         xdg_surface_add_listener(this->_xdg_surface, &xdg_surface_listener, NULL);
 

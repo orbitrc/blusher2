@@ -47,15 +47,25 @@ WlRegistry *wl_registry_singleton = nullptr;
 
 WlRegistry::WlRegistry()
 {
+    this->_wl_registry = nullptr;
+}
+
+WlRegistry::WlRegistry(struct wl_registry *wl_registry)
+{
     assert(wl_registry_singleton == nullptr);
 
-    this->_wl_registry = nullptr;
+    this->_wl_registry = wl_registry;
 
     wl_registry_singleton = this;
 }
 
 WlRegistry::~WlRegistry()
 {
+}
+
+struct wl_registry* WlRegistry::wl_registry()
+{
+    return this->_wl_registry;
 }
 
 void WlRegistry::add_listener(const WlRegistry::Listener& listener)

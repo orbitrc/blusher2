@@ -50,8 +50,7 @@ struct wl_display* WlDisplay::wl_display()
 WlRegistry WlDisplay::get_registry()
 {
     struct wl_registry *reg = wl_display_get_registry(this->_wl_display);
-    WlRegistry registry;
-    registry._wl_registry = reg;
+    WlRegistry registry(reg);
 
     return registry;
 }
