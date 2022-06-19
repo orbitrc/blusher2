@@ -137,17 +137,16 @@ int init_program(GLuint *program_object)
         return 0;
     }
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     return 1;
 }
 
 static void draw_function()
 {
     GLfloat vVertices[] = {
-         0.5f,  0.5f,  0.0f,    0.0f, 0.0f, 0.0f,   1.0f, 1.0f,     // Top right
-         0.5f, -0.5f,  0.0f,    0.0f, 0.0f, 0.0f,   1.0f, 0.0f,     // Bottom right
-        -0.5f, -0.5f,  0.0f,    0.0f, 0.0f, 0.0f,   0.0f, 0.0f,     // Bottom left
-        -0.5f,  0.5f,  0.0f,    0.0f, 0.0f, 0.0f,   0.0f, 1.0f,     // Top left
+        -1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,   1.0f, 1.0f,     // Top right
+        -1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,   1.0f, 0.0f,     // Bottom right
+         1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,   0.0f, 0.0f,     // Bottom left
+         1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,   0.0f, 1.0f,     // Top left
     };
     GLuint indices[] = {
         0, 1, 3,    // First triangle
@@ -157,7 +156,10 @@ static void draw_function()
     eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
 
     // Set the viewport.
-    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    glViewport(
+        0, WINDOW_HEIGHT - image.height(),
+        image.width(), image.height()
+    );
 
     // Clear the color buffer.
     glClearColor(0.5, 0.5, 0.5, 0.8);
@@ -418,8 +420,6 @@ int main(int argc, char *argv[])
     egl_surface = eglCreateWindowSurface(egl_display, egl_config, egl_window,
         NULL);
     eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
-    glClearColor(1.0, 1.0, 0.0, 0.5);
-    glClear(GL_COLOR_BUFFER_BIT);
     glFlush();
     eglSwapBuffers(egl_display, egl_surface);
     //===================//
