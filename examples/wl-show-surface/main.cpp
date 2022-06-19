@@ -143,10 +143,10 @@ int init_program(GLuint *program_object)
 static void draw_function()
 {
     GLfloat vVertices[] = {
-        -1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,   1.0f, 1.0f,     // Top right
-        -1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,   1.0f, 0.0f,     // Bottom right
-         1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,   0.0f, 0.0f,     // Bottom left
-         1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,   0.0f, 1.0f,     // Top left
+        -1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    0.0f,  1.0f,     // Top right
+        -1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    0.0f,  0.0f,     // Bottom right
+         1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    1.0f,  0.0f,     // Bottom left
+         1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    1.0f,  1.0f,     // Top left
     };
     GLuint indices[] = {
         0, 1, 3,    // First triangle
