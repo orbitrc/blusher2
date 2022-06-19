@@ -260,7 +260,6 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
 
     this->_compositor = NULL;
     this->_subcompositor = NULL;
-    this->_registry = NULL;
     this->_shm = NULL;
     this->_seat = NULL;
     this->_keyboard = NULL;
@@ -268,9 +267,9 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
 
     this->_xdg_wm_base = NULL;
 
-    this->setRegistry(wl_display_get_registry(this->_display.wl_display()));
+    this->_registry = this->_display.get_registry();
 
-    wl_registry_add_listener(this->_registry,
+    wl_registry_add_listener(this->_registry.wl_registry(),
         &registry_listener, (void*)this);
 
     this->_display.dispatch();
@@ -334,14 +333,9 @@ void ApplicationImpl::setSubcompositor(struct wl_subcompositor *subcompositor)
 }
 
 // Registry
-struct wl_registry* ApplicationImpl::registry() const
+WlRegistry* ApplicationImpl::registry()
 {
-    return this->_registry;
-}
-
-void ApplicationImpl::setRegistry(struct wl_registry *registry)
-{
-    this->_registry = registry;
+    return &this->_registry;
 }
 
 // Shm

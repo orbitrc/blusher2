@@ -9,6 +9,7 @@
 #include <QThread>
 
 #include <blusher/wayland/wl-display.h>
+#include <blusher/wayland/wl-registry.h>
 
 // Wayland protocols
 #include <wayland-protocols/stable/xdg-shell.h>
@@ -44,8 +45,7 @@ public:
     struct wl_subcompositor* subcompositor() const;
     void setSubcompositor(struct wl_subcompositor*);
 
-    struct wl_registry* registry() const;
-    void setRegistry(struct wl_registry*);
+    WlRegistry* registry();
 
     struct wl_shm* shm() const;
     void setShm(struct wl_shm*);
@@ -83,7 +83,7 @@ private:
     WlDisplay _display;
     struct wl_compositor *_compositor;
     struct wl_subcompositor *_subcompositor;
-    struct wl_registry *_registry;
+    WlRegistry _registry;
     struct wl_shm *_shm;
     struct wl_seat *_seat;
     struct wl_keyboard *_keyboard;
