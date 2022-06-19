@@ -65,6 +65,10 @@ public:
             WlCompositorInterface& interface,
             uint32_t version);
 
+    std::shared_ptr<WlSubcompositorInterface::BindType> bind(uint32_t id,
+            WlSubcompositorInterface& interface,
+            uint32_t version);
+
     std::shared_ptr<XdgWmBaseInterface::BindType> bind(uint32_t id,
             XdgWmBaseInterface& interface,
             uint32_t version);

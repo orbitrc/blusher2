@@ -103,6 +103,23 @@ std::shared_ptr<WlCompositorInterface::BindType> WlRegistry::bind(uint32_t id,
     return compositor;
 }
 
+std::shared_ptr<WlSubcompositorInterface::BindType> WlRegistry::bind(uint32_t id,
+        WlSubcompositorInterface& interface,
+        uint32_t version)
+{
+    struct wl_subcompositor *wl_subcompositor =
+        static_cast<struct wl_subcompositor*>(
+            wl_registry_bind(
+                this->_wl_registry,
+                id,
+                interface.wl_interface(),
+                version
+            ));
+    std::shared_ptr<WlSubcompositor> subcompositor(new WlSubcompositor(wl_subcompositor));
+
+    return subcompositor;
+}
+
 std::shared_ptr<XdgWmBaseInterface::BindType> WlRegistry::bind(uint32_t id,
         XdgWmBaseInterface& interface,
         uint32_t version)

@@ -10,6 +10,7 @@
 // Blusher
 #include <blusher/wayland/wl-output.h>
 #include <blusher/wayland/wl-compositor.h>
+#include <blusher/wayland/wl-subcompositor.h>
 #include <blusher/wayland/xdg-wm-base.h>
 
 namespace bl {
@@ -18,6 +19,7 @@ enum class WlInterfaceType {
     Output,
     Compositor,
     Subcompositor,
+    Seat,
     XdgWmBase,
 };
 
@@ -34,7 +36,11 @@ public:
             typename std::conditional<
                 type == WlInterfaceType::XdgWmBase,
                 XdgWmBase,
-                bool
+                typename std::conditional<
+                    type == WlInterfaceType::Subcompositor,
+                    WlSubcompositor,
+                    bool
+                >::type
             >::type
         >::type
     >::type;
@@ -54,6 +60,7 @@ private:
 
 using WlOutputInterface = WlInterface<WlInterfaceType::Output>;
 using WlCompositorInterface = WlInterface<WlInterfaceType::Compositor>;
+using WlSubcompositorInterface = WlInterface<WlInterfaceType::Subcompositor>;
 using XdgWmBaseInterface = WlInterface<WlInterfaceType::XdgWmBase>;
 
 } // namespace bl

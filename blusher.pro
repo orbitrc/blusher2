@@ -38,6 +38,7 @@ SOURCES += \
     src/wl-registry.cpp \
     src/wl-interface.cpp \
     src/wl-compositor.cpp \
+    src/wl-subcompositor.cpp \
     src/wl-surface.cpp \
     src/wl-output.cpp \
     src/xdg-wm-base.cpp \
@@ -62,6 +63,7 @@ HEADERS += \
     include/blusher/wayland/wl-registry.h \
     include/blusher/wayland/wl-interface.h \
     include/blusher/wayland/wl-compositor.h \
+    include/blusher/wayland/wl-subcompositor.h \
     include/blusher/wayland/wl-surface.h \
     include/blusher/wayland/wl-output.h \
     include/blusher/wayland/xdg-wm-base.h \
