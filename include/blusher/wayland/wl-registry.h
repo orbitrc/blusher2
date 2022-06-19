@@ -6,6 +6,9 @@
 // C
 #include <stdint.h>
 
+// C++
+#include <memory>
+
 // Blusher
 #include <blusher/wayland/wl-interface.h>
 
@@ -54,16 +57,16 @@ public:
 
     void add_listener(const WlRegistry::Listener& listener);
 
-    WlInterface<WlInterfaceType::Output>::BindType bind(uint32_t id,
-            WlInterface<WlInterfaceType::Output>& interface,
+    std::shared_ptr<WlOutputInterface::BindType> bind(uint32_t id,
+            WlOutputInterface& interface,
             uint32_t version);
 
-    WlInterface<WlInterfaceType::Compositor>::BindType bind(uint32_t id,
-            WlInterface<WlInterfaceType::Compositor>& interface,
+    std::shared_ptr<WlCompositorInterface::BindType> bind(uint32_t id,
+            WlCompositorInterface& interface,
             uint32_t version);
 
-    WlInterface<WlInterfaceType::XdgWmBase>::BindType bind(uint32_t id,
-            WlInterface<WlInterfaceType::XdgWmBase>& interface,
+    std::shared_ptr<XdgWmBaseInterface::BindType> bind(uint32_t id,
+            XdgWmBaseInterface& interface,
             uint32_t version);
 
     /// Returns singleton instance.

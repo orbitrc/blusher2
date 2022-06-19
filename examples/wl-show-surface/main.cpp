@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <memory>
+
 #include <wayland-egl.h>
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
@@ -16,8 +18,8 @@
 #include <blusher/wayland/xdg-wm-base.h>
 #include <blusher/wayland/xdg-toplevel.h>
 
-bl::WlCompositor compositor;
-bl::XdgWmBase xdg_wm_base(nullptr);
+std::shared_ptr<bl::WlCompositor> compositor = nullptr;
+std::shared_ptr<bl::XdgWmBase> xdg_wm_base = nullptr;
 
 struct wl_egl_window *egl_window = nullptr;
 
@@ -288,7 +290,7 @@ static void xdg_wm_base_ping_handler(void *data,
         struct xdg_wm_base *xdg_wm_base, uint32_t serial)
 {
     fprintf(stderr, "Ping!\n");
-    ::xdg_wm_base.pong(serial);
+    ::xdg_wm_base->pong(serial);
 }
 
 static const bl::XdgWmBase::Listener xdg_wm_base_listener =
@@ -390,12 +392,12 @@ int main(int argc, char *argv[])
     bl::WlSurface surface = bl::WlCompositor::instance()->create_surface();
     fprintf(stderr, "Surface created!\n");
 
-    fprintf(stderr, "xdg_wm_base: %p\n", xdg_wm_base.xdg_wm_base());
-    xdg_wm_base.add_listener(xdg_wm_base_listener);
+    fprintf(stderr, "xdg_wm_base: %p\n", xdg_wm_base->xdg_wm_base());
+    xdg_wm_base->add_listener(xdg_wm_base_listener);
     fprintf(stderr, "xdg_wm_base listener added.\n");
 
     // Get XDG surface.
-    bl::XdgSurface xdg_surface = xdg_wm_base.get_xdg_surface(surface);
+    bl::XdgSurface xdg_surface = xdg_wm_base->get_xdg_surface(surface);
     fprintf(stderr, "Got XDG surface.\n");
     xdg_surface.add_listener(xdg_surface_listener);
 

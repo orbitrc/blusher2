@@ -52,6 +52,10 @@ private:
     WlInterfaceType _type;
 };
 
+using WlOutputInterface = WlInterface<WlInterfaceType::Output>;
+using WlCompositorInterface = WlInterface<WlInterfaceType::Compositor>;
+using XdgWmBaseInterface = WlInterface<WlInterfaceType::XdgWmBase>;
+
 } // namespace bl
 
 #endif // _BL_WL_INTERFACE_H

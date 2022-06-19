@@ -69,8 +69,8 @@ void WlRegistry::add_listener(const WlRegistry::Listener& listener)
 //==========
 // Binds
 //==========
-WlInterface<WlInterfaceType::Output>::BindType WlRegistry::bind(uint32_t id,
-        WlInterface<WlInterfaceType::Output>& interface,
+std::shared_ptr<WlOutputInterface::BindType> WlRegistry::bind(uint32_t id,
+        WlOutputInterface& interface,
         uint32_t version)
 {
     struct wl_output *wl_output =
@@ -81,13 +81,13 @@ WlInterface<WlInterfaceType::Output>::BindType WlRegistry::bind(uint32_t id,
                 interface.wl_interface(),
                 version
             ));
-    WlOutput output(wl_output);
+    std::shared_ptr<WlOutput> output(new WlOutput(wl_output));
 
     return output;
 }
 
-WlInterface<WlInterfaceType::Compositor>::BindType WlRegistry::bind(uint32_t id,
-        WlInterface<WlInterfaceType::Compositor>& interface,
+std::shared_ptr<WlCompositorInterface::BindType> WlRegistry::bind(uint32_t id,
+        WlCompositorInterface& interface,
         uint32_t version)
 {
     struct wl_compositor *wl_compositor =
@@ -98,13 +98,13 @@ WlInterface<WlInterfaceType::Compositor>::BindType WlRegistry::bind(uint32_t id,
                 interface.wl_interface(),
                 version
             ));
-    WlCompositor compositor(wl_compositor);
+    std::shared_ptr<WlCompositor> compositor(new WlCompositor(wl_compositor));
 
     return compositor;
 }
 
-WlInterface<WlInterfaceType::XdgWmBase>::BindType WlRegistry::bind(uint32_t id,
-        WlInterface<WlInterfaceType::XdgWmBase>& interface,
+std::shared_ptr<XdgWmBaseInterface::BindType> WlRegistry::bind(uint32_t id,
+        XdgWmBaseInterface& interface,
         uint32_t version)
 {
     struct xdg_wm_base *xdg_wm_base =
@@ -115,7 +115,7 @@ WlInterface<WlInterfaceType::XdgWmBase>::BindType WlRegistry::bind(uint32_t id,
                 interface.wl_interface(),
                 version
             ));
-    XdgWmBase base(xdg_wm_base);
+    std::shared_ptr<XdgWmBase> base(new XdgWmBase(xdg_wm_base));
 
     return base;
 }
