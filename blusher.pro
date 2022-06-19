@@ -41,6 +41,7 @@ SOURCES += \
     src/wl-subcompositor.cpp \
     src/wl-surface.cpp \
     src/wl-output.cpp \
+    src/wl-seat.cpp \
     src/xdg-wm-base.cpp \
     src/xdg-surface.cpp \
     src/xdg-toplevel.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     include/blusher/wayland/wl-subcompositor.h \
     include/blusher/wayland/wl-surface.h \
     include/blusher/wayland/wl-output.h \
+    include/blusher/wayland/wl-seat.h \
     include/blusher/wayland/xdg-wm-base.h \
     include/blusher/wayland/xdg-surface.h \
     include/blusher/wayland/xdg-toplevel.h \

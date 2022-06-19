@@ -20,6 +20,13 @@ WlInterface<WlInterfaceType::Compositor>::WlInterface()
 }
 
 template<>
+WlInterface<WlInterfaceType::Seat>::WlInterface()
+{
+    this->_wl_interface = &wl_seat_interface;
+    this->_type = WlInterfaceType::Seat;
+}
+
+template<>
 WlInterface<WlInterfaceType::XdgWmBase>::WlInterface()
 {
     this->_wl_interface = &xdg_wm_base_interface;
