@@ -240,10 +240,10 @@ namespace bl {
 void DisplayDispatchThread::run()
 {
     fprintf(stderr, "before wl_display_dispatch %p\n", app_impl->display());
-    int result = wl_display_dispatch(app_impl->display());
+    int result = wl_display_dispatch(app_impl->display()->wl_display());
     fprintf(stderr, "result: %d\n", result);
     while (result != -1) {
-        result = wl_display_dispatch(app_impl->display());
+        result = wl_display_dispatch(app_impl->display()->wl_display());
     }
 }
 
@@ -256,7 +256,7 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     //===============
     // Wayland
     //===============
-    this->setDisplay(wl_display_connect(NULL));
+    this->_display = WlDisplay::connect();
 
     this->_compositor = NULL;
     this->_subcompositor = NULL;
@@ -268,13 +268,13 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
 
     this->_xdg_wm_base = NULL;
 
-    this->setRegistry(wl_display_get_registry(this->_display));
+    this->setRegistry(wl_display_get_registry(this->_display.wl_display()));
 
     wl_registry_add_listener(this->_registry,
         &registry_listener, (void*)this);
 
-    wl_display_dispatch(this->_display);
-    wl_display_roundtrip(this->_display);
+    this->_display.dispatch();
+    this->_display.roundtrip();
 
     xdg_wm_base_add_listener(this->_xdg_wm_base,
         &xdg_wm_base_listener, (void*)this);
@@ -306,14 +306,9 @@ int ApplicationImpl::exec()
 //=========================
 
 // Display
-struct wl_display* ApplicationImpl::display() const
+WlDisplay* ApplicationImpl::display()
 {
-    return this->_display;
-}
-
-void ApplicationImpl::setDisplay(struct wl_display *display)
-{
-    this->_display = display;
+    return &this->_display;
 }
 
 // Compositor

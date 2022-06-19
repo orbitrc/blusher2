@@ -8,6 +8,8 @@
 #include <QCoreApplication>
 #include <QThread>
 
+#include <blusher/wayland/wl-display.h>
+
 // Wayland protocols
 #include <wayland-protocols/stable/xdg-shell.h>
 
@@ -34,8 +36,7 @@ public:
     //========================
     // Wayland client objects
     //========================
-    struct wl_display* display() const;
-    void setDisplay(struct wl_display*);
+    WlDisplay* display();
 
     struct wl_compositor* compositor() const;
     void setCompositor(struct wl_compositor*);
@@ -79,7 +80,7 @@ private:
     //=================
     // Wayland client
     //=================
-    struct wl_display *_display;
+    WlDisplay _display;
     struct wl_compositor *_compositor;
     struct wl_subcompositor *_subcompositor;
     struct wl_registry *_registry;

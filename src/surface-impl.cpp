@@ -192,7 +192,7 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
         // Signal that the surface is ready to be configured.
         wl_surface_commit(this->_surface);
         // Wait for the surface to be configured.
-        wl_display_roundtrip(app_impl->display());
+        app_impl->display()->roundtrip();
     }
 
 //    this->setGeometry(this->m_x, this->m_y, this->m_width, this->m_height);
