@@ -11,6 +11,7 @@
 
 #include <blusher/wayland/wl-display.h>
 #include <blusher/wayland/wl-registry.h>
+#include <blusher/wayland/wl-seat.h>
 #include <blusher/wayland/xdg-wm-base.h>
 
 // Wayland protocols
@@ -52,8 +53,8 @@ public:
     struct wl_shm* shm() const;
     void setShm(struct wl_shm*);
 
-    struct wl_seat* seat() const;
-    void setSeat(struct wl_seat*);
+    std::shared_ptr<WlSeat> seat();
+    void setSeat(std::shared_ptr<WlSeat> seat);
 
     struct wl_keyboard* keyboard() const;
     void setKeyboard(struct wl_keyboard*);
@@ -87,7 +88,7 @@ private:
     struct wl_subcompositor *_subcompositor;
     WlRegistry _registry;
     struct wl_shm *_shm;
-    struct wl_seat *_seat;
+    std::shared_ptr<WlSeat> _seat;
     struct wl_keyboard *_keyboard;
     struct wl_pointer *_pointer;
 

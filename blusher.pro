@@ -74,7 +74,8 @@ HEADERS += \
     include/blusher/utils.h
 
 # Examples
-DISTFILES += examples/wl-show-surface/main.cpp
+DISTFILES += examples/wl-show-surface/main.cpp \
+    examples/window/main.cpp
 
 # Default rules for deployment.
 unix {

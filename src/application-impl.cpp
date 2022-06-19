@@ -37,12 +37,13 @@ static const bl::XdgWmBase::Listener xdg_wm_base_listener =
     );
 
 //=============
-// Seat
+// Keyboard
 //=============
 
-// Keyboard
 
+//=============
 // Pointer
+//=============
 static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
         uint32_t serial, struct wl_surface *surface,
         wl_fixed_t sx, wl_fixed_t sy)
@@ -152,36 +153,47 @@ static const struct wl_pointer_listener pointer_listener = {
     .axis_discrete = pointer_axis_discrete_handler,
 };
 
-// Capabilities
+//=============
+// Seat
+//=============
+
 static void seat_capabilities_handler(void *data, struct wl_seat *seat,
         uint32_t caps)
 {
+    (void)data;
+    (void)seat;
     fprintf(stderr, "seat_capabilities_handler() - capabilities: %d\n", caps);
 
-    bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(data);
+    bl::ApplicationImpl *application_impl =
+        static_cast<bl::ApplicationImpl*>(data);
+    assert(application_impl != nullptr);
+
     if (caps & WL_SEAT_CAPABILITY_POINTER &&
             application_impl->pointer() == nullptr) {
         application_impl->setPointer(
-            wl_seat_get_pointer(application_impl->seat()));
+            wl_seat_get_pointer(application_impl->seat()->wl_seat()));
         wl_pointer_add_listener(application_impl->pointer(),
             &pointer_listener, (void*)application_impl);
     } else if (caps & WL_SEAT_CAPABILITY_KEYBOARD &&
             application_impl->keyboard() == nullptr) {
         application_impl->setKeyboard(
-            wl_seat_get_keyboard(application_impl->seat()));
+            wl_seat_get_keyboard(application_impl->seat()->wl_seat()));
     }
 }
 
 static void seat_name_handler(void *data, struct wl_seat *seat,
         const char *name)
 {
+    (void)data;
+    (void)seat;
     fprintf(stderr, "seat_name_handler() - name: %s\n", name);
 }
 
-static const struct wl_seat_listener seat_listener = {
-    .capabilities = seat_capabilities_handler,
-    .name = seat_name_handler,
-};
+static const bl::WlSeat::Listener seat_listener =
+    bl::WlSeat::Listener(
+        seat_capabilities_handler,
+        seat_name_handler
+    );
 
 //==============
 // Global
@@ -199,11 +211,11 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
 
     fprintf(stderr, "<%s %d>\n", interface, version);
     if (strcmp(interface, "wl_seat") == 0) {
-        if (application_impl->seat() == NULL) {
-            application_impl->setSeat(static_cast<struct wl_seat*>(
-                wl_registry_bind(registry, id, &wl_seat_interface, 7)));
-            wl_seat_add_listener(application_impl->seat(),
-                &seat_listener, (void*)application_impl);
+        if (application_impl->seat() == nullptr) {
+            auto interface = bl::WlInterface<bl::WlInterfaceType::Seat>();
+            application_impl->setSeat(reg->bind(id, interface, 7));
+            application_impl->seat()->add_listener(seat_listener,
+                static_cast<void*>(application_impl));
         }
     } else if (strcmp(interface, "wl_compositor") == 0) {
         if (application_impl->compositor() == NULL) {
@@ -268,7 +280,7 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     this->_compositor = NULL;
     this->_subcompositor = NULL;
     this->_shm = NULL;
-    this->_seat = NULL;
+    this->_seat = nullptr;
     this->_keyboard = NULL;
     this->_pointer = NULL;
 
@@ -357,12 +369,12 @@ void ApplicationImpl::setShm(struct wl_shm *shm)
 }
 
 // Seat
-struct wl_seat* ApplicationImpl::seat() const
+std::shared_ptr<WlSeat> ApplicationImpl::seat()
 {
     return this->_seat;
 }
 
-void ApplicationImpl::setSeat(struct wl_seat *seat)
+void ApplicationImpl::setSeat(std::shared_ptr<WlSeat> seat)
 {
     this->_seat = seat;
 }

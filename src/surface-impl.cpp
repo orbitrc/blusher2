@@ -393,7 +393,7 @@ void SurfaceImpl::moveIfToplevel()
 {
     if (this->parent() == nullptr) {
         xdg_toplevel_move(this->_xdg_toplevel,
-            app_impl->seat(), app_impl->pointerPressSerial());
+            app_impl->seat()->wl_seat(), app_impl->pointerPressSerial());
     }
 }
 
