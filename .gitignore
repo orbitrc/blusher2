@@ -9,5 +9,10 @@ target/
 
 build/
 
+resources/*.o
+resources/*.h
+resources/*.cpp
+resources/*.a
+
 wayland-protocols/stable/xdg-shell.h
 wayland-protocols/stable/xdg-shell.c

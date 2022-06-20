@@ -184,11 +184,11 @@ class Brc:
             for file in resource._files:
                 # Get resource path for file.
                 path = resource.prefix() + '/' + file.filename_or_alias()
-                resource_data += f'static bl_resource_data resource_data_{index} = {{\n'
-                resource_data += f'    .path = "{path}",\n'
-                resource_data += f'    .data = data_{index},\n'
-                resource_data += f'    .size = sizeof(data_{index}),\n'
-                resource_data += '};\n\n'
+                resource_data += f'static bl::Resource::Data resource_data_{index}(\n'
+                resource_data += f'    "{path}",\n'
+                resource_data += f'    data_{index},\n'
+                resource_data += f'    sizeof(data_{index})\n'
+                resource_data += ');\n\n'
                 index += 1
 
         return resource_data
@@ -200,8 +200,8 @@ class Brc:
         for resource in self._resources:
             for file in resource._files:
                 path = resource.prefix() + '/' + file.filename_or_alias()
-                register_function += f'    /* {path} */\n'
-                register_function += f'    bl_resource_add_data(bl_app->resource, &resource_data_{index});\n'
+                register_function += f'    // {path}\n'
+                register_function += f'    bl::app->resource()->add_data(&resource_data_{index});\n'
                 index += 1
 
         register_function += '}\n'
@@ -244,7 +244,7 @@ def rcc(input_file, output=None):
     f.close()
 
     # Create C source file.
-    f = open(brc.brc_dir() + '/' + brc.name() + '.c', 'w')
+    f = open(brc.brc_dir() + '/' + brc.name() + '.cpp', 'w')
     f.write(brc.make_source())
     f.close()
 
@@ -252,11 +252,11 @@ def rcc(input_file, output=None):
     cflags = ' -fPIC '
     if not os.path.exists('/usr/include/blusher/application.h'):
         blusher_bin_dir = os.path.dirname(os.path.realpath(__file__))
-        cflags += f' -I{blusher_bin_dir}/../libblusher/include '
-    c_path = brc.brc_dir() + '/' + f'{brc.name()}.c'
+        cflags += f' -I{blusher_bin_dir}/../include '
+    cpp_path = brc.brc_dir() + '/' + f'{brc.name()}.cpp'
     o_path = brc.brc_dir() + '/' + f'{brc.name()}.o'
     a_path = brc.brc_dir() + '/' + f'lib{brc.name()}.a'
-    cmd = f'gcc {cflags} -c {c_path} -o {o_path}'
+    cmd = f'g++ {cflags} -c {cpp_path} -o {o_path}'
     print(f'blusher rcc: {cmd}')
     os.system(cmd)
     cmd = f'ar -rcs {a_path} {o_path}'
