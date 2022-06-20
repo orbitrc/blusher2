@@ -32,6 +32,7 @@ public:
 public:
     Image(const pr::String& path);
 
+    /// Construct Image from data. The data is a file data, not a pixel data.
     Image(const uint8_t *data, uint64_t size);
 
     ~Image();
