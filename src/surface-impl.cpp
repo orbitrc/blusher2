@@ -578,7 +578,8 @@ void SurfaceImpl::show()
             this->_egl_object.egl_surface,
             this->_egl_object.egl_context);
         glFlush();
-        eglSwapBuffers(this->_egl_object.egl_display, this->_egl_object.egl_surface);
+        // Below makes hang call eglSwapBuffers() in fill_function().
+        // eglSwapBuffers(this->_egl_object.egl_display, this->_egl_object.egl_surface);
         //===================//
         if (init_program(&this->_egl_object.program_object) == 0) {
             fprintf(stderr, "Error init program!\n");
