@@ -21,7 +21,7 @@ wayland-protocols/stable/xdg-shell.c:
 resources: $(BLUSHER_RESOURCES_A)
 
 $(BLUSHER_RESOURCES_A):
-	../bin/blusher rcc resources/resources.brc
+	bin/blusher rcc resources/resources.brc
 
 clean:
 	rm -rf build
