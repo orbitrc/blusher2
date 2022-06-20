@@ -269,13 +269,14 @@ void DisplayDispatchThread::run()
 ApplicationImpl *app_impl = nullptr;
 
 ApplicationImpl::ApplicationImpl(int argc, char *argv[])
+    : _display(WlDisplay::connect())
 {
     this->_argc = argc;
 
     //===============
     // Wayland
     //===============
-    this->_display = WlDisplay::connect();
+//    this->_display = WlDisplay::connect();
 
     this->_compositor = NULL;
     this->_subcompositor = NULL;

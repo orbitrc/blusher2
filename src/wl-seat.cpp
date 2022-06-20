@@ -46,6 +46,7 @@ WlSeat::WlSeat(struct wl_seat *wl_seat)
 WlSeat::~WlSeat()
 {
     wl_seat_destroy(this->_wl_seat);
+//    wl_seat_release(this->_wl_seat);
 }
 
 struct wl_seat* WlSeat::wl_seat()

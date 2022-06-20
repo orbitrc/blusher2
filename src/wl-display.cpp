@@ -2,6 +2,7 @@
 
 // C
 #include <assert.h>
+#include <stdio.h>
 
 namespace bl {
 
@@ -9,6 +10,7 @@ WlDisplay *wl_display_singleton = nullptr;
 
 WlDisplay::~WlDisplay()
 {
+    fprintf(stderr, "WlDisplay::~WlDisplay()\n");
     // TODO: Close connection.
 
     wl_display_singleton = nullptr;

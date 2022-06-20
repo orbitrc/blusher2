@@ -56,75 +56,265 @@ static const struct xdg_toplevel_listener xdg_toplevel_listener = {
 //================
 // Manage buffers
 //================
-static struct wl_shm_pool* create_shm_pool(bl::SurfaceImpl *surface_impl,
-        int width, int height)
-{
-    struct wl_shm *shm = bl::app_impl->shm();
-    struct wl_shm_pool *pool;
-    int stride = width * 4; // 4 bytes per pixel.
-    int size = stride * height;
-    int fd;
 
-    fd = os_create_anonymous_file(size);
-    if (fd < 0) {
-        fprintf(stderr, "Creating a buffer file for %d B failed: %m\n",
-            size);
-        return NULL;
+//=================
+// EGL/OpenGL
+//=================
+
+GLuint load_shader(const char *shader_src, GLenum type)
+{
+    GLuint shader;
+    GLint compiled;
+
+    // Create the shader object.
+    shader = glCreateShader(type);
+    if (shader == 0) {
+        return 0;
     }
 
-    surface_impl->setShmData(
-        mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0)
+    // Load the shader source.
+    glShaderSource(shader, 1, &shader_src, NULL);
+
+    // Compile the shader.
+    glCompileShader(shader);
+
+    // Check the compile status.
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+    if (!compiled) {
+        GLint info_len = 0;
+
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &info_len);
+        if (info_len > 1) {
+            char *info_log = (char*)malloc(sizeof(char));
+            glGetShaderInfoLog(shader, info_len, NULL, info_log);
+            fprintf(stderr, "Error compiling shader: %s\n", info_log);
+            free(info_log);
+        }
+
+        glDeleteShader(shader);
+        return 0;
+    }
+
+    return shader;
+}
+
+int init_program(GLuint *program_object)
+{
+    GLbyte vertex_shader_str[] =
+        "#version 300 es \n"
+        "layout (location = 0) in vec3 aPos; \n"
+        "layout (location = 1) in vec3 aColor; \n"
+        "layout (location = 2) in vec2 aTexCoord; \n"
+        "out vec3 ourColor; \n"
+        "out vec2 TexCoord; \n"
+        "void main()                         \n"
+        "{                                   \n"
+        "    gl_Position = vec4(aPos, 1.0);  \n"
+        "    ourColor = aColor;              \n"
+        "    TexCoord = aTexCoord;           \n"
+        "}                                   \n";
+
+    GLbyte fragment_shader_str[] =
+        "#version 300 es  \n"
+        "precision mediump float; \n"
+        "out vec4 fragColor;      \n"
+        "in vec3 ourColor;        \n"
+        "in vec2 TexCoord;        \n"
+        "uniform sampler2D ourTexture; \n"
+        "void main()              \n"
+        "{                        \n"
+        "    fragColor = texture(ourTexture, TexCoord); \n"
+        "}                        \n";
+
+    GLuint vertex_shader;
+    GLuint fragment_shader;
+    GLint linked;
+
+    vertex_shader = load_shader((const char*)vertex_shader_str, GL_VERTEX_SHADER);
+    fragment_shader = load_shader((const char*)fragment_shader_str, GL_FRAGMENT_SHADER);
+
+    *program_object = glCreateProgram();
+    if (*program_object == 0) {
+        fprintf(stderr, "glCreateProgram() - program_object is 0.\n");
+        return 0;
+    }
+
+    glAttachShader(*program_object, vertex_shader);
+    glAttachShader(*program_object, fragment_shader);
+
+    // Link the program.
+    glLinkProgram(*program_object);
+
+    // Check the link status.
+    glGetProgramiv(*program_object, GL_LINK_STATUS, &linked);
+    if (!linked) {
+        GLint info_len = 0;
+        glGetProgramiv(*program_object, GL_INFO_LOG_LENGTH, &info_len);
+        if (info_len > 1) {
+            char *info_log = (char*)malloc(sizeof(char) * info_len);
+
+            glGetProgramInfoLog(*program_object, info_len, NULL, info_log);
+            fprintf(stderr, "Error linking program: %s\n", info_log);
+            free(info_log);
+        }
+
+        glDeleteProgram(*program_object);
+        return 0;
+    }
+
+    return 1;
+}
+
+static void fill_function(EGLDisplay egl_display, EGLSurface egl_surface,
+        EGLContext egl_context,
+        GLuint *program_object,
+        const bl::Color& color,
+        uint64_t width, uint64_t height)
+{
+    GLfloat vVertices[] = {
+        -1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    0.0f,  1.0f,     // Top right
+        -1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    0.0f,  0.0f,     // Bottom right
+         1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    1.0f,  0.0f,     // Bottom left
+         1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    1.0f,  1.0f,     // Top left
+    };
+    GLuint indices[] = {
+        0, 1, 3,    // First triangle
+        1, 2, 3,    // Second triangle
+    };
+    uint32_t texture_data[1] = { color.to_argb() };
+    fprintf(stderr, "fill_function() - color: 0x%08x\n",
+        color.to_argb());
+
+    eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
+
+    // Set the viewport.
+    glViewport(
+        0, 0,
+        width, height
     );
-    if (surface_impl->shmData() == MAP_FAILED) {
-        surface_impl->setShmData(NULL);
-        close(fd);
-        return NULL;
-    }
-    surface_impl->setShmDataSize(size);
 
-    pool = wl_shm_create_pool(shm, fd, size);
+    // Clear the color buffer.
+    glClearColor(0.5, 0.5, 0.5, 0.8);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    surface_impl->setShmFd(fd);
-//    close(fd);
+    // Use the program object.
+    glUseProgram(*program_object);
 
-    return pool;
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    GLuint ebo;
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+        GL_STATIC_DRAW);
+
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vVertices), vVertices,
+        GL_STATIC_DRAW);
+
+    // Position attribute.
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)0);
+    glEnableVertexAttribArray(0);
+    // Color attribute.
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+    // Texture coord attribute.
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGBA,
+        1,  // width. 1.
+        1,  // height. 1.
+        0,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        texture_data
+    );
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+
+    eglSwapBuffers(egl_display, egl_surface);
 }
 
-static void resize_shm_pool(bl::SurfaceImpl *surface_impl,
-        int width, int height)
+static void init_egl(bl::SurfaceImpl::EglObject *egl_object)
 {
-    int origin_size = surface_impl->shmDataSize();
-    int stride = width * 4;
-    int size = stride * height;
+    EGLint major, minor, count, n, size;
+    EGLConfig *configs;
+    EGLint config_attribs[] = {
+        EGL_SURFACE_TYPE,
+        EGL_WINDOW_BIT,
+        EGL_RED_SIZE,
+        8,
+        EGL_GREEN_SIZE,
+        8,
+        EGL_BLUE_SIZE,
+        8,
+        EGL_ALPHA_SIZE,
+        8,
+        EGL_RENDERABLE_TYPE,
+        EGL_OPENGL_ES2_BIT,
+        EGL_NONE,
+    };
 
-    fprintf(stderr, "resize_shm_pool() - origin_size: %d, size: %d\n", origin_size, size);
+    static const EGLint context_attribs[] = {
+        EGL_CONTEXT_CLIENT_VERSION,
+        2,
+        EGL_NONE,
+    };
 
-    if (size > origin_size) {
-        fprintf(stderr, "resize_shm_pool() - size is greater than origin size.\n");
-        truncate_fd(surface_impl->shmFd(), size);
-
-        surface_impl->setShmData(
-            mremap(surface_impl->shmData(), origin_size, size, MREMAP_MAYMOVE)
-        );
-        surface_impl->setShmDataSize(size);
-        wl_shm_pool_resize(surface_impl->shmPool(), size);
+    fprintf(stderr, "WlDisplay: %p\n", bl::WlDisplay::instance());
+    egl_object->egl_display = eglGetDisplay(
+        (EGLNativeDisplayType)bl::WlDisplay::instance()->wl_display()
+    );
+    if (egl_object->egl_display == EGL_NO_DISPLAY) {
+        fprintf(stderr, "Can't create egl display.\n");
+        exit(1);
     }
-}
 
-static struct wl_buffer* create_buffer(bl::SurfaceImpl *surface_impl,
-        int width, int height)
-{
-    fprintf(stderr, "create_buffer: %dx%d\n", width, height);
-    struct wl_shm_pool *pool = surface_impl->shmPool();
-    int stride = width * 4; // 4 bytes per pixel.
-    struct wl_buffer *buff;
+    if (eglInitialize(egl_object->egl_display, &major, &minor) != EGL_TRUE) {
+        fprintf(stderr, "Can't initialise egl display.\n");
+        exit(1);
+    }
+    printf("EGL major: %d, minor %d\n", major, minor);
 
-    buff = wl_shm_pool_create_buffer(pool, 0, width, height, stride,
-        WL_SHM_FORMAT_ARGB8888);
+    eglGetConfigs(egl_object->egl_display, NULL, 0, &count);
 
-//    wl_shm_pool_destroy(pool);
+    configs = (EGLConfig*)calloc(count, sizeof *configs);
 
-    return buff;
+    eglChooseConfig(egl_object->egl_display,
+        config_attribs, configs, count, &n);
+
+    for (int i = 0; i < n; ++i) {
+        eglGetConfigAttrib(egl_object->egl_display,
+            configs[i], EGL_BUFFER_SIZE, &size);
+        eglGetConfigAttrib(egl_object->egl_display,
+            configs[i], EGL_RED_SIZE, &size);
+
+        // Just choose the first one.
+        egl_object->egl_config = configs[i];
+        break;
+    }
+
+    egl_object->egl_context = eglCreateContext(egl_object->egl_display,
+        egl_object->egl_config, EGL_NO_CONTEXT,
+        context_attribs);
 }
 
 namespace bl {
@@ -162,14 +352,9 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     this->_surface = wl_compositor_create_surface(bl::app_impl->compositor());
     this->_subsurface = NULL;
     this->_frame_callback = NULL;
-    this->_shm_pool = NULL;
-    this->_buffer = NULL;
 
     this->_shm_data = NULL;
     this->_shm_data_size = 0;
-
-    this->_shm_pool = create_shm_pool(this, this->m_width, this->m_height);
-    this->_buffer = create_buffer(this, this->m_width, this->m_height);
 
     if (this->toplevel() != true) {
         this->_subsurface = wl_subcompositor_get_subsurface(app_impl->subcompositor(),
@@ -195,6 +380,22 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
         app_impl->display()->roundtrip();
     }
 
+    //============
+    // EGL
+    //============
+    this->_egl_object = EglObject();
+
+    fprintf(stderr, "before init_egl\n");
+    init_egl(&this->_egl_object);
+    this->_egl_window = wl_egl_window_create(this->_surface,
+        this->width(), this->height());
+    fprintf(stderr, "before eglCreateWindowSurface\n");
+    this->_egl_object.egl_surface = eglCreateWindowSurface(
+        this->_egl_object.egl_display, this->_egl_object.egl_config,
+        this->_egl_window,
+        NULL);
+    fprintf(stderr, "after eglCreateWindowSurface\n");
+
 //    this->setGeometry(this->m_x, this->m_y, this->m_width, this->m_height);
 
     app_impl->addSurfaceImpl(this);
@@ -207,7 +408,7 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
 
 SurfaceImpl::~SurfaceImpl()
 {
-    wl_shm_pool_destroy(this->_shm_pool);
+    // wl_shm_pool_destroy(this->_shm_pool);
 
     app_impl->removeSurfaceImpl(this);
 }
@@ -289,9 +490,24 @@ void SurfaceImpl::setSize(double width, double height)
         this->m_height = height;
     }
 
+    /*
     resize_shm_pool(this, width, height);
     wl_buffer_destroy(this->_buffer);
     this->_buffer = create_buffer(this, width, height);
+    */
+    struct wl_egl_window *new_window = wl_egl_window_create(this->_surface,
+        width, height);
+    EGLSurface new_surface = eglCreateWindowSurface(
+        this->_egl_object.egl_display, this->_egl_object.egl_config,
+        new_window,
+        NULL);
+
+    eglDestroySurface(this->_egl_object.egl_display,
+        this->_egl_object.egl_surface);
+    wl_egl_window_destroy(this->_egl_window);
+
+    this->_egl_window = new_window;
+    this->_egl_object.egl_surface = new_surface;
 }
 
 bool SurfaceImpl::clip() const
@@ -329,28 +545,53 @@ void SurfaceImpl::paint()
     if (this->m_visible == false) {
         return;
     }
-    fprintf(stderr, "SurfaceImpl::paint() - width: %f, height: %f\n", this->width(), this->height());
+    fprintf(stderr, "SurfaceImpl::paint() - width: %f, height: %f\n",
+        this->width(), this->height());
 
+    /*
     uint32_t *pixel = static_cast<uint32_t*>(this->shmData());
 
     const uint32_t color = this->m_color.to_argb();
     for (int n = 0; n < (this->width() * this->height()); ++n) {
         *pixel++ = color;
     }
+    */
 }
 
 void SurfaceImpl::show()
 {
     if (this->m_visible != true) {
         this->m_visible = true;
-        fprintf(stderr, "visible set to true\n");
+        fprintf(stderr, "visible set to true. width: %f, height: %f\n",
+            this->width(), this->height());
 
-        wl_surface_attach(this->_surface, this->_buffer, 0, 0);
+        // wl_surface_attach(this->_surface, this->_buffer, 0, 0);
         wl_surface_commit(this->_surface);
 
         if (this->parent() != nullptr) {
             wl_surface_commit(static_cast<SurfaceImpl*>(this->parent())->wlSurface());
         }
+
+        fprintf(stderr, "EGL and OpenGL\n");
+        eglMakeCurrent(this->_egl_object.egl_display,
+            this->_egl_object.egl_surface,
+            this->_egl_object.egl_surface,
+            this->_egl_object.egl_context);
+        glFlush();
+        eglSwapBuffers(this->_egl_object.egl_display, this->_egl_object.egl_surface);
+        //===================//
+        if (init_program(&this->_egl_object.program_object) == 0) {
+            fprintf(stderr, "Error init program!\n");
+            exit(1);
+        }
+        fill_function(
+            this->_egl_object.egl_display,
+            this->_egl_object.egl_surface,
+            this->_egl_object.egl_context,
+            &this->_egl_object.program_object,
+            this->m_color,
+            this->width(), this->height()
+        );
 
         QRegion q_region;
         QExposeEvent event(q_region);
@@ -458,49 +699,6 @@ void SurfaceImpl::callPointerReleaseHandler(uint32_t button, double x, double y)
 struct wl_surface* SurfaceImpl::wlSurface() const
 {
     return this->_surface;
-}
-
-//=================
-// Shm objects
-//=================
-int SurfaceImpl::shmFd() const
-{
-    return this->_shm_fd;
-}
-
-void SurfaceImpl::setShmFd(int fd)
-{
-    this->_shm_fd = fd;
-}
-
-struct wl_shm_pool* SurfaceImpl::shmPool()
-{
-    return this->_shm_pool;
-}
-
-void SurfaceImpl::setShmPool(struct wl_shm_pool *shmPool)
-{
-    this->_shm_pool = shmPool;
-}
-
-void* SurfaceImpl::shmData()
-{
-    return this->_shm_data;
-}
-
-void SurfaceImpl::setShmData(void *shmData)
-{
-    this->_shm_data = shmData;
-}
-
-uint64_t SurfaceImpl::shmDataSize() const
-{
-    return this->_shm_data_size;
-}
-
-void SurfaceImpl::setShmDataSize(uint64_t size)
-{
-    this->_shm_data_size = size;
 }
 
 //=================

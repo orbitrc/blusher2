@@ -14,6 +14,11 @@
 
 // Wayland
 #include <wayland-client.h>
+#include <wayland-egl.h>
+
+// EGL/OpenGL
+#include <EGL/egl.h>
+#include <GLES3/gl3.h>
 
 // Blusher
 #include <blusher/color.h>
@@ -30,6 +35,26 @@ class SurfaceImpl : public QObject
     Q_OBJECT
 
 public:
+    class EglObject {
+    public:
+        EglObject()
+        {
+            this->egl_display = nullptr;
+            this->egl_config = nullptr;
+            this->egl_surface = nullptr;
+            this->egl_context = nullptr;
+            this->program_object = 0;
+        }
+
+        EGLDisplay egl_display;
+        EGLConfig egl_config;
+        EGLSurface egl_surface;
+        EGLContext egl_context;
+        GLuint program_object;
+    };
+
+public:
+
     SurfaceImpl(QObject *parent = nullptr);
     ~SurfaceImpl();
 
@@ -82,22 +107,6 @@ public:
     //==================
     struct wl_surface* wlSurface() const;
 
-public:
-    //================
-    // Shm objects
-    //================
-    int shmFd() const;
-    void setShmFd(int fd);
-
-    struct wl_shm_pool* shmPool();
-    void setShmPool(struct wl_shm_pool *shmPool);
-
-    void* shmData();
-    void setShmData(void *shmData);
-
-    uint64_t shmDataSize() const;
-    void setShmDataSize(uint64_t size);
-
 signals:
     void implXChanged(double x);
     void implYChanged(double y);
@@ -148,14 +157,18 @@ private:
     struct wl_surface *_surface;
     struct wl_subsurface *_subsurface;
     struct wl_callback *_frame_callback;
-    struct wl_shm_pool *_shm_pool;
-    struct wl_buffer *_buffer;
 
     //============================
     // Wayland XDG shell objects
     //============================
     struct xdg_surface *_xdg_surface;
     struct xdg_toplevel *_xdg_toplevel;
+
+    //==================
+    // EGL/OpenGL
+    //==================
+    struct wl_egl_window *_egl_window;
+    EglObject _egl_object;
 
     int _shm_fd;
     void *_shm_data;
