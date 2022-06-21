@@ -7,6 +7,9 @@
 // Primer
 #include <primer/string.h>
 
+// Blusher
+#include <blusher/color.h>
+
 namespace bl {
 
 class Image
@@ -35,6 +38,10 @@ public:
     /// Construct Image from data. The data is a file data, not a pixel data.
     Image(const uint8_t *data, uint64_t size);
 
+    /// Construct empty image with size and format.
+    Image(uint64_t width, uint64_t height,
+        Image::Format format = Image::Format::Argb32);
+
     ~Image();
 
     uint64_t width() const;
@@ -44,6 +51,8 @@ public:
     Image::Format format() const;
 
     const uint8_t* data() const;
+
+    void fill(const Color& color);
 
 private:
     uint64_t _width;

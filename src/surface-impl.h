@@ -6,6 +6,7 @@
 
 // C++
 #include <functional>
+#include <memory>
 
 // Qt
 #include <QObject>
@@ -22,6 +23,7 @@
 
 // Blusher
 #include <blusher/color.h>
+#include <blusher/view.h>
 
 // Wayland protocols
 #include <wayland-protocols/stable/xdg-shell.h>
@@ -135,6 +137,8 @@ private:
 
     bool m_visible;
     Color m_color;
+
+    std::shared_ptr<View> m_rootView;
 
     //===========
     // Clipping

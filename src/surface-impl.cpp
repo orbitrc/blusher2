@@ -342,6 +342,8 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     this->m_visible = false;
     this->m_color = Color::from_rgb(255, 255, 255);
 
+    this->m_rootView = std::make_shared<View>(new View());
+
     this->m_pointerEnterHandler = nullptr;
     this->m_pointerLeaveHandler = nullptr;
     this->m_pointerPressHandler = nullptr;

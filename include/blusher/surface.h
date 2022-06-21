@@ -9,6 +9,8 @@
 
 namespace bl {
 
+class View;
+
 class SurfaceImpl;
 
 class Surface
@@ -55,6 +57,8 @@ public:
 
     /// This is implementation specific method. DO NOT USE THIS in an application.
     void move_if_window();
+
+    std::shared_ptr<View> root_view();
 
 public:
     Signal<> color_changed;

@@ -7,12 +7,18 @@ ViewImpl::ViewImpl(QObject *parent)
 {
     this->m_x = 0.0;
     this->m_y = 0.0;
-    this->m_width = 0.0;
-    this->m_height = 0.0;
+    this->m_width = 10.0;
+    this->m_height = 10.0;
+
+    this->m_color = Color::from_rgba(255, 255, 255, 255);
+
+    this->m_image = new Image(this->m_width, this->m_height);
+    this->m_image->fill(this->m_color);
 }
 
 ViewImpl::~ViewImpl()
 {
+    // delete this->m_image;
 }
 
 double ViewImpl::x() const

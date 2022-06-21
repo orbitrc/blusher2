@@ -1,6 +1,7 @@
 #include <blusher/image.h>
 
 // C
+#include <stdlib.h>
 #include <string.h>
 
 // Cairo
@@ -179,6 +180,26 @@ Image::Image(const uint8_t *data, uint64_t size)
     }
 }
 
+Image::Image(uint64_t width, uint64_t height, Image::Format format)
+{
+    this->_width = width;
+    this->_height = height;
+    this->_format = format;
+
+    if (format == Image::Format::Argb32) {
+        auto pixel_size = sizeof(uint8_t) * 4;
+        this->_data = (uint8_t*)malloc(
+            pixel_size * (width * height));
+        auto data_size = pixel_size * (width * height);
+        // Fill transparent.
+        for (uint64_t i = 0; i < data_size; ++i) {
+            this->_data[i] = 0x00;
+        }
+    } else {
+        this->_data = nullptr;
+    }
+}
+
 Image::~Image()
 {
     // TODO: Delete data.
@@ -202,6 +223,19 @@ Image::Format Image::format() const
 const uint8_t* Image::data() const
 {
     return this->_data;
+}
+
+void Image::fill(const Color& color)
+{
+    if (this->_format == Image::Format::Argb32) {
+        uint32_t *pixel = (uint32_t*)this->_data;
+        for (uint64_t i = 0; i < this->_width * this->_height; ++i) {
+            *pixel = color.to_argb();
+            ++pixel;
+        }
+    } else {
+        // TODO.
+    }
 }
 
 } // namespace bl

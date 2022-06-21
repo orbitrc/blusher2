@@ -5,6 +5,7 @@
 #include <QObject>
 
 // Blusher
+#include <blusher/color.h>
 #include <blusher/image.h>
 
 namespace bl {
@@ -31,6 +32,10 @@ private:
     double m_y;
     double m_width;
     double m_height;
+
+    Color m_color;
+
+    Image *m_image;
 };
 
 } // namespace bl
