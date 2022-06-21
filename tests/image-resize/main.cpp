@@ -10,7 +10,7 @@ void print_image(const uint8_t *data, uint64_t width, uint64_t height)
 
     for (uint64_t y = 0; y < height; ++y) {
         for (uint64_t x = 0; x < width; ++x) {
-            printf("0x%08x ", *(pixel + (y * x)));
+            printf("0x%08x ", *(pixel++));
         }
         printf("\n");
     }
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     print_image(image.data(), image.width(), image.height());
 
-    image.resize(8, 3);
+    image.resize(7, 7);
 
     printf("\n\n");
 

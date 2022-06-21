@@ -39,6 +39,11 @@ static void xdg_toplevel_configure_handler(void *data,
         struct xdg_toplevel *xdg_toplevel, int32_t width, int32_t height,
         struct wl_array *states)
 {
+    (void)data;
+    (void)xdg_toplevel;
+    (void)width;
+    (void)height;
+    (void)states;
     // TODO: implement
 }
 
