@@ -3,6 +3,7 @@
 // C
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 // Cairo
 #include <cairo.h>
@@ -263,17 +264,21 @@ void Image::resize(uint64_t width, uint64_t height, Image::Scale scale)
         auto limit_height = (this->_height <= target_height)
             ? this->_height
             : target_height;
-        for (uint64_t y = 0; y < target_height; ++y) {
-            if (y > limit_height) {
+        fprintf(stderr, "Limit x, y: %ld, %ld\n", limit_width, limit_height);
+        for (uint64_t y = 0; y < this->_height; ++y) {
+            if (y >= limit_height) {
                 continue;
             }
-            for (uint64_t x = 0; x < target_width; ++x) {
-                if (x > limit_width) {
+            for (uint64_t x = 0; x < this->_width; ++x) {
+                if (x >= limit_width) {
                     continue;
                 }
-                uint32_t *src = (uint32_t*)(this->_data) + (y * x);
+                uint64_t src_y = this->_width * y;
+                uint32_t *src = (uint32_t*)(this->_data) + (src_y + x);
+                uint64_t dst_y = target_width * y;
+                fprintf(stderr, " - x, y: %ld, %ld. dst offset: %ld\n", x, y, dst_y + x);
                 uint32_t *dst =
-                    (uint32_t*)(new_data) + (y + x);
+                    (uint32_t*)(new_data) + (dst_y + x);
                 *dst = *src;
             }
         }

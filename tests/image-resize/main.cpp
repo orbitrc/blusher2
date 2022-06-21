@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     print_image(image.data(), image.width(), image.height());
 
-    image.resize(8, 4);
+    image.resize(8, 3);
 
     printf("\n\n");
 
