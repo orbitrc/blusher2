@@ -8,7 +8,8 @@ CONFIG += link_pkgconfig
 
 INCLUDEPATH += ./include
 
-LIBS += -lwayland-client -lwayland-egl -lprimer ../resources/libresources.a
+LIBS += -lwayland-client -lwayland-egl -lprimer -lblusher-svg \
+    ../resources/libresources.a
 
 TARGET = blusher
 

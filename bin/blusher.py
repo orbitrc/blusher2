@@ -109,20 +109,6 @@ class Brc:
     def header_guard_end(self):
         return '#endif\n'
 
-    def header_extern_c_begin(self):
-        extern_c = '#ifdef __cplusplus\n'
-        extern_c += 'extern "C" {\n'
-        extern_c += '#endif\n'
-
-        return extern_c
-
-    def header_extern_c_end(self):
-        extern_c = '#ifdef __cplusplus\n'
-        extern_c += '}\n'
-        extern_c += '#endif\n'
-
-        return extern_c
-
     def header_decl(self):
         md5 = self._md5
         return f'void bl_register_resource_{md5}();\n'
@@ -140,11 +126,7 @@ class Brc:
     def make_header(self):
         header = self.header_guard_begin()
         header += '\n'
-        header += self.header_extern_c_begin()
-        header += '\n'
         header += self.header_decl()
-        header += '\n'
-        header += self.header_extern_c_end()
         header += '\n'
         header += self.header_macro()
         header += '\n'
@@ -228,7 +210,13 @@ class Brc:
 
     def make_source(self):
         source = self.source_comment()
+        source += f'#ifdef __cplusplus\n'
+        source += f'extern "C" {{\n'
+        source += f'#endif\n'
         source += f'#include "{self._name}.h"\n'
+        source += f'#ifdef __cplusplus\n'
+        source += f'}}\n'
+        source += f'#endif\n'
         source += '\n'
         source += '#include <blusher/application.h>\n'
         source += '#include <blusher/resource.h>\n'
