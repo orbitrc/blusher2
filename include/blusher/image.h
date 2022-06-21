@@ -40,7 +40,7 @@ public:
 
     /// Construct empty image with size and format.
     Image(uint64_t width, uint64_t height,
-        Image::Format format = Image::Format::Argb32);
+            Image::Format format = Image::Format::Argb32);
 
     ~Image();
 
@@ -52,7 +52,13 @@ public:
 
     const uint8_t* data() const;
 
+    /// Fill every pixels as given color.
     void fill(const Color& color);
+
+    /// Resize image size. If `scale` is `NoScale` and new size is larger,
+    /// fill transparent pixels.
+    void resize(uint64_t width, uint64_t height,
+            Image::Scale scale = Image::Scale::NoScale);
 
 private:
     uint64_t _width;

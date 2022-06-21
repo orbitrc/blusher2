@@ -238,4 +238,54 @@ void Image::fill(const Color& color)
     }
 }
 
+void Image::resize(uint64_t width, uint64_t height, Image::Scale scale)
+{
+    if (scale == Image::Scale::NoScale) {
+        // TODO.
+        auto target_width = width;
+        auto target_height = height;
+
+        // Create new image canvas.
+        uint8_t *new_data = (uint8_t*)malloc(
+            (sizeof(uint8_t) * (target_width * target_height)));
+
+        // Fill transparent pixels.
+        uint32_t *pixel = (uint32_t*)new_data;
+        for (uint64_t i = 0; i < (target_width * target_height); ++i) {
+            *pixel = 0x00000000;
+            ++pixel;
+        }
+
+        // Copy source image.
+        auto limit_width = (this->_width <= target_width)
+            ? this->_width
+            : target_width;
+        auto limit_height = (this->_height <= target_height)
+            ? this->_height
+            : target_height;
+        for (uint64_t y = 0; y < target_height; ++y) {
+            if (y > limit_height) {
+                continue;
+            }
+            for (uint64_t x = 0; x < target_width; ++x) {
+                if (x > limit_width) {
+                    continue;
+                }
+                uint32_t *src = (uint32_t*)(this->_data) + (y * x);
+                uint32_t *dst =
+                    (uint32_t*)(new_data) + (y + x);
+                *dst = *src;
+            }
+        }
+        free(this->_data);
+        this->_data = new_data;
+        this->_width = width;
+        this->_height = height;
+    } else if (scale == Image::Scale::NoScaleRepeat) {
+        // TODO.
+    } else if (scale == Image::Scale::Fit) {
+        // TODO.
+    }
+}
+
 } // namespace bl
