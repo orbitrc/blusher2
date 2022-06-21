@@ -26,6 +26,7 @@ SOURCES += \
     src/surface.cpp \
     src/window.cpp \
     src/title-bar.cpp \
+    src/view.cpp \
     src/signal.cpp \
     src/color.cpp \
     src/image.cpp \
@@ -35,6 +36,7 @@ SOURCES += \
     src/application-impl.cpp \
     src/signal-impl.cpp \
     src/surface-impl.cpp \
+    src/view-impl.cpp \
     src/utils.cpp \
     src/wl-display.cpp \
     src/wl-registry.cpp \
@@ -54,6 +56,7 @@ HEADERS += \
     include/blusher/surface.h \
     include/blusher/window.h \
     include/blusher/title-bar.h \
+    include/blusher/view.h \
     include/blusher/signal.h \
     include/blusher/color.h \
     include/blusher/image.h \
@@ -63,6 +66,7 @@ HEADERS += \
     src/application-impl.h \
     src/signal-impl.h \
     src/surface-impl.h \
+    src/view-impl.h \
     include/blusher/wayland/wl-display.h \
     include/blusher/wayland/wl-registry.h \
     include/blusher/wayland/wl-interface.h \
