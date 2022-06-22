@@ -77,6 +77,11 @@ void View::set_height(double height)
     this->_impl->setHeight(height);
 }
 
+Rect View::geometry() const
+{
+    return Rect(this->x(), this->y(), this->width(), this->height());
+}
+
 Color View::color() const
 {
     return this->_impl->color();
@@ -94,9 +99,13 @@ View* View::child_at(const Point &pos)
             pos.y() > this->height()) {
         return nullptr;
     }
-    // TODO: Implementation.
-    for (auto& child: this->_children) {
-        // TODO.
+
+    // Reverse for loop.
+    for (uint64_t i = this->_children.length(); i > 0; --i) {
+        View *child = this->_children[i];
+        if (child->geometry().contains(pos)) {
+            return child;
+        }
     }
 
     return nullptr;

@@ -10,6 +10,7 @@
 // Blusher
 #include <blusher/color.h>
 #include <blusher/point.h>
+#include <blusher/rect.h>
 #include <blusher/pointer-event.h>
 
 namespace bl {
@@ -36,6 +37,8 @@ public:
     void set_y(double y);
     void set_width(double width);
     void set_height(double height);
+
+    Rect geometry() const;
 
     Color color() const;
     void set_color(const Color& color);

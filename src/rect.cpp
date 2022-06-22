@@ -39,4 +39,19 @@ Size Rect::size() const
     return this->_size;
 }
 
+bool Rect::contains(const Point& point)
+{
+    // Check top left.
+    if (point.x() < this->x() || point.y() < this->y()) {
+        return false;
+    }
+
+    // Check width and height.
+    if (point.x() <= this->width() && point.y() <= this->height()) {
+        return true;
+    }
+
+    return false;
+}
+
 } // namespace bl

@@ -19,6 +19,9 @@ public:
 
     Size size() const;
 
+    /// Returns true if this rect contains given point.
+    bool contains(const Point& point);
+
 private:
     Point _pos;
     Size _size;
