@@ -1,11 +1,15 @@
 #ifndef _BL_VIEW_H
 #define _BL_VIEW_H
 
+// C++
+#include <memory>
+
 // Primer
 #include <primer/vector.h>
 
 // Blusher
 #include <blusher/color.h>
+#include <blusher/pointer-event.h>
 
 namespace bl {
 
@@ -42,6 +46,15 @@ public:
     void set_surface(Surface *surface);
 
     void update();
+
+protected:
+    //===============
+    // Events
+    //===============
+    virtual void pointer_enter_event(std::shared_ptr<PointerEvent> event);
+    virtual void pointer_leave_event(std::shared_ptr<PointerEvent> event);
+    virtual void pointer_press_event(std::shared_ptr<PointerEvent> event);
+    virtual void pointer_release_event(std::shared_ptr<PointerEvent> event);
 
 private:
     ViewImpl *_impl;

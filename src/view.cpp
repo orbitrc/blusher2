@@ -106,4 +106,28 @@ void View::update()
     this->_surface->update();
 }
 
+//=================
+// Events
+//=================
+
+void View::pointer_enter_event(std::shared_ptr<PointerEvent> event)
+{
+    (void)event;
+}
+
+void View::pointer_leave_event(std::shared_ptr<PointerEvent> event)
+{
+    (void)event;
+}
+
+void View::pointer_press_event(std::shared_ptr<PointerEvent> event)
+{
+    (void)event;
+}
+
+void View::pointer_release_event(std::shared_ptr<PointerEvent> event)
+{
+    (void)event;
+}
+
 } // namespace bl
