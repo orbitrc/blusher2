@@ -291,4 +291,16 @@ void Image::resize(uint64_t width, uint64_t height, Image::Scale scale)
     }
 }
 
+void Image::add(const Image &image)
+{
+    if (this->_format == Image::Format::Argb32) {
+        if (image.format() == Image::Format::Argb32) {
+            uint32_t *pixel = (uint32_t*)this->_data;
+            *pixel = 0xffff0000;
+        }
+    } else {
+        // TODO.
+    }
+}
+
 } // namespace bl

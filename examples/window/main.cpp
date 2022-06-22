@@ -2,6 +2,7 @@
 #include <blusher/window.h>
 #include <blusher/surface.h>
 #include <blusher/color.h>
+#include <blusher/view.h>
 
 int main(int argc, char *argv[])
 {
@@ -13,6 +14,10 @@ int main(int argc, char *argv[])
     // surface.set_color(bl::Color::from_rgba(100, 100, 100, 100));
     window.show();
     // surface.show();
+
+    bl::View view(window.root_view().get());
+    // window.root_view()->update();
+    view.update();
 
     return app.exec();
 }

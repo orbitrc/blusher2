@@ -1,5 +1,7 @@
 #include "view-impl.h"
 
+#include <blusher/view.h>
+
 namespace bl {
 
 ViewImpl::ViewImpl(QObject *parent)
@@ -14,6 +16,14 @@ ViewImpl::ViewImpl(QObject *parent)
 
     this->m_image = new Image(this->m_width, this->m_height);
     this->m_image->fill(this->m_color);
+
+    this->m_composedImage = new Image(this->m_width, this->m_height);
+    this->m_composedImage->fill(this->m_color);
+
+    QObject::connect(this, &ViewImpl::colorChanged,
+                     this, [this]() {
+        this->update();
+    });
 }
 
 ViewImpl::~ViewImpl()
@@ -59,6 +69,9 @@ void ViewImpl::setWidth(double width)
 {
     if (this->m_width != width) {
         this->m_width = width;
+
+        this->m_image->resize(width, this->m_height);
+        this->m_image->fill(this->m_color);
     }
 }
 
@@ -66,6 +79,47 @@ void ViewImpl::setHeight(double height)
 {
     if (this->m_height != height) {
         this->m_height = height;
+
+        this->m_image->resize(this->m_width, height);
+        this->m_image->fill(this->m_color);
+    }
+}
+
+Color ViewImpl::color() const
+{
+    return this->m_color;
+}
+
+void ViewImpl::setColor(const Color& color)
+{
+    this->m_color = color;
+
+    this->m_image->fill(color);
+
+    emit this->colorChanged();
+}
+
+void ViewImpl::appendChild(View *view)
+{
+    (void)view;
+    this->update();
+}
+
+//=================
+// Private Slots
+//=================
+
+void ViewImpl::update()
+{
+    this->m_composedImage->fill(this->m_color);
+    for (auto& child: this->m_view->_children) {
+        this->m_composedImage->add(*(child->_impl->m_image));
+    }
+
+    // Update surface.
+    if (this->m_view->_surface == nullptr) {
+        fprintf(stderr, "[WARN] ViewImpl::update() - surface is null!\n");
+        return;
     }
 }
 

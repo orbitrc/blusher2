@@ -10,9 +10,15 @@
 
 namespace bl {
 
+class SurfaceImpl;
+
+class View;
+
 class ViewImpl : public QObject
 {
     Q_OBJECT
+    friend SurfaceImpl;
+    friend View;
 public:
     ViewImpl(QObject *parent = nullptr);
     ~ViewImpl();
@@ -27,15 +33,29 @@ public:
     void setWidth(double width);
     void setHeight(double height);
 
+    Color color() const;
+    void setColor(const Color& color);
+
+    void appendChild(View *view);
+
+signals:
+    void colorChanged();
+
+private slots:
+    void update();
+
 private:
     double m_x;
     double m_y;
     double m_width;
     double m_height;
 
+    View *m_view;
+
     Color m_color;
 
     Image *m_image;
+    Image *m_composedImage;
 };
 
 } // namespace bl

@@ -16,8 +16,11 @@
 
 #include <blusher/application.h>
 #include <blusher/utils.h>
+#include <blusher/image.h>
+#include <blusher/view.h>
 
 #include "application-impl.h"
+#include "view-impl.h"
 
 //=========
 // XDG
@@ -170,10 +173,10 @@ int init_program(GLuint *program_object)
     return 1;
 }
 
-static void fill_function(EGLDisplay egl_display, EGLSurface egl_surface,
+static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
         EGLContext egl_context,
         GLuint *program_object,
-        const bl::Color& color,
+        const bl::Image& image,
         uint64_t width, uint64_t height)
 {
     GLfloat vVertices[] = {
@@ -186,9 +189,6 @@ static void fill_function(EGLDisplay egl_display, EGLSurface egl_surface,
         0, 1, 3,    // First triangle
         1, 2, 3,    // Second triangle
     };
-    uint32_t texture_data[1] = { color.to_argb() };
-    fprintf(stderr, "fill_function() - color: 0x%08x\n",
-        color.to_argb());
 
     eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
 
@@ -242,12 +242,12 @@ static void fill_function(EGLDisplay egl_display, EGLSurface egl_surface,
         GL_TEXTURE_2D,
         0,
         GL_RGBA,
-        1,  // width. 1.
-        1,  // height. 1.
+        image.width(),      // width.
+        image.height(),     // height.
         0,
         GL_RGBA,
         GL_UNSIGNED_BYTE,
-        texture_data
+        image.data()
     );
     glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -547,6 +547,11 @@ double SurfaceImpl::clipHeight() const
     return this->m_clipHeight;
 }
 
+std::shared_ptr<View> SurfaceImpl::rootView()
+{
+    return this->m_rootView;
+}
+
 void SurfaceImpl::paint()
 {
     if (this->m_visible == false) {
@@ -592,12 +597,12 @@ void SurfaceImpl::show()
             fprintf(stderr, "Error init program!\n");
             exit(1);
         }
-        fill_function(
+        texture_function(
             this->_egl_object.egl_display,
             this->_egl_object.egl_surface,
             this->_egl_object.egl_context,
             &this->_egl_object.program_object,
-            this->m_color,
+            *this->m_rootView->_impl->m_composedImage,
             this->width(), this->height()
         );
 
@@ -610,6 +615,8 @@ void SurfaceImpl::show()
 void SurfaceImpl::setColor(const Color &color)
 {
     this->m_color = color;
+
+    this->m_rootView->set_color(color);
 }
 
 void SurfaceImpl::placeAbove(SurfaceImpl *surface_impl)
@@ -636,6 +643,7 @@ bool SurfaceImpl::toplevel() const
 void SurfaceImpl::setBlSurface(Surface *blSurface)
 {
     this->m_blSurface = blSurface;
+    this->m_rootView->set_surface(blSurface);
 }
 
 void SurfaceImpl::moveIfToplevel()
@@ -707,6 +715,35 @@ void SurfaceImpl::callPointerReleaseHandler(uint32_t button, double x, double y)
 struct wl_surface* SurfaceImpl::wlSurface() const
 {
     return this->_surface;
+}
+
+
+//=================
+// Public Slots
+//=================
+
+void SurfaceImpl::update()
+{
+    eglMakeCurrent(this->_egl_object.egl_display,
+        this->_egl_object.egl_surface,
+        this->_egl_object.egl_surface,
+        this->_egl_object.egl_context);
+    glFlush();
+    // Below makes hang call eglSwapBuffers() in fill_function().
+    // eglSwapBuffers(this->_egl_object.egl_display, this->_egl_object.egl_surface);
+    //===================//
+    if (init_program(&this->_egl_object.program_object) == 0) {
+        fprintf(stderr, "Error init program!\n");
+        exit(1);
+    }
+    texture_function(
+        this->_egl_object.egl_display,
+        this->_egl_object.egl_surface,
+        this->_egl_object.egl_context,
+        &this->_egl_object.program_object,
+        *this->m_rootView->_impl->m_composedImage,
+        this->width(), this->height()
+    );
 }
 
 //=================

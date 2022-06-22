@@ -79,6 +79,8 @@ public:
     double clipWidth() const;
     double clipHeight() const;
 
+    std::shared_ptr<View> rootView();
+
     void paint();
 
     void show();
@@ -114,6 +116,9 @@ signals:
     void implYChanged(double y);
     void implWidthChanged(double width);
     void implHeightChanged(double height);
+
+public slots:
+    void update();
 
 private slots:
     void onImplXChanged(double x);

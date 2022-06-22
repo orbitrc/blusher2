@@ -60,6 +60,8 @@ public:
 
     std::shared_ptr<View> root_view();
 
+    void update();
+
 public:
     Signal<> color_changed;
     Signal<> clicked;

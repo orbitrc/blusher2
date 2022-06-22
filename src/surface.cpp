@@ -103,6 +103,16 @@ void Surface::move_if_window()
     }
 }
 
+std::shared_ptr<View> Surface::root_view()
+{
+    return this->_impl->rootView();
+}
+
+void Surface::update()
+{
+    this->_impl->update();
+}
+
 //=================
 // Events
 //=================

@@ -60,6 +60,9 @@ public:
     void resize(uint64_t width, uint64_t height,
             Image::Scale scale = Image::Scale::NoScale);
 
+    /// Adds an image.
+    void add(const Image& image);
+
 private:
     uint64_t _width;
     uint64_t _height;
