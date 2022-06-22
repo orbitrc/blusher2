@@ -9,6 +9,8 @@ namespace bl {
 
 class TitleBar;
 
+class Resize;
+
 class Window : public Surface
 {
 public:
@@ -32,10 +34,25 @@ private:
     uint32_t _height;
 
     Surface *_decoration;
-    Surface *_resize;
+    Resize *_resize;
     Surface *_border;
     TitleBar *_title_bar;
     Surface *_body;
+};
+
+
+//=================
+// Window Resize
+//=================
+class Resize : public Surface
+{
+public:
+    Resize(Surface *parent);
+
+protected:
+    void pointer_press_event(std::shared_ptr<PointerEvent> event) override;
+
+private:
 };
 
 } // namespace bl

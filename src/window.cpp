@@ -23,6 +23,10 @@ static void register_resources()
 
 namespace bl {
 
+//=============
+// Window
+//=============
+
 Window::Window()
     : Surface(nullptr)
 {
@@ -42,7 +46,7 @@ Window::Window()
     this->_border = new Surface(this->_body);
     this->_border->place_below(this->_body);
 
-    this->_resize = new Surface(this->_body);
+    this->_resize = new Resize(this->_body);
     this->_resize->place_below(this->_border);
 
     this->_decoration = new Surface(this->_body);
@@ -143,6 +147,29 @@ void Window::update_title_bar()
         BLUSHER_TITLE_BAR_HEIGHT
     );
     this->_title_bar->set_color(Color::from_rgb(100, 100, 100));
+}
+
+//===============
+// Resize
+//===============
+
+Resize::Resize(Surface *parent)
+    : Surface(parent)
+{
+}
+
+void Resize::pointer_press_event(std::shared_ptr<PointerEvent> event)
+{
+    if (event->button() == PointerEvent::Button::Left) {
+        for (Surface *it = this; it->parent() != nullptr; it = it->parent()) {
+            Surface *win = it->parent();
+            if (win->parent() == nullptr) {
+                win->resize_if_window();
+            }
+        }
+    }
+
+    return Surface::pointer_press_event(event);
 }
 
 } // namespace bl

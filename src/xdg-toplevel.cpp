@@ -66,4 +66,49 @@ void XdgToplevel::add_listener(const XdgToplevel::Listener &listener)
         listener.xdg_toplevel_listener(), NULL);
 }
 
+//===================
+// Static Methods
+//===================
+
+pr::Vector<XdgToplevel::State> XdgToplevel::states_to_vector(
+        struct wl_array *states)
+{
+    pr::Vector<XdgToplevel::State> v;
+
+    for (size_t i = 0; i < states->size; ++i) {
+        enum xdg_toplevel_state state =
+            ((enum xdg_toplevel_state*)(states->data))[i];
+        switch (state) {
+        case XDG_TOPLEVEL_STATE_MAXIMIZED:
+            v.push(XdgToplevel::State::Maximized);
+            break;
+        case XDG_TOPLEVEL_STATE_FULLSCREEN:
+            v.push(XdgToplevel::State::Fullscreen);
+            break;
+        case XDG_TOPLEVEL_STATE_RESIZING:
+            v.push(XdgToplevel::State::Resizing);
+            break;
+        case XDG_TOPLEVEL_STATE_ACTIVATED:
+            v.push(XdgToplevel::State::Activated);
+            break;
+        case XDG_TOPLEVEL_STATE_TILED_LEFT:
+            v.push(XdgToplevel::State::TiledLeft);
+            break;
+        case XDG_TOPLEVEL_STATE_TILED_RIGHT:
+            v.push(XdgToplevel::State::TiledRight);
+            break;
+        case XDG_TOPLEVEL_STATE_TILED_TOP:
+            v.push(XdgToplevel::State::TiledTop);
+            break;
+        case XDG_TOPLEVEL_STATE_TILED_BOTTOM:
+            v.push(XdgToplevel::State::TiledBottom);
+            break;
+        default:
+            break;
+        }
+    }
+
+    return v;
+}
+
 } // namespace bl

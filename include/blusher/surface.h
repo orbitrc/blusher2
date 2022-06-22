@@ -57,6 +57,8 @@ public:
 
     /// This is implementation specific method. DO NOT USE THIS in an application.
     void move_if_window();
+    /// This is implementation specific method. DO NOT USE THIS in an application.
+    void resize_if_window();
 
     std::shared_ptr<View> root_view();
 

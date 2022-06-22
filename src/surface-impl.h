@@ -93,7 +93,9 @@ public:
     bool toplevel() const;
 
     void moveIfToplevel();
+    void resizeIfToplevel();
 
+    Surface* surface();
     void setBlSurface(Surface *blSurface);
     void setPointerEnterHandler(void (Surface::*)());
     void setPointerLeaveHandler(void (Surface::*)());

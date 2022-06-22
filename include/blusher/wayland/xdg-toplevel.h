@@ -4,6 +4,9 @@
 // C
 #include <stdint.h>
 
+// Primer
+#include <primer/vector.h>
+
 struct wl_array;
 struct xdg_toplevel;
 struct xdg_toplevel_listener;
@@ -23,6 +26,17 @@ public:
         Right = 8,
         TopRight = 9,
         BottomRight = 10,
+    };
+
+    enum class State {
+        Maximized = 1,
+        Fullscreen = 2,
+        Resizing = 3,
+        Activated = 4,
+        TiledLeft = 5,      // Since 2
+        TiledRight = 6,     // Since 2
+        TiledTop = 7,       // Since 2
+        TiledBottom = 8,    // Since 2
     };
 
     class Listener
@@ -55,6 +69,10 @@ public:
     struct xdg_toplevel* xdg_toplevel();
 
     void add_listener(const XdgToplevel::Listener& listener);
+
+    /// wl_array states to Vector. ConfigureHandler's last argument.
+    static pr::Vector<XdgToplevel::State> states_to_vector(
+            struct wl_array *states);
 
 private:
     struct xdg_toplevel *_xdg_toplevel;

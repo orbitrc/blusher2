@@ -103,6 +103,13 @@ void Surface::move_if_window()
     }
 }
 
+void Surface::resize_if_window()
+{
+    if (this->_parent == nullptr) {
+        this->_impl->resizeIfToplevel();
+    }
+}
+
 std::shared_ptr<View> Surface::root_view()
 {
     return this->_impl->rootView();

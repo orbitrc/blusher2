@@ -1,5 +1,7 @@
 #include "surface-impl.h"
 
+// C
+#include <assert.h>
 #include <stdio.h>
 
 // Unix
@@ -14,7 +16,18 @@
 #include <QMouseEvent>
 #include <QResizeEvent>
 
+// Primer
+#include <primer/vector.h>
+
+// Blusher
 #include <blusher/application.h>
+#ifdef emit
+#undef emit
+#endif
+#include <blusher/surface.h>
+#ifndef emit
+#define emit Q_EMIT
+#endif
 #include <blusher/utils.h>
 #include <blusher/image.h>
 #include <blusher/view.h>
@@ -42,12 +55,26 @@ static void xdg_toplevel_configure_handler(void *data,
         struct xdg_toplevel *xdg_toplevel, int32_t width, int32_t height,
         struct wl_array *states)
 {
-    (void)data;
+    bl::SurfaceImpl *surface_impl = static_cast<bl::SurfaceImpl*>(data);
+    bl::Surface *surface = surface_impl->surface();
+
+    // Check if same.
+    // assert(xdg_toplevel == surface_impl->_xdg_toplevel);
+
     (void)xdg_toplevel;
     (void)width;
     (void)height;
-    (void)states;
     // TODO: implement
+
+    pr::Vector<bl::XdgToplevel::State> states_v =
+        bl::XdgToplevel::states_to_vector(states);
+
+    // State is resizing.
+    if (states_v.index(bl::XdgToplevel::State::Resizing) != std::nullopt) {
+        fprintf(stderr, "Resizing...\n");
+        surface->set_geometry(0, 0, width, height);
+        // surface->update();
+    }
 }
 
 static void xdg_toplevel_close_handler(void *data,
@@ -379,7 +406,9 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
         xdg_surface_add_listener(this->_xdg_surface, &xdg_surface_listener, NULL);
 
         this->_xdg_toplevel = xdg_surface_get_toplevel(this->_xdg_surface);
-        xdg_toplevel_add_listener(this->_xdg_toplevel, &xdg_toplevel_listener, NULL);
+        xdg_toplevel_add_listener(this->_xdg_toplevel,
+            &xdg_toplevel_listener,
+            static_cast<void*>(this));
 
         // Signal that the surface is ready to be configured.
         wl_surface_commit(this->_surface);
@@ -629,6 +658,11 @@ bool SurfaceImpl::toplevel() const
     return this->parent() == nullptr;
 }
 
+Surface* SurfaceImpl::surface()
+{
+    return this->m_blSurface;
+}
+
 void SurfaceImpl::setBlSurface(Surface *blSurface)
 {
     this->m_blSurface = blSurface;
@@ -640,6 +674,17 @@ void SurfaceImpl::moveIfToplevel()
     if (this->parent() == nullptr) {
         xdg_toplevel_move(this->_xdg_toplevel,
             app_impl->seat()->wl_seat(), app_impl->pointerPressSerial());
+    }
+}
+
+void SurfaceImpl::resizeIfToplevel()
+{
+    if (this->parent() == nullptr) {
+        xdg_toplevel_resize(this->_xdg_toplevel,
+            bl::app_impl->seat()->wl_seat(),
+            bl::app_impl->pointerPressSerial(),
+            XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM
+        );
     }
 }
 

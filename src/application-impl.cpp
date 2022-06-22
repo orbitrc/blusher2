@@ -14,6 +14,8 @@
 //==============
 static void shm_format(void *data, struct wl_shm *wl_shm, uint32_t format)
 {
+    (void)data;
+    (void)wl_shm;
     fprintf(stderr, "Format: %d\n", format);
 }
 
@@ -93,6 +95,8 @@ static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
 static void pointer_button_handler(void *data, struct wl_pointer *pointer,
         uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
 {
+    (void)pointer;
+    (void)time;
     bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
         data);
 
