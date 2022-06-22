@@ -95,6 +95,9 @@ View* View::child_at(const Point &pos)
         return nullptr;
     }
     // TODO: Implementation.
+    for (auto& child: this->_children) {
+        // TODO.
+    }
 
     return nullptr;
 }

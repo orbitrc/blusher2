@@ -29,6 +29,8 @@ SOURCES += \
     src/view.cpp \
     src/signal.cpp \
     src/point.cpp \
+    src/size.cpp \
+    src/rect.cpp \
     src/color.cpp \
     src/image.cpp \
     src/svg.cpp \
@@ -60,6 +62,8 @@ HEADERS += \
     include/blusher/view.h \
     include/blusher/signal.h \
     include/blusher/point.h \
+    include/blusher/size.h \
+    include/blusher/rect.h \
     include/blusher/color.h \
     include/blusher/image.h \
     include/blusher/svg.h \
