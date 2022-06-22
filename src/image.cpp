@@ -291,12 +291,52 @@ void Image::resize(uint64_t width, uint64_t height, Image::Scale scale)
     }
 }
 
-void Image::add(const Image &image)
+void Image::add(const Image &image, uint64_t x, uint64_t y)
 {
     if (this->_format == Image::Format::Argb32) {
         if (image.format() == Image::Format::Argb32) {
+            int stride1 = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
+                this->_width);
+            int stride2 = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
+                image.width());
+            cairo_surface_t *surface = cairo_image_surface_create_for_data(
+                this->_data, CAIRO_FORMAT_ARGB32,
+                this->_width, this->_height, stride1
+            );
+            cairo_status_t status = cairo_surface_status(surface);
+            if (status == CAIRO_STATUS_INVALID_STRIDE) {
+                fprintf(stderr, "INVALID STRIDE!\n");
+            }
+            cairo_surface_t *surface2 = cairo_image_surface_create_for_data(
+                image._data, CAIRO_FORMAT_ARGB32,
+                image.width(), image.height(), stride2
+            );
+            cairo_t *cr = cairo_create(surface);
+
+            cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
+
+            cairo_set_source_surface(cr, surface, 0, 0);
+            cairo_paint(cr);
+
+            cairo_set_source_surface(cr, surface2, x, y);
+            cairo_paint(cr);
+
+            // Get result data.
+            uint8_t *new_data = cairo_image_surface_get_data(surface);
+
+            // Write to this data.
             uint32_t *pixel = (uint32_t*)this->_data;
-            *pixel = 0xffff0000;
+            uint32_t *new_pixel = (uint32_t*)new_data;
+            for (uint64_t i = 0; i < (this->_width * this->_height); ++i) {
+                *pixel = *new_pixel;
+                ++pixel;
+                ++new_pixel;
+            }
+
+            // Free the resources.
+            cairo_destroy(cr);
+            cairo_surface_destroy(surface2);
+            cairo_surface_destroy(surface);
         }
     } else {
         // TODO.

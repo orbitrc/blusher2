@@ -123,7 +123,8 @@ void ViewImpl::update()
     }
     this->m_composedImage->fill(this->m_color);
     for (auto& child: this->m_view->_children) {
-        this->m_composedImage->add(*(child->_impl->m_image));
+        this->m_composedImage->add(*(child->_impl->m_image),
+            child->x(), child->y());
     }
 
     // Update surface.
