@@ -503,19 +503,7 @@ void SurfaceImpl::setSize(double width, double height)
     wl_buffer_destroy(this->_buffer);
     this->_buffer = create_buffer(this, width, height);
     */
-    struct wl_egl_window *new_window = wl_egl_window_create(this->_surface,
-        width, height);
-    EGLSurface new_surface = eglCreateWindowSurface(
-        this->_egl_object.egl_display, this->_egl_object.egl_config,
-        new_window,
-        NULL);
-
-    eglDestroySurface(this->_egl_object.egl_display,
-        this->_egl_object.egl_surface);
-    wl_egl_window_destroy(this->_egl_window);
-
-    this->_egl_window = new_window;
-    this->_egl_object.egl_surface = new_surface;
+    wl_egl_window_resize(this->_egl_window, width, height, 0, 0);
 }
 
 bool SurfaceImpl::clip() const
