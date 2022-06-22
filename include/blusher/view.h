@@ -9,6 +9,7 @@
 
 // Blusher
 #include <blusher/color.h>
+#include <blusher/point.h>
 #include <blusher/pointer-event.h>
 
 namespace bl {
@@ -38,6 +39,8 @@ public:
 
     Color color() const;
     void set_color(const Color& color);
+
+    View* child_at(const Point& pos);
 
     /// Get surface of this view.
     Surface* surface();

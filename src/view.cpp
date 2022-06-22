@@ -87,6 +87,18 @@ void View::set_color(const Color &color)
     this->_impl->setColor(color);
 }
 
+View* View::child_at(const Point &pos)
+{
+    // Return nullptr if position is out of this view.
+    if (pos.x() > this->width() ||
+            pos.y() > this->height()) {
+        return nullptr;
+    }
+    // TODO: Implementation.
+
+    return nullptr;
+}
+
 Surface* View::surface()
 {
     return this->_surface;
