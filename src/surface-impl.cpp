@@ -392,16 +392,13 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     //============
     this->_egl_object = EglObject();
 
-    fprintf(stderr, "before init_egl\n");
     init_egl(&this->_egl_object);
     this->_egl_window = wl_egl_window_create(this->_surface,
         this->width(), this->height());
-    fprintf(stderr, "before eglCreateWindowSurface\n");
     this->_egl_object.egl_surface = eglCreateWindowSurface(
         this->_egl_object.egl_display, this->_egl_object.egl_config,
         this->_egl_window,
         NULL);
-    fprintf(stderr, "after eglCreateWindowSurface\n");
 
 //    this->setGeometry(this->m_x, this->m_y, this->m_width, this->m_height);
 
@@ -496,6 +493,10 @@ void SurfaceImpl::setSize(double width, double height)
     if (this->m_height != height) {
         this->m_height = height;
     }
+
+    // Resize view's size.
+    this->m_rootView->set_width(width);
+    this->m_rootView->set_height(height);
 
     /*
     resize_shm_pool(this, width, height);

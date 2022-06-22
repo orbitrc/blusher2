@@ -1,5 +1,8 @@
 #include "view-impl.h"
 
+// C
+#include <stdio.h>
+
 #include <blusher/view.h>
 
 namespace bl {
@@ -111,6 +114,13 @@ void ViewImpl::appendChild(View *view)
 
 void ViewImpl::update()
 {
+    if (this->m_composedImage->width() != this->m_image->width() &&
+            this->m_composedImage->height() != this->m_image->height()) {
+        this->m_composedImage->resize(
+            this->m_image->width(),
+            this->m_image->height()
+        );
+    }
     this->m_composedImage->fill(this->m_color);
     for (auto& child: this->m_view->_children) {
         this->m_composedImage->add(*(child->_impl->m_image));

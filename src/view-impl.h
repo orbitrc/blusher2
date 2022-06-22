@@ -42,6 +42,7 @@ signals:
     void colorChanged();
 
 private slots:
+    /// Resize composed image and compose it's children views.
     void update();
 
 private:
