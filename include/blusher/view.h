@@ -35,6 +35,9 @@ public:
     Color color() const;
     void set_color(const Color& color);
 
+    /// Get surface of this view.
+    Surface* surface();
+
     /// DO NOT USE THIS MANUALLY YET!
     void set_surface(Surface *surface);
 

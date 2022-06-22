@@ -87,6 +87,11 @@ void View::set_color(const Color &color)
     this->_impl->setColor(color);
 }
 
+Surface* View::surface()
+{
+    return this->_surface;
+}
+
 void View::set_surface(Surface *surface)
 {
     this->_surface = surface;
