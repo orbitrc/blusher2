@@ -46,6 +46,11 @@ bool Rect::contains(const Point& point)
         return false;
     }
 
+    // Check bottom right.
+    if (point.x() > this->width() || point.y() > this->height()) {
+        return false;
+    }
+
     // Check width and height.
     if (point.x() <= this->width() && point.y() <= this->height()) {
         return true;
