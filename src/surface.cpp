@@ -23,12 +23,12 @@ Surface::Surface(Surface *parent)
         this->_impl = new SurfaceImpl();
     }
 
+    this->_impl->setBlSurface(this);
+
     this->_parent = parent;
     this->_state = State::Normal;
 
     this->color_changed.connect([]() { fprintf(stderr, "Hello, color_changed!\n"); });
-
-    this->_impl->setBlSurface(this);
 
     // Set event handlers.
     this->_impl->setPointerEnterHandler(&Surface::pointer_enter_handler);
