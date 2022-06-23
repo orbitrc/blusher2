@@ -26,8 +26,6 @@ Surface::Surface(Surface *parent)
     this->_parent = parent;
     this->_state = State::Normal;
 
-    this->set_color(Color::from_rgb(255, 255, 255));
-
     this->color_changed.connect([]() { fprintf(stderr, "Hello, color_changed!\n"); });
 
     this->_impl->setBlSurface(this);
@@ -66,13 +64,6 @@ void Surface::place_above(Surface *surface)
 void Surface::place_below(Surface *surface)
 {
     this->_impl->placeBelow(surface->_impl);
-}
-
-void Surface::set_color(const Color &color)
-{
-    this->_color = color;
-    this->_impl->setColor(color);
-    /* DEBUG */ this->color_changed.emit();
 }
 
 void Surface::set_geometry(double x, double y, double width, double height)

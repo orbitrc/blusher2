@@ -85,8 +85,6 @@ public:
 
     void show();
 
-    void setColor(const Color& color);
-
     void placeAbove(SurfaceImpl*);
     void placeBelow(SurfaceImpl*);
 
@@ -143,7 +141,6 @@ private:
     double m_height;
 
     bool m_visible;
-    Color m_color;
 
     std::shared_ptr<View> m_rootView;
 

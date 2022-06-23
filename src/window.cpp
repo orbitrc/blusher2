@@ -113,7 +113,7 @@ void Window::update_decoration()
         this->_width + (BLUSHER_SHADOW_WIDTH * 2),
         this->_height + (BLUSHER_SHADOW_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
-    this->_decoration->set_color(Color::from_rgba(0, 0, 0, 100));
+    this->_decoration->root_view()->set_color(Color::from_rgba(0, 0, 0, 100));
 }
 
 void Window::update_resize()
@@ -124,7 +124,7 @@ void Window::update_resize()
         this->_width + (BLUSHER_RESIZE_WIDTH * 2),
         this->_height + (BLUSHER_RESIZE_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
-    this->_resize->set_color(Color::from_rgba(255, 0, 0, 100));
+    this->_resize->root_view()->set_color(Color::from_rgba(255, 0, 0, 100));
 }
 
 void Window::update_border()
@@ -135,7 +135,7 @@ void Window::update_border()
         this->_width + (BLUSHER_BORDER_WIDTH * 2),
         this->_height + (BLUSHER_BORDER_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
-    this->_border->set_color(Color::from_rgb(0, 0, 0));
+    this->_border->root_view()->set_color(Color::from_rgb(0, 0, 0));
 }
 
 void Window::update_title_bar()
@@ -146,7 +146,7 @@ void Window::update_title_bar()
         this->_width,
         BLUSHER_TITLE_BAR_HEIGHT
     );
-    this->_title_bar->set_color(Color::from_rgb(100, 100, 100));
+    this->_title_bar->root_view()->set_color(Color::from_rgb(100, 100, 100));
 }
 
 //===============

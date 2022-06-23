@@ -43,8 +43,6 @@ public:
 
     void place_below(Surface *surface);
 
-    void set_color(const Color& color);
-
     void set_geometry(double x, double y, double width, double height);
 
     void show();
@@ -92,7 +90,6 @@ private:
     SurfaceImpl *_impl;
 
     Surface *_parent;
-    Color _color;
     State _state;
 };
 

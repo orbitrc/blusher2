@@ -416,7 +416,6 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     this->_xdg_toplevel = nullptr;
 
     this->m_visible = false;
-    this->m_color = Color::from_rgb(255, 255, 255);
 
     this->m_rootView = std::make_shared<View>(new View());
 
@@ -675,13 +674,6 @@ void SurfaceImpl::show()
         QExposeEvent event(q_region);
         QCoreApplication::sendEvent(this, &event);
     }
-}
-
-void SurfaceImpl::setColor(const Color &color)
-{
-    this->m_color = color;
-
-    this->m_rootView->set_color(color);
 }
 
 void SurfaceImpl::placeAbove(SurfaceImpl *surface_impl)
