@@ -458,6 +458,8 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
         wl_surface_commit(this->_surface);
         // Wait for the surface to be configured.
         app_impl->display()->roundtrip();
+
+        xdg_surface_set_window_geometry(this->_xdg_surface, 0, 0, 200, 200);
     }
 
     //============
@@ -573,8 +575,12 @@ void SurfaceImpl::setSize(double width, double height)
 
     wl_egl_window_resize(this->_egl_window, width, height, 0, 0);
     // Re-create EGL window surface.
-    eglDestroySurface(this->_egl_object.egl_display,
+    EGLBoolean destroyed = eglDestroySurface(this->_egl_object.egl_display,
         this->_egl_object.egl_surface);
+    if (!destroyed) {
+        fprintf(stderr, "[WARN] EGL surface not destroyed!\n");
+        return;
+    }
     this->_egl_object.egl_surface = eglCreateWindowSurface(
         this->_egl_object.egl_display,
         this->_egl_object.egl_config,
