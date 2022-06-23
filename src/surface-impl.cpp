@@ -562,6 +562,11 @@ void SurfaceImpl::setHeight(double height)
 
 void SurfaceImpl::setSize(double width, double height)
 {
+    // Pass if size is not changed.
+    if (this->m_width == width && this->m_height == height) {
+        return;
+    }
+
     if (this->m_width != width) {
         this->m_width = width;
     }
