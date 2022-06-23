@@ -98,8 +98,6 @@ static const struct xdg_toplevel_listener xdg_toplevel_listener = {
 // EGL/OpenGL
 //=================
 
-static EGLSurface last_swapped = nullptr;
-
 const char* egl_error_to_string(EGLint err)
 {
     switch (err) {
@@ -320,10 +318,7 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-    if (last_swapped != egl_surface) {
-        eglSwapBuffers(egl_display, egl_surface);
-        last_swapped = egl_surface;
-    }
+    eglSwapBuffers(egl_display, egl_surface);
 
     eglMakeCurrent(egl_display, NULL, NULL, NULL);
 }
