@@ -62,8 +62,8 @@ static void xdg_toplevel_configure_handler(void *data,
     // assert(xdg_toplevel == surface_impl->_xdg_toplevel);
 
     (void)xdg_toplevel;
-    (void)width;
-    (void)height;
+    fprintf(stderr, "[LOG] xdg_toplevel_configure_handler - size: %dx%d\n",
+        width, height);
     // TODO: implement
 
     pr::Vector<bl::XdgToplevel::State> states_v =
@@ -247,6 +247,8 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
         1, 2, 3,    // Second triangle
     };
 
+    fprintf(stderr, "[LOG] texture_function() - width height: %ldx%ld\n",
+        width, height);
     eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
     EGLint err = eglGetError();
     if (err != EGL_SUCCESS) {
@@ -322,6 +324,8 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
         eglSwapBuffers(egl_display, egl_surface);
         last_swapped = egl_surface;
     }
+
+    eglMakeCurrent(egl_display, NULL, NULL, NULL);
 }
 
 static void init_egl(bl::SurfaceImpl::EglObject *egl_object)
@@ -408,6 +412,8 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
         this->m_clipWidth = this->m_width;
         this->m_clipHeight = this->m_height;
     }
+
+    this->_xdg_toplevel = nullptr;
 
     this->m_visible = false;
     this->m_color = Color::from_rgb(255, 255, 255);
