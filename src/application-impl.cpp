@@ -90,6 +90,13 @@ static void pointer_leave_handler(void *data, struct wl_pointer *pointer,
 static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
         uint32_t time, wl_fixed_t sx, wl_fixed_t sy)
 {
+    (void)data;
+    (void)pointer;
+    (void)time;
+    double x = wl_fixed_to_double(sx);
+    double y = wl_fixed_to_double(sy);
+    bl::app_impl->setPointerEventX(x);
+    bl::app_impl->setPointerEventY(y);
 }
 
 static void pointer_button_handler(void *data, struct wl_pointer *pointer,
@@ -108,7 +115,10 @@ static void pointer_button_handler(void *data, struct wl_pointer *pointer,
             // Pointer press event.
             if (state == WL_POINTER_BUTTON_STATE_PRESSED) {
                 application_impl->setPointerPressSerial(serial);
-                surface_impl->callPointerPressHandler(button, 0, 0);
+                surface_impl->callPointerPressHandler(button,
+                    application_impl->pointerEventX(),
+                    application_impl->pointerEventY()
+                );
             }
             // Pointer release event.
             if (state == WL_POINTER_BUTTON_STATE_RELEASED) {
@@ -288,6 +298,9 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     this->_seat = nullptr;
     this->_keyboard = NULL;
     this->_pointer = NULL;
+
+    this->_pointer_event_x = 0;
+    this->_pointer_event_y = 0;
 
     this->_xdg_wm_base = nullptr;
 
@@ -480,6 +493,30 @@ uint32_t ApplicationImpl::pointerPressSerial() const
 void ApplicationImpl::setPointerPressSerial(uint32_t serial)
 {
     this->_pointer_press_serial = serial;
+}
+
+double ApplicationImpl::pointerEventX() const
+{
+    return this->_pointer_event_x;
+}
+
+double ApplicationImpl::pointerEventY() const
+{
+    return this->_pointer_event_y;
+}
+
+void ApplicationImpl::setPointerEventX(double x)
+{
+    if (this->_pointer_event_x != x) {
+        this->_pointer_event_x = x;
+    }
+}
+
+void ApplicationImpl::setPointerEventY(double y)
+{
+    if (this->_pointer_event_y != y) {
+        this->_pointer_event_y = y;
+    }
 }
 
 } // namespace bl

@@ -102,8 +102,8 @@ View* View::child_at(const Point &pos)
     }
 
     // Reverse for loop.
-    for (uint64_t i = this->_children.length() - 1; i >= 0; --i) {
-        View *child = this->_children[i];
+    for (uint64_t i = this->_children.length(); i > 0; --i) {
+        View *child = this->_children[i - 1];
         if (child->geometry().contains(pos)) {
             return child;
         }
