@@ -71,9 +71,11 @@ static void xdg_toplevel_configure_handler(void *data,
 
     // State is resizing.
     if (states_v.index(bl::XdgToplevel::State::Resizing) != std::nullopt) {
-        fprintf(stderr, "Resizing...\n");
-        surface->set_geometry(0, 0, width, height);
-        // surface->update();
+        if (surface->width() != width || surface->height() != height) {
+            fprintf(stderr, "Resizing...\n");
+            surface->set_geometry(0, 0, width, height);
+            // surface->update();
+        }
     }
 }
 
@@ -95,6 +97,34 @@ static const struct xdg_toplevel_listener xdg_toplevel_listener = {
 //=================
 // EGL/OpenGL
 //=================
+
+static EGLSurface last_swapped = nullptr;
+
+const char* egl_error_to_string(EGLint err)
+{
+    switch (err) {
+    case EGL_BAD_ACCESS:
+        return "EGL_BAD_ACCESS";
+    case EGL_BAD_SURFACE:
+        return "EGL_BAD_SURFACE";
+    case EGL_BAD_NATIVE_WINDOW:
+        return "EGL_BAD_NATIVE_WINDOW";
+    case EGL_BAD_MATCH:
+        return "EGL_BAD_MATCH";
+    case EGL_BAD_CURRENT_SURFACE:
+        return "EGL_BAD_CURRENT_SURFACE";
+    case EGL_BAD_ALLOC:
+        return "EGL_BAD_ALLOC";
+    case EGL_CONTEXT_LOST:
+        return "EGL_CONTEXT_LOST";
+    case EGL_NOT_INITIALIZED:
+        return "EGL_NOT_INITIALIZED";
+    case EGL_SUCCESS:
+        return "EGL_SUCCESS";
+    default:
+        return "Error Not Catched!";
+    }
+}
 
 GLuint load_shader(const char *shader_src, GLenum type)
 {
@@ -218,6 +248,12 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
     };
 
     eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
+    EGLint err = eglGetError();
+    if (err != EGL_SUCCESS) {
+        fprintf(stderr,
+            "[WARN] texture_function() - eglMakeCurrent Error: %s %d\n",
+            egl_error_to_string(err), err);
+    }
 
     // Set the viewport.
     glViewport(
@@ -282,7 +318,10 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-    eglSwapBuffers(egl_display, egl_surface);
+    if (last_swapped != egl_surface) {
+        eglSwapBuffers(egl_display, egl_surface);
+        last_swapped = egl_surface;
+    }
 }
 
 static void init_egl(bl::SurfaceImpl::EglObject *egl_object)
@@ -311,7 +350,6 @@ static void init_egl(bl::SurfaceImpl::EglObject *egl_object)
         EGL_NONE,
     };
 
-    fprintf(stderr, "WlDisplay: %p\n", bl::WlDisplay::instance());
     egl_object->egl_display = eglGetDisplay(
         (EGLNativeDisplayType)bl::WlDisplay::instance()->wl_display()
     );
@@ -533,6 +571,13 @@ void SurfaceImpl::setSize(double width, double height)
     this->_buffer = create_buffer(this, width, height);
     */
     wl_egl_window_resize(this->_egl_window, width, height, 0, 0);
+
+    if (this->m_blSurface != nullptr) {
+        fprintf(stderr, "[LOG] SurfaceImpl::setSize() - update.\n");
+        this->m_blSurface->update();
+    } else {
+        fprintf(stderr, "[WARN] SurfaceImpl::setSize() - surface is null!\n");
+    }
 }
 
 bool SurfaceImpl::clip() const
@@ -603,26 +648,7 @@ void SurfaceImpl::show()
         }
 
         fprintf(stderr, "EGL and OpenGL\n");
-        eglMakeCurrent(this->_egl_object.egl_display,
-            this->_egl_object.egl_surface,
-            this->_egl_object.egl_surface,
-            this->_egl_object.egl_context);
-        glFlush();
-        // Below makes hang call eglSwapBuffers() in fill_function().
-        // eglSwapBuffers(this->_egl_object.egl_display, this->_egl_object.egl_surface);
-        //===================//
-        if (init_program(&this->_egl_object.program_object) == 0) {
-            fprintf(stderr, "Error init program!\n");
-            exit(1);
-        }
-        texture_function(
-            this->_egl_object.egl_display,
-            this->_egl_object.egl_surface,
-            this->_egl_object.egl_context,
-            &this->_egl_object.program_object,
-            *this->m_rootView->_impl->m_composedImage,
-            this->width(), this->height()
-        );
+        this->update();
 
         QRegion q_region;
         QExposeEvent event(q_region);
@@ -758,17 +784,25 @@ struct wl_surface* SurfaceImpl::wlSurface() const
 
 void SurfaceImpl::update()
 {
+    fprintf(stderr, " - update() SurfaceImpl: %p\n", this);
     eglMakeCurrent(this->_egl_object.egl_display,
         this->_egl_object.egl_surface,
         this->_egl_object.egl_surface,
         this->_egl_object.egl_context);
+    EGLint err = eglGetError();
+    if (err != EGL_SUCCESS) {
+        fprintf(stderr, "[WARN] eglMakeCurrent Error: %s\n",
+            egl_error_to_string(err));
+        return;
+    }
     glFlush();
     // Below makes hang call eglSwapBuffers() in fill_function().
     // eglSwapBuffers(this->_egl_object.egl_display, this->_egl_object.egl_surface);
     //===================//
     if (init_program(&this->_egl_object.program_object) == 0) {
         fprintf(stderr, "Error init program!\n");
-        exit(1);
+        // exit(1);
+        return;
     }
     texture_function(
         this->_egl_object.egl_display,

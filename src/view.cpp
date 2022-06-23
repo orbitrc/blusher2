@@ -21,7 +21,6 @@ View::View(View *parent)
 
     // Add to children.
     if (parent != nullptr) {
-        fprintf(stderr, " - push this: %p\n", this);
         parent->_children.push(this);
 
         parent->_impl->appendChild(this);
