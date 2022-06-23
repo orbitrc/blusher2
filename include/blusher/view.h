@@ -23,6 +23,7 @@ class ViewImpl;
 
 class View
 {
+    friend Surface;
     friend SurfaceImpl;
     friend ViewImpl;
 public:

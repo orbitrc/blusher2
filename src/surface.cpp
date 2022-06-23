@@ -6,6 +6,9 @@
 
 #include <linux/input.h>
 
+#include <blusher/point.h>
+#include <blusher/rect.h>
+
 #ifdef emit
     #undef emit
 #endif
@@ -197,9 +200,26 @@ void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
         break;
     }
 
+    // Surface.
     auto event = std::make_shared<PointerEvent>(button, x, y);
 
     this->pointer_press_event(event);
+
+    // View.
+    auto root_view = this->_impl->rootView();
+    View *view = root_view->child_at(Point(x, y));
+    if (view != nullptr) {
+        fprintf(stderr, "view found. send event to %p\n", view);
+        // TODO: Fix x, y position!
+        auto event = std::make_shared<PointerEvent>(button, x, y);
+
+        view->pointer_press_event(event);
+    } else {
+        fprintf(stderr, "view is nullptr. send event to root_view.\n");
+        auto event = std::make_shared<PointerEvent>(button, x, y);
+
+        root_view->pointer_press_event(event);
+    }
 }
 
 void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
