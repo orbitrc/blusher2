@@ -571,12 +571,16 @@ void SurfaceImpl::setSize(double width, double height)
     this->m_rootView->set_width(width);
     this->m_rootView->set_height(height);
 
-    /*
-    resize_shm_pool(this, width, height);
-    wl_buffer_destroy(this->_buffer);
-    this->_buffer = create_buffer(this, width, height);
-    */
     wl_egl_window_resize(this->_egl_window, width, height, 0, 0);
+    // Re-create EGL window surface.
+    eglDestroySurface(this->_egl_object.egl_display,
+        this->_egl_object.egl_surface);
+    this->_egl_object.egl_surface = eglCreateWindowSurface(
+        this->_egl_object.egl_display,
+        this->_egl_object.egl_config,
+        this->_egl_window,
+        NULL
+    );
 
     if (this->m_blSurface != nullptr) {
         fprintf(stderr, "[LOG] SurfaceImpl::setSize() - update.\n");
