@@ -125,6 +125,7 @@ void View::update()
 {
     this->_impl->update();
     if (this->_surface == nullptr) {
+        fprintf(stderr, "[WARN] View::update() surface is null!\n");
         return;
     }
     this->_surface->update();

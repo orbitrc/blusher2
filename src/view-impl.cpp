@@ -126,12 +126,6 @@ void ViewImpl::update()
         this->m_composedImage->add(*(child->_impl->m_image),
             child->x(), child->y());
     }
-
-    // Update surface.
-    if (this->m_view->_surface == nullptr) {
-        fprintf(stderr, "[WARN] ViewImpl::update() - surface is null!\n");
-        return;
-    }
 }
 
 } // namespace bl

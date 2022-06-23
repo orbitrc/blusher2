@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include <blusher/application.h>
 #include <blusher/window.h>
 #include <blusher/surface.h>
@@ -18,7 +20,9 @@ int main(int argc, char *argv[])
     bl::View view(window.root_view().get());
     // window.root_view()->update();
     view.set_color(bl::Color::from_rgb(255, 0, 0));
+    fprintf(stderr, "-- update view\n");
     view.update();
+    fprintf(stderr, "-- update view done.\n");
     window.root_view()->update();
 
     return app.exec();
