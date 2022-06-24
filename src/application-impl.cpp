@@ -302,6 +302,10 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     this->_pointer_event_x = 0;
     this->_pointer_event_y = 0;
 
+    // Toy cursor. Change this later.
+    this->_cursor = nullptr;
+    // this->_cursor = new Cursor(Cursor::Shape::Arrow);
+
     this->_xdg_wm_base = nullptr;
 
     fprintf(stderr, "!!! get_registry()\n");

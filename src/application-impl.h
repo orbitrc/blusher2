@@ -13,6 +13,7 @@
 #include <blusher/wayland/wl-registry.h>
 #include <blusher/wayland/wl-seat.h>
 #include <blusher/wayland/xdg-wm-base.h>
+#include <blusher/cursor.h>
 
 // Wayland protocols
 #include <wayland-protocols/stable/xdg-shell.h>
@@ -115,6 +116,8 @@ private:
     uint32_t _pointer_press_serial;
     double _pointer_event_x;
     double _pointer_event_y;
+
+    Cursor *_cursor;
 
     QCoreApplication *_q_core_application;
 

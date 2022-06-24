@@ -1,7 +1,21 @@
 #ifndef _BL_CURSOR_H
 #define _BL_CURSOR_H
 
+// C
+#include <stdint.h>
+
+// Wayland
+#include <wayland-client.h>
+
+// Primer
+#include <primer/vector.h>
+
+// Blusher
+#include <blusher/image.h>
+
 namespace bl {
+
+class CursorImpl;
 
 class Cursor
 {
@@ -41,7 +55,27 @@ public:
         SplitVer,
     };
 
+public:
+    Cursor(Cursor::Shape shape);
+
+    ~Cursor();
+
+    Cursor::Shape shape() const;
+
+    uint32_t hot_spot_x() const;
+
+    uint32_t hot_spot_y() const;
+
+    struct wl_surface* wl_surface();
+
 private:
+    Cursor::Shape _shape;
+    uint32_t _hot_spot_x;
+    uint32_t _hot_spot_y;
+
+    pr::Vector<Image> _images;
+
+    CursorImpl *_impl;
 };
 
 } // namespace bl
