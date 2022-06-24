@@ -75,6 +75,8 @@ void ViewImpl::setWidth(double width)
 
         this->m_image->resize(width, this->m_height);
         this->m_image->fill(this->m_color);
+
+        this->update();
     }
 }
 
@@ -85,6 +87,8 @@ void ViewImpl::setHeight(double height)
 
         this->m_image->resize(this->m_width, height);
         this->m_image->fill(this->m_color);
+
+        this->update();
     }
 }
 
@@ -114,7 +118,7 @@ void ViewImpl::appendChild(View *view)
 
 void ViewImpl::update()
 {
-    if (this->m_composedImage->width() != this->m_image->width() &&
+    if (this->m_composedImage->width() != this->m_image->width() ||
             this->m_composedImage->height() != this->m_image->height()) {
         this->m_composedImage->resize(
             this->m_image->width(),
