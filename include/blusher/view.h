@@ -11,6 +11,7 @@
 #include <blusher/color.h>
 #include <blusher/point.h>
 #include <blusher/rect.h>
+#include <blusher/image.h>
 #include <blusher/pointer-event.h>
 
 namespace bl {
@@ -57,6 +58,8 @@ public:
 
     Color color() const;
     void set_color(const Color& color);
+
+    void draw_image(const Point& pos, const Image& image);
 
     View* child_at(const Point& pos);
 

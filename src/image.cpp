@@ -8,6 +8,10 @@
 // Cairo
 #include <cairo.h>
 
+// Blusher
+#include <blusher/application.h>
+#include <blusher/resource.h>
+
 //===================
 // Helper Functions
 //===================
@@ -151,6 +155,22 @@ Image::Image(const pr::String& path)
     if (path_s.length() > 4 &&
             path.starts_with("brc:"_S)) {
         // Path is blusher resource.
+        fprintf(stderr, "[LOG] Image::Image() - path is blusher resource. %s\n",
+            path.c_str());
+        if (app == nullptr) {
+            fprintf(stderr, "[WARN] Image::Image() - app is null!\n");
+            return;
+        }
+        const Resource::Data *rc_data =
+            app->resource()->data(path.c_str() + 4);
+        if (rc_data == nullptr) {
+            fprintf(stderr,
+                "[WARN] Image::Image() - resource data not found!\n");
+            return;
+        }
+        uint64_t size;
+        this->_data = load_png_from_data(rc_data->data(), &size,
+            &this->_width, &this->_height, &this->_format);
     } else {
         // Path is file system path.
 

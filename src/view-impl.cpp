@@ -106,6 +106,11 @@ void ViewImpl::setColor(const Color& color)
     emit this->colorChanged();
 }
 
+void ViewImpl::drawImage(uint64_t x, uint64_t y, const Image& image)
+{
+    this->m_image->add(image, x, y);
+}
+
 void ViewImpl::appendChild(View *view)
 {
     (void)view;
@@ -126,6 +131,7 @@ void ViewImpl::update()
         );
     }
     this->m_composedImage->fill(this->m_color);
+    this->m_composedImage->add(*this->m_image, 0, 0);
     for (auto& child: this->m_view->_children) {
         this->m_composedImage->add(*(child->_impl->m_image),
             child->x(), child->y());

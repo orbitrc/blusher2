@@ -36,6 +36,8 @@ public:
     Color color() const;
     void setColor(const Color& color);
 
+    void drawImage(uint64_t x, uint64_t y, const Image& image);
+
     void appendChild(View *view);
 
 signals:
