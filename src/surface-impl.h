@@ -60,16 +60,16 @@ public:
     SurfaceImpl(QObject *parent = nullptr);
     ~SurfaceImpl();
 
-    double x() const;
-    double y() const;
-    double width() const;
-    double height() const;
+    uint32_t x() const;
+    uint32_t y() const;
+    uint32_t width() const;
+    uint32_t height() const;
 
-    void setX(double x);
-    void setY(double y);
-    void setWidth(double width);
-    void setHeight(double height);
-    void setSize(double width, double height);
+    void setX(uint32_t x);
+    void setY(uint32_t y);
+    void setWidth(uint32_t width);
+    void setHeight(uint32_t height);
+    void setSize(uint32_t width, uint32_t height);
 
     bool clip() const;
     void setClip(bool clip);
@@ -135,10 +135,10 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
 private:
-    double m_x;
-    double m_y;
-    double m_width;
-    double m_height;
+    uint32_t m_x;
+    uint32_t m_y;
+    uint32_t m_width;
+    uint32_t m_height;
 
     bool m_visible;
 

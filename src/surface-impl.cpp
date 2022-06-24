@@ -490,27 +490,27 @@ SurfaceImpl::~SurfaceImpl()
 // Public Methods
 //===================
 
-double SurfaceImpl::x() const
+uint32_t SurfaceImpl::x() const
 {
     return this->m_x;
 }
 
-double SurfaceImpl::y() const
+uint32_t SurfaceImpl::y() const
 {
     return this->m_y;
 }
 
-double SurfaceImpl::width() const
+uint32_t SurfaceImpl::width() const
 {
     return this->m_width;
 }
 
-double SurfaceImpl::height() const
+uint32_t SurfaceImpl::height() const
 {
     return this->m_height;
 }
 
-void SurfaceImpl::setX(double x)
+void SurfaceImpl::setX(uint32_t x)
 {
     if (this->m_x != x) {
         this->m_x = x;
@@ -523,7 +523,7 @@ void SurfaceImpl::setX(double x)
     }
 }
 
-void SurfaceImpl::setY(double y)
+void SurfaceImpl::setY(uint32_t y)
 {
     if (this->m_y != y) {
         this->m_y = y;
@@ -536,7 +536,7 @@ void SurfaceImpl::setY(double y)
     }
 }
 
-void SurfaceImpl::setWidth(double width)
+void SurfaceImpl::setWidth(uint32_t width)
 {
     if (this->m_width != width) {
         this->m_width = width;
@@ -545,7 +545,7 @@ void SurfaceImpl::setWidth(double width)
     }
 }
 
-void SurfaceImpl::setHeight(double height)
+void SurfaceImpl::setHeight(uint32_t height)
 {
     if (this->m_height != height) {
         this->m_height = height;
@@ -554,7 +554,7 @@ void SurfaceImpl::setHeight(double height)
     }
 }
 
-void SurfaceImpl::setSize(double width, double height)
+void SurfaceImpl::setSize(uint32_t width, uint32_t height)
 {
     // Pass if size is not changed.
     if (this->m_width == width && this->m_height == height) {
@@ -635,7 +635,7 @@ void SurfaceImpl::paint()
     if (this->m_visible == false) {
         return;
     }
-    fprintf(stderr, "SurfaceImpl::paint() - width: %f, height: %f\n",
+    fprintf(stderr, "SurfaceImpl::paint() - width: %d, height: %d\n",
         this->width(), this->height());
 
     /*
@@ -652,7 +652,7 @@ void SurfaceImpl::show()
 {
     if (this->m_visible != true) {
         this->m_visible = true;
-        fprintf(stderr, "visible set to true. width: %f, height: %f\n",
+        fprintf(stderr, "visible set to true. width: %d, height: %d\n",
             this->width(), this->height());
 
         // wl_surface_attach(this->_surface, this->_buffer, 0, 0);

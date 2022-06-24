@@ -1,6 +1,8 @@
 #ifndef _BL_SURFACE_H
 #define _BL_SURFACE_H
 
+#include <stdint.h>
+
 #include <memory>
 
 #include "color.h"
@@ -33,7 +35,7 @@ public:
     Surface(Surface *parent = nullptr);
 
     /// Height of the surface.
-    double height() const;
+    uint32_t height() const;
 
     void paint();
 
@@ -51,7 +53,7 @@ public:
     bool toplevel() const;
 
     /// Width of the surface.
-    double width() const;
+    uint32_t width() const;
 
     /// This is implementation specific method. DO NOT USE THIS in an application.
     void move_if_window();

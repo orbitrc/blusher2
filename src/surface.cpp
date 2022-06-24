@@ -41,7 +41,7 @@ Surface::Surface(Surface *parent)
 // Public Methods
 //=================
 
-double Surface::height() const
+uint32_t Surface::height() const
 {
     return this->_impl->height();
 }
@@ -83,7 +83,7 @@ bool Surface::toplevel() const
     return this->_impl->toplevel();
 }
 
-double Surface::width() const
+uint32_t Surface::width() const
 {
     return this->_impl->width();
 }
