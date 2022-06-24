@@ -34,6 +34,7 @@ SOURCES += \
     src/color.cpp \
     src/image.cpp \
     src/svg.cpp \
+    src/cursor.cpp \
     src/resource.cpp \
     src/pointer-event.cpp \
     src/application-impl.cpp \
@@ -67,6 +68,7 @@ HEADERS += \
     include/blusher/color.h \
     include/blusher/image.h \
     include/blusher/svg.h \
+    include/blusher/cursor.h \
     include/blusher/resource.h \
     include/blusher/pointer-event.h \
     src/application-impl.h \
