@@ -79,6 +79,8 @@ public:
     uint32_t pointerPressSerial() const;
     void setPointerPressSerial(uint32_t serial);
 
+    Cursor* cursor();
+
     /// Pointer x position stored in pointer motion event.
     double pointerEventX() const;
     /// Pointer y position stored in pointer motion event.
@@ -118,8 +120,10 @@ private:
     double _pointer_event_x;
     double _pointer_event_y;
 
+public:
     Cursor *_cursor;
 
+private:
     QCoreApplication *_q_core_application;
 
     DisplayDispatchThread _display_dispatch;

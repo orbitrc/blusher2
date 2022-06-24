@@ -60,6 +60,15 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
     bl::SurfaceImpl *surface_impl =
         application_impl->surfaceImplForWlSurface(surface);
 
+    // Set toy cursor.
+    if (application_impl->cursor() == nullptr) {
+        application_impl->_cursor = new bl::Cursor(bl::Cursor::Shape::Arrow);
+    }
+    wl_pointer_set_cursor(pointer, serial,
+        application_impl->cursor()->wl_surface(),
+        application_impl->cursor()->hot_spot_x(),
+        application_impl->cursor()->hot_spot_y());
+
     if (surface_impl != nullptr) {
         QPointF pos;
         QPointF winPos;
@@ -304,7 +313,6 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
 
     // Toy cursor. Change this later.
     this->_cursor = nullptr;
-    // this->_cursor = new Cursor(Cursor::Shape::Arrow);
 
     this->_xdg_wm_base = nullptr;
 
@@ -521,6 +529,11 @@ void ApplicationImpl::setPointerEventY(double y)
     if (this->_pointer_event_y != y) {
         this->_pointer_event_y = y;
     }
+}
+
+Cursor* ApplicationImpl::cursor()
+{
+    return this->_cursor;
 }
 
 } // namespace bl

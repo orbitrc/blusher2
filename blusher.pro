@@ -42,6 +42,7 @@ SOURCES += \
     src/surface-impl.cpp \
     src/view-impl.cpp \
     src/utils.cpp \
+    src/egl-utils.cpp \
     src/wl-display.cpp \
     src/wl-registry.cpp \
     src/wl-interface.cpp \
@@ -86,7 +87,8 @@ HEADERS += \
     include/blusher/wayland/xdg-wm-base.h \
     include/blusher/wayland/xdg-surface.h \
     include/blusher/wayland/xdg-toplevel.h \
-    include/blusher/utils.h
+    include/blusher/utils.h \
+    src/egl-utils.h
 
 # Examples
 DISTFILES += examples/wl-show-surface/main.cpp \
