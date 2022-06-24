@@ -27,6 +27,20 @@ class View
     friend SurfaceImpl;
     friend ViewImpl;
 public:
+    enum class State {
+        /// State is normal.
+        Normal = 0,
+        /// Pointer hovered.
+        Hover = 1,
+        /// Pointer pressed and pointer is in the surface.
+        Active = 2,
+        /// Pointer pressed but pointer is out of the surface area.
+        ActiveOut = 3,
+        /// Keyboard focus.
+        Focus = 4,
+    };
+
+public:
     View(View *parent = nullptr);
 
     double x() const;
