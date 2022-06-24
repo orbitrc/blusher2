@@ -230,6 +230,9 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
             egl_error_to_string(err), err);
     }
 
+    // Convert image format.
+    bl::Image rgba32_image = image.converted(bl::Image::Format::Rgba32);
+
     // Set the viewport.
     glViewport(
         0, 0,
@@ -285,7 +288,7 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
         0,
         GL_RGBA,
         GL_UNSIGNED_BYTE,
-        image.data()
+        rgba32_image.data()
     );
     glGenerateMipmap(GL_TEXTURE_2D);
 

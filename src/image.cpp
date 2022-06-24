@@ -207,7 +207,7 @@ Image::Image(uint64_t width, uint64_t height, Image::Format format)
     this->_height = height;
     this->_format = format;
 
-    if (format == Image::Format::Argb32) {
+    if (format == Image::Format::Argb32 || format == Image::Format::Rgba32) {
         auto pixel_size = sizeof(uint8_t) * 4;
         this->_data = (uint8_t*)malloc(
             pixel_size * (width * height));
@@ -361,6 +361,44 @@ void Image::add(const Image &image, uint64_t x, uint64_t y)
     } else {
         // TODO.
     }
+}
+
+Image Image::converted(Image::Format format) const
+{
+    Image ret(this->_width, this->_height, format);
+
+    // Copy image data.
+    ret.add(*this, 0, 0);
+
+    if (this->_format == format) {
+        // Do nothing if format is same.
+        return ret;
+    }
+
+    if (this->_format == Image::Format::Argb32) {
+        if (format == Image::Format::Rgba32) {
+            uint32_t *pixel = (uint32_t*)this->_data;
+            uint32_t *target = (uint32_t*)ret._data;
+            for (uint64_t i = 0; i < (ret.width() * ret.height()); ++i) {
+                uint32_t argb32 = *pixel;
+                uint32_t rgba32 = 0;
+                rgba32 += ((argb32 & 0xff000000));          // Set alpha.
+                rgba32 += ((argb32 & 0x00ff0000) >> 16);    // Set blue.
+                rgba32 += ((argb32 & 0x0000ff00));          // Set green.
+                rgba32 += ((argb32 & 0x000000ff) << 16);    // Set red.
+                *target = rgba32;
+                ++pixel;
+                ++target;
+            }
+        } else if (format == Image::Format::Rgb32) {
+            fprintf(stderr, "[WARN] Image::converted() - "
+                "Argb32 to Rgb32 is not implemented!\n");
+        } else {
+            fprintf(stderr, "[WARN] Image::converted() - not implemented!\n");
+        }
+    }
+
+    return ret;
 }
 
 } // namespace bl

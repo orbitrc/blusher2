@@ -17,8 +17,11 @@ class Image
 public:
     enum class Format {
         Invalid,
+        /// Most format is Argb32.
         Argb32,
         Rgb32,
+        /// OpenGL uses Rgba32 format.
+        Rgba32,
     };
 
     enum class FileFormat {
@@ -62,6 +65,9 @@ public:
 
     /// Adds an image.
     void add(const Image& image, uint64_t x, uint64_t y);
+
+    /// Returns new image that format changed.
+    Image converted(Image::Format format) const;
 
 private:
     uint64_t _width;
