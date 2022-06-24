@@ -22,6 +22,7 @@
 #include <GLES3/gl3.h>
 
 // Blusher
+#include <blusher/wayland/wl-surface.h>
 #include <blusher/color.h>
 #include <blusher/view.h>
 
@@ -162,7 +163,7 @@ private:
     //=================
     // Wayland client
     //=================
-    struct wl_surface *_surface;
+    WlSurface _surface;
     struct wl_subsurface *_subsurface;
     struct wl_callback *_frame_callback;
 

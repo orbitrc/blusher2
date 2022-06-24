@@ -389,7 +389,8 @@ static void init_egl(bl::SurfaceImpl::EglObject *egl_object)
 namespace bl {
 
 SurfaceImpl::SurfaceImpl(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+      _surface(bl::app_impl->compositor()->create_surface())
 {
     this->m_x = 0;
     this->m_y = 0;
@@ -421,7 +422,6 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     //===============
     // Wayland
     //===============
-    this->_surface = wl_compositor_create_surface(bl::app_impl->compositor());
     this->_subsurface = NULL;
     this->_frame_callback = NULL;
 
@@ -430,7 +430,7 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
 
     if (this->toplevel() != true) {
         this->_subsurface = wl_subcompositor_get_subsurface(app_impl->subcompositor(),
-            this->_surface,
+            this->_surface.wl_surface(),
             static_cast<SurfaceImpl*>(this->parent())->wlSurface()
         );
     }
@@ -439,8 +439,9 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     // XDG shell
     //=============
     if (this->parent() == nullptr) {
-        this->_xdg_surface = xdg_wm_base_get_xdg_surface(app_impl->xdgWmBase()->xdg_wm_base(),
-            this->_surface);
+        this->_xdg_surface =
+            xdg_wm_base_get_xdg_surface(app_impl->xdgWmBase()->xdg_wm_base(),
+                this->_surface.wl_surface());
         xdg_surface_add_listener(this->_xdg_surface, &xdg_surface_listener, NULL);
 
         this->_xdg_toplevel = xdg_surface_get_toplevel(this->_xdg_surface);
@@ -449,7 +450,7 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
             static_cast<void*>(this));
 
         // Signal that the surface is ready to be configured.
-        wl_surface_commit(this->_surface);
+        this->_surface.commit();
         // Wait for the surface to be configured.
         app_impl->display()->roundtrip();
 
@@ -462,7 +463,7 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     this->_egl_object = EglObject();
 
     init_egl(&this->_egl_object);
-    this->_egl_window = wl_egl_window_create(this->_surface,
+    this->_egl_window = wl_egl_window_create(this->_surface.wl_surface(),
         this->width(), this->height());
     this->_egl_object.egl_surface = eglCreateWindowSurface(
         this->_egl_object.egl_display, this->_egl_object.egl_config,
@@ -656,7 +657,7 @@ void SurfaceImpl::show()
             this->width(), this->height());
 
         // wl_surface_attach(this->_surface, this->_buffer, 0, 0);
-        wl_surface_commit(this->_surface);
+        this->_surface.commit();
 
         if (this->parent() != nullptr) {
             wl_surface_commit(static_cast<SurfaceImpl*>(this->parent())->wlSurface());
@@ -782,7 +783,7 @@ void SurfaceImpl::callPointerReleaseHandler(uint32_t button, double x, double y)
 //==================
 struct wl_surface* SurfaceImpl::wlSurface() const
 {
-    return this->_surface;
+    return const_cast<WlSurface&>(this->_surface).wl_surface();
 }
 
 

@@ -11,6 +11,7 @@
 
 #include <blusher/wayland/wl-display.h>
 #include <blusher/wayland/wl-registry.h>
+#include <blusher/wayland/wl-compositor.h>
 #include <blusher/wayland/wl-seat.h>
 #include <blusher/wayland/xdg-wm-base.h>
 #include <blusher/cursor.h>
@@ -43,8 +44,8 @@ public:
     //========================
     WlDisplay* display();
 
-    struct wl_compositor* compositor() const;
-    void setCompositor(struct wl_compositor*);
+    std::shared_ptr<WlCompositor> compositor() const;
+    void setCompositor(std::shared_ptr<WlCompositor>);
 
     struct wl_subcompositor* subcompositor() const;
     void setSubcompositor(struct wl_subcompositor*);
@@ -96,7 +97,7 @@ private:
     // Wayland client
     //=================
     WlDisplay _display;
-    struct wl_compositor *_compositor;
+    std::shared_ptr<WlCompositor> _compositor;
     struct wl_subcompositor *_subcompositor;
     WlRegistry _registry;
     struct wl_shm *_shm;

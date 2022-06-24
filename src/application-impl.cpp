@@ -232,9 +232,9 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
                 static_cast<void*>(application_impl));
         }
     } else if (strcmp(interface, "wl_compositor") == 0) {
-        if (application_impl->compositor() == NULL) {
-            application_impl->setCompositor(static_cast<struct wl_compositor*>(
-                wl_registry_bind(registry, id, &wl_compositor_interface, 3)));
+        if (application_impl->compositor() == nullptr) {
+            auto interface = bl::WlInterface<bl::WlInterfaceType::Compositor>();
+            application_impl->setCompositor(reg->bind(id, interface, 3));
         }
     } else if (strcmp(interface, "wl_subcompositor") == 0) {
         if (application_impl->subcompositor() == NULL) {
@@ -292,7 +292,7 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     //===============
 //    this->_display = WlDisplay::connect();
 
-    this->_compositor = NULL;
+    this->_compositor = nullptr;
     this->_subcompositor = NULL;
     this->_shm = NULL;
     this->_seat = nullptr;
@@ -352,12 +352,12 @@ WlDisplay* ApplicationImpl::display()
 }
 
 // Compositor
-struct wl_compositor* ApplicationImpl::compositor() const
+std::shared_ptr<WlCompositor> ApplicationImpl::compositor() const
 {
     return this->_compositor;
 }
 
-void ApplicationImpl::setCompositor(struct wl_compositor *compositor)
+void ApplicationImpl::setCompositor(std::shared_ptr<WlCompositor> compositor)
 {
     this->_compositor =  compositor;
 }
