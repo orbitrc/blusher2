@@ -21,6 +21,8 @@ TitleBar::TitleBar(Surface *parent)
 
     // Add buttons.
     TitleBarButton *close_button = new TitleBarButton(this->root_view().get());
+    close_button->set_x(5);
+    close_button->set_y(2);
     close_button->set_width(26);
     close_button->set_height(26);
     close_button->set_color(Color::from_rgb(255, 0, 0));
