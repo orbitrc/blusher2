@@ -1,6 +1,12 @@
 #ifndef _BL_APPLICATION_H
 #define _BL_APPLICATION_H
 
+// C++
+#include <memory>
+
+// Blusher
+#include <blusher/wayland/wl-compositor.h>
+
 namespace bl {
 
 class ApplicationImpl;
@@ -14,6 +20,12 @@ public:
     ~Application();
 
     Resource* resource();
+
+    //==================
+    // Wayland Native
+    //==================
+    std::shared_ptr<WlCompositor> compositor();
+
 
     int exec();
 

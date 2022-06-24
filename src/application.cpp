@@ -38,4 +38,9 @@ int Application::exec()
     return this->_impl->exec();
 }
 
+std::shared_ptr<WlCompositor> Application::compositor()
+{
+    return this->_impl->compositor();
+}
+
 } // namespace bl
