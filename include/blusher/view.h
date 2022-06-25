@@ -86,6 +86,7 @@ private:
     View *_parent;
     Surface *_surface;
     pr::Vector<View*> _children;
+    View::State _state;
 };
 
 } // namespace bl

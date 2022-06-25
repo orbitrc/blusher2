@@ -35,6 +35,8 @@ View::View(View *parent)
     } else {
         this->_surface = nullptr;
     }
+
+    this->_state = View::State::Normal;
 }
 
 double View::x() const
