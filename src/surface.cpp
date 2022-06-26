@@ -258,9 +258,24 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
         break;
     }
 
+    // Surface.
     auto event = std::make_shared<PointerEvent>(button, x, y);
 
     this->pointer_move_event(event);
+
+    // View.
+    auto root_view = this->_impl->rootView();
+    View *view = root_view->child_at(Point(x, y));
+    if (view != nullptr) {
+        // TODO: Fix x, y position!
+        auto event = std::make_shared<PointerEvent>(button, x, y);
+
+        view->pointer_move_event(event);
+    } else {
+        auto event = std::make_shared<PointerEvent>(button, x, y);
+
+        root_view->pointer_move_event(event);
+    }
 }
 
 } // namespace bl

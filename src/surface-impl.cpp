@@ -875,6 +875,15 @@ bool SurfaceImpl::event(QEvent *event)
 
             return true;
         }
+    } else if (event->type() == QEvent::MouseMove) {
+        auto mouse_event = static_cast<QMouseEvent*>(event);
+        if (this->m_pointerMoveHandler != nullptr) {
+            auto handler = this->m_pointerMoveHandler;
+            (this->m_blSurface->*handler)(0,
+                mouse_event->pos().x(),
+                mouse_event->pos().y());
+        }
+        return true;
     }
 
     return QObject::event(event);
@@ -892,11 +901,7 @@ void SurfaceImpl::exposeEvent(QExposeEvent *event)
 
 void SurfaceImpl::mouseMoveEvent(QMouseEvent *event)
 {
-//    fprintf(stderr, "(%f, %f)\n", event->localPos().x(), event->localPos().y());
-    if (this->m_pointerMoveHandler != nullptr) {
-        auto handler = this->m_pointerMoveHandler;
-        (this->m_blSurface->*handler)(0, event->pos().x(), event->pos().y());
-    }
+    (void)event;
 }
 
 void SurfaceImpl::mousePressEvent(QMouseEvent *event)

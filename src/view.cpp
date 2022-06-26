@@ -162,4 +162,9 @@ void View::pointer_release_event(std::shared_ptr<PointerEvent> event)
     (void)event;
 }
 
+void View::pointer_move_event(std::shared_ptr<PointerEvent> event)
+{
+    (void)event;
+}
+
 } // namespace bl

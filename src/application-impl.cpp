@@ -115,7 +115,8 @@ static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
 
         if (surface_impl != nullptr) {
             QPoint pos;
-            QMoveEvent event(pos, pos);
+            Qt::KeyboardModifiers mod;
+            QMouseEvent event(QEvent::MouseMove, pos, Qt::MouseButton::NoButton, 0, mod);
             QCoreApplication::sendEvent(surface_impl, &event);
         }
     }
