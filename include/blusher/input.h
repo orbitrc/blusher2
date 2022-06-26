@@ -10,11 +10,44 @@ enum class Button {
     Middle,
 };
 
-enum class KeyModifier {
+enum class KeyboardModifier {
     None,
     Ctrl,
     Alt,
     Shift,
+};
+
+enum class KeyboardKey {
+    Esc,
+    Tab,
+    Backspace,
+    Enter,
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H,
+    I,
+    J,
+    K,
+    L,
+    M,
+    N,
+    O,
+    P,
+    Q,
+    R,
+    S,
+    T,
+    U,
+    V,
+    W,
+    X,
+    Y,
+    Z,
 };
 
 } // namespace bl
