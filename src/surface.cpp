@@ -160,7 +160,7 @@ void Surface::pointer_enter_handler()
 {
     this->_state = State::Hover;
 
-    PointerEvent::Button button = PointerEvent::Button::None;
+    Button button = Button::None;
 
     auto event = std::make_shared<PointerEvent>(button, 0, 0);
 
@@ -171,7 +171,7 @@ void Surface::pointer_leave_handler()
 {
     this->_state = State::Normal;
 
-    PointerEvent::Button button = PointerEvent::Button::None;
+    Button button = Button::None;
 
     auto event = std::make_shared<PointerEvent>(button, 0, 0);
 
@@ -180,18 +180,18 @@ void Surface::pointer_leave_handler()
 
 void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
 {
-    PointerEvent::Button button;
+    Button button;
     switch (impl_button) {
     case BTN_LEFT:
-        button = PointerEvent::Button::Left;
+        button = Button::Left;
         // Set surface state to active.
         this->_state = State::Active;
         break;
     case BTN_RIGHT:
-        button = PointerEvent::Button::Right;
+        button = Button::Right;
         break;
     case BTN_MIDDLE:
-        button = PointerEvent::Button::Middle;
+        button = Button::Middle;
         break;
     default:
         break;
@@ -221,16 +221,16 @@ void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
 
 void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
 {
-    PointerEvent::Button button;
+    Button button;
     switch (impl_button) {
     case BTN_LEFT:
-        button = PointerEvent::Button::Left;
+        button = Button::Left;
         break;
     case BTN_RIGHT:
-        button = PointerEvent::Button::Right;
+        button = Button::Right;
         break;
     case BTN_MIDDLE:
-        button = PointerEvent::Button::Middle;
+        button = Button::Middle;
         break;
     default:
         break;
@@ -243,16 +243,16 @@ void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
 
 void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
 {
-    PointerEvent::Button button;
+    Button button;
     switch (impl_button) {
     case BTN_LEFT:
-        button = PointerEvent::Button::Left;
+        button = Button::Left;
         break;
     case BTN_RIGHT:
-        button = PointerEvent::Button::Right;
+        button = Button::Right;
         break;
     case BTN_MIDDLE:
-        button = PointerEvent::Button::Middle;
+        button = Button::Middle;
         break;
     default:
         break;

@@ -71,6 +71,7 @@ HEADERS += \
     include/blusher/svg.h \
     include/blusher/cursor.h \
     include/blusher/resource.h \
+    include/blusher/input.h \
     include/blusher/pointer-event.h \
     src/application-impl.h \
     src/signal-impl.h \

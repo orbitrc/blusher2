@@ -20,7 +20,7 @@ PointerEvent::~PointerEvent()
 // Public Methods
 //=================
 
-PointerEvent::Button PointerEvent::button() const
+Button PointerEvent::button() const
 {
     return this->_button;
 }

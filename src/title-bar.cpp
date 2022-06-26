@@ -34,7 +34,7 @@ TitleBar::TitleBar(Surface *parent)
 
 void TitleBar::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    if (event->button() == PointerEvent::Button::Left) {
+    if (event->button() == Button::Left) {
         fprintf(stderr, "bl::TitleBar::pointer_press_event() - Button::Left\n");
         for (Surface *it = this; it->parent() != nullptr; it = it->parent()) {
             Surface *win = it->parent();

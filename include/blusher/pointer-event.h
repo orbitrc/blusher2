@@ -1,18 +1,12 @@
 #ifndef _BL_POINTER_EVENT_H
 #define _BL_POINTER_EVENT_H
 
+#include <blusher/input.h>
+
 namespace bl {
 
 class PointerEvent
 {
-public:
-    enum class Button {
-        None,
-        Left,
-        Right,
-        Middle,
-    };
-
 public:
     PointerEvent(Button button, double x, double y);
     ~PointerEvent();

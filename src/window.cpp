@@ -160,7 +160,7 @@ Resize::Resize(Surface *parent)
 
 void Resize::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    if (event->button() == PointerEvent::Button::Left) {
+    if (event->button() == Button::Left) {
         for (Surface *it = this; it->parent() != nullptr; it = it->parent()) {
             Surface *win = it->parent();
             if (win->parent() == nullptr) {
