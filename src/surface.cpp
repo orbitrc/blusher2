@@ -35,6 +35,7 @@ Surface::Surface(Surface *parent)
     this->_impl->setPointerLeaveHandler(&Surface::pointer_leave_handler);
     this->_impl->setPointerPressHandler(&Surface::pointer_press_handler);
     this->_impl->setPointerReleaseHandler(&Surface::pointer_release_handler);
+    this->_impl->setPointerMoveHandler(&Surface::pointer_move_handler);
 }
 
 //=================
@@ -138,6 +139,11 @@ void Surface::pointer_release_event(std::shared_ptr<PointerEvent> event)
     (void)event;
 }
 
+void Surface::pointer_move_event(std::shared_ptr<PointerEvent> event)
+{
+    (void)event;
+}
+
 //=================
 // Private Slots
 //=================
@@ -233,6 +239,28 @@ void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
     auto event = std::make_shared<PointerEvent>(button, x, y);
 
     this->pointer_release_event(event);
+}
+
+void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
+{
+    PointerEvent::Button button;
+    switch (impl_button) {
+    case BTN_LEFT:
+        button = PointerEvent::Button::Left;
+        break;
+    case BTN_RIGHT:
+        button = PointerEvent::Button::Right;
+        break;
+    case BTN_MIDDLE:
+        button = PointerEvent::Button::Middle;
+        break;
+    default:
+        break;
+    }
+
+    auto event = std::make_shared<PointerEvent>(button, x, y);
+
+    this->pointer_move_event(event);
 }
 
 } // namespace bl

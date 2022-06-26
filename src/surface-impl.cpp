@@ -44,6 +44,7 @@
 static void xdg_surface_configure_handler(void *data,
         struct xdg_surface *xdg_surface, uint32_t serial)
 {
+    (void)data;
     xdg_surface_ack_configure(xdg_surface, serial);
 }
 
@@ -72,6 +73,10 @@ static void xdg_toplevel_configure_handler(void *data,
 
     // State is resizing.
     if (states_v.index(bl::XdgToplevel::State::Resizing) != std::nullopt) {
+        // Sometimes width and height could be zero.
+        if (width == 0 && height == 0) {
+            return;
+        }
         if (surface->width() != width || surface->height() != height) {
             fprintf(stderr, "Resizing...\n");
             surface->set_geometry(0, 0, width, height);
@@ -724,6 +729,11 @@ void SurfaceImpl::setPointerReleaseHandler(void (Surface::*handler)(uint32_t, do
     this->m_pointerReleaseHandler = handler;
 }
 
+void SurfaceImpl::setPointerMoveHandler(void (Surface::*handler)(uint32_t, double, double))
+{
+    this->m_pointerMoveHandler = handler;
+}
+
 void SurfaceImpl::callPointerEnterHandler()
 {
     if (this->m_pointerEnterHandler != nullptr) {
@@ -752,6 +762,14 @@ void SurfaceImpl::callPointerReleaseHandler(uint32_t button, double x, double y)
 {
     if (this->m_pointerReleaseHandler != nullptr) {
         auto handler = this->m_pointerReleaseHandler;
+        (this->m_blSurface->*handler)(button, x, y);
+    }
+}
+
+void SurfaceImpl::callPointerMoveHandler(uint32_t button, double x, double y)
+{
+    if (this->m_pointerMoveHandler != nullptr) {
+        auto handler = this->m_pointerMoveHandler;
         (this->m_blSurface->*handler)(button, x, y);
     }
 }
@@ -854,6 +872,14 @@ bool SurfaceImpl::event(QEvent *event)
         if (this->m_pointerLeaveHandler != nullptr) {
             auto handler = this->m_pointerLeaveHandler;
             (this->m_blSurface->*handler)();
+
+            return true;
+        }
+    } else if (event->type() == QEvent::Move) {
+        auto move_event = static_cast<QMoveEvent*>(event);
+        if (this->m_pointerMoveHandler != nullptr) {
+            auto handler = this->m_pointerMoveHandler;
+            (this->m_blSurface->*handler)(0, move_event->pos().x(), move_event->pos().y());
 
             return true;
         }

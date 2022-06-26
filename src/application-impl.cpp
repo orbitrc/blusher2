@@ -81,6 +81,7 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
 static void pointer_leave_handler(void *data, struct wl_pointer *pointer,
         uint32_t serial, struct wl_surface *surface)
 {
+    fprintf(stderr, "[LOG] pointer_leave_handler()\n");
     bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
         data);
 
@@ -106,6 +107,18 @@ static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
     double y = wl_fixed_to_double(sy);
     bl::app_impl->setPointerEventX(x);
     bl::app_impl->setPointerEventY(y);
+
+    struct wl_surface *active_wl_surface = bl::app_impl->pointerSurface();
+    if (active_wl_surface != nullptr) {
+        bl::SurfaceImpl *surface_impl =
+            bl::app_impl->surfaceImplForWlSurface(active_wl_surface);
+
+        if (surface_impl != nullptr) {
+            QPoint pos;
+            QMoveEvent event(pos, pos);
+            QCoreApplication::sendEvent(surface_impl, &event);
+        }
+    }
 }
 
 static void pointer_button_handler(void *data, struct wl_pointer *pointer,
