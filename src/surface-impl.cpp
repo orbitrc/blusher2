@@ -226,8 +226,10 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
         1, 2, 3,    // Second triangle
     };
 
+    /*
     fprintf(stderr, "[LOG] texture_function() - width height: %ldx%ld\n",
         width, height);
+    */
     eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
     EGLint err = eglGetError();
     if (err != EGL_SUCCESS) {
@@ -685,6 +687,9 @@ Surface* SurfaceImpl::surface()
 void SurfaceImpl::setBlSurface(Surface *blSurface)
 {
     this->m_blSurface = blSurface;
+    fprintf(stderr,
+        "[LOG] SurfaceImpl::setBlSurface() - %p, surface: %p, root_view: %p\n",
+        this, blSurface, this->m_rootView.get());
     this->m_rootView->set_surface(blSurface);
 }
 
@@ -796,7 +801,6 @@ struct wl_surface* SurfaceImpl::wlSurface() const
 
 void SurfaceImpl::update()
 {
-    fprintf(stderr, " - update() SurfaceImpl: %p\n", this);
     // Re-create EGL window surface.
     EGLBoolean destroyed = eglDestroySurface(this->_egl_object.egl_display,
         this->_egl_object.egl_surface);

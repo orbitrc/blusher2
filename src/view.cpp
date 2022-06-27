@@ -131,13 +131,17 @@ void View::set_surface(Surface *surface)
 void View::update()
 {
     this->_impl->update();
+
+    // Update parent.
+    if (this->_parent != nullptr) {
+        this->_parent->update();
+    }
+
     if (this->_surface == nullptr) {
         fprintf(stderr, "[WARN] View::update() surface is null!\n");
+        fprintf(stderr, " - this: %p, this->_parent: %p\n", this, this->_parent);
         return;
     }
-    // Update parent.
-    this->_parent->update();
-
     this->_surface->update();
 }
 

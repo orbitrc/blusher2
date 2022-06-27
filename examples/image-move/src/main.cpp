@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     SampleView v(window.root_view().get());
 
     v.update();
-    v.surface()->root_view()->update();
+//    v.surface()->root_view()->update();
 
     return app.exec();
 }
