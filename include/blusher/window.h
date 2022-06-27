@@ -16,9 +16,6 @@ class Window : public Surface
 public:
     Window();
 
-    uint32_t width() const;
-    uint32_t height() const;
-
     void show();
 
     void move();
@@ -30,9 +27,6 @@ private:
     void update_title_bar();
 
 private:
-    uint32_t _width;
-    uint32_t _height;
-
     Surface *_decoration;
     Resize *_resize;
     Surface *_border;
