@@ -161,7 +161,8 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
         1, 2, 3,    // Second triangle
     };
 
-    fprintf(stderr, "[LOG] texture_function() - width height: %ldx%ld\n",
+    fprintf(stderr,
+        "[LOG] In Cursor. texture_function() - width height: %ldx%ld\n",
         width, height);
     eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
     EGLint err = eglGetError();
