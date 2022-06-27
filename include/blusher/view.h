@@ -59,6 +59,8 @@ public:
     Color color() const;
     void set_color(const Color& color);
 
+    void fill(const Color& color);
+
     void draw_image(const Point& pos, const Image& image);
 
     View* child_at(const Point& pos);

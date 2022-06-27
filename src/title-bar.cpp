@@ -61,6 +61,14 @@ TitleBarButton::TitleBarButton(View *parent)
 // Events
 //==============
 
+void TitleBarButton::pointer_enter_event(std::shared_ptr<PointerEvent> event)
+{
+    fprintf(stderr, "[LOG] TitleBarButton::pointer_enter_event()\n");
+    this->fill(Color::from_rgb(150, 0, 0));
+
+    return View::pointer_enter_event(event);
+}
+
 void TitleBarButton::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
     fprintf(stderr, "Title bar button pressed.\n");

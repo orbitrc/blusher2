@@ -95,6 +95,8 @@ private:
 
     Surface *_parent;
     State _state;
+
+    View *_current_view;
 };
 
 } // namespace bl

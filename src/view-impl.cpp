@@ -110,6 +110,13 @@ void ViewImpl::setColor(const Color& color)
     emit this->colorChanged();
 }
 
+void ViewImpl::fill(const Color& color)
+{
+    this->m_image->fill(color);
+
+    this->m_view->update();
+}
+
 void ViewImpl::drawImage(uint64_t x, uint64_t y, const Image& image)
 {
     this->m_image->add(image, x, y);

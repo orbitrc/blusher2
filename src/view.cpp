@@ -94,6 +94,11 @@ void View::set_color(const Color &color)
     this->_impl->setColor(color);
 }
 
+void View::fill(const Color& color)
+{
+    this->_impl->fill(color);
+}
+
 void View::draw_image(const Point& pos, const Image& image)
 {
     this->_impl->drawImage(pos.x(), pos.y(), image);

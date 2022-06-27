@@ -16,6 +16,7 @@ public:
     TitleBarButton(View *parent);
 
 protected:
+    void pointer_enter_event(std::shared_ptr<PointerEvent> event) override;
     void pointer_press_event(std::shared_ptr<PointerEvent> event) override;
 };
 

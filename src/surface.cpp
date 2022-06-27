@@ -8,6 +8,7 @@
 
 #include <blusher/point.h>
 #include <blusher/rect.h>
+#include <blusher/utils.h>
 
 #ifdef emit
     #undef emit
@@ -27,6 +28,7 @@ Surface::Surface(Surface *parent)
 
     this->_parent = parent;
     this->_state = State::Normal;
+    this->_current_view = nullptr;
 
     this->color_changed.connect([]() { fprintf(stderr, "Hello, color_changed!\n"); });
 
@@ -267,6 +269,15 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
     auto root_view = this->_impl->rootView();
     View *view = root_view->child_at(Point(x, y));
     if (view != nullptr) {
+        // Send pointer enter event.
+        if (this->_current_view != view) {
+            this->_current_view = view;
+
+            auto event = std::make_shared<PointerEvent>(Button::None, x, y);
+
+            view->pointer_enter_event(event);
+        }
+
         // TODO: Fix x, y position!
         auto event = std::make_shared<PointerEvent>(button, x, y);
 
