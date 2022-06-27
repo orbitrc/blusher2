@@ -693,6 +693,9 @@ void SurfaceImpl::moveIfToplevel()
     if (this->parent() == nullptr) {
         xdg_toplevel_move(this->_xdg_toplevel,
             app_impl->seat()->wl_seat(), app_impl->pointer_state.serial);
+        // Manually release button pressed state because after
+        // xdg_toplevel_move() call, xdg_toplevel.button event not called.
+        app_impl->pointer_state.button = 0;
     }
 }
 
@@ -704,6 +707,9 @@ void SurfaceImpl::resizeIfToplevel()
             bl::app_impl->pointer_state.serial,
             XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM
         );
+        // Manually release button pressed state because after
+        // xdg_toplevel_resize() call, xdg_toplevel.button event not called.
+        app_impl->pointer_state.button = 0;
     }
 }
 

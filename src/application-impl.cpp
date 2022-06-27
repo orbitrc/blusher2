@@ -52,7 +52,6 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
         uint32_t serial, struct wl_surface *surface,
         wl_fixed_t sx, wl_fixed_t sy)
 {
-    fprintf(stderr, "pointer_enter_handler()\n");
     bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
         data);
 
@@ -83,7 +82,6 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
 static void pointer_leave_handler(void *data, struct wl_pointer *pointer,
         uint32_t serial, struct wl_surface *surface)
 {
-    fprintf(stderr, "[LOG] pointer_leave_handler()\n");
     bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
         data);
 
