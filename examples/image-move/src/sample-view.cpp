@@ -9,6 +9,9 @@
 SampleView::SampleView(bl::View *parent)
     : bl::View(parent)
 {
+    this->_pressed_x = 0;
+    this->_pressed_y = 0;
+
     this->set_width(150);
     this->set_height(150);
     this->set_color(bl::Color::from_rgb(0, 255, 0));
@@ -20,20 +23,23 @@ SampleView::SampleView(bl::View *parent)
 // Events
 //=============
 
+void SampleView::pointer_press_event(std::shared_ptr<bl::PointerEvent> event)
+{
+    if (event->button() == bl::Button::Left) {
+        fprintf(stderr, "pointer press x, y: %f, %f\n", event->x(), event->y());
+        this->_pressed_x = event->x();
+        this->_pressed_y = event->y();
+    }
+}
+
 void SampleView::pointer_move_event(std::shared_ptr<bl::PointerEvent> event)
 {
     if (event->button() == bl::Button::Left) {
-        //
-        fprintf(stderr, "pointer move x, y: %f, %f\n", event->x(), event->y());
-        double offset_x = event->x() - this->x();
-        double offset_y = event->y() - this->y();
-        fprintf(stderr, " - offset x, y: %f, %f\n", offset_x, offset_y);
+        double offset_x = event->x() - this->_pressed_x;
+        double offset_y = event->y() - this->_pressed_y;
+
         this->set_x(offset_x);
         this->set_y(offset_y);
-        /*
-        this->set_x(this->x() + 1);
-        this->set_y(this->y() + 1);
-        */
     }
 
     return View::pointer_move_event(event);
