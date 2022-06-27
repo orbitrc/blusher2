@@ -22,7 +22,10 @@ SampleView::SampleView(bl::View *parent)
 
 void SampleView::pointer_move_event(std::shared_ptr<bl::PointerEvent> event)
 {
-    fprintf(stderr, "pointer move x, y: %f, %f\n", event->x(), event->y());
+    if (event->button() == bl::Button::Left) {
+        //
+        fprintf(stderr, "pointer move x, y: %f, %f\n", event->x(), event->y());
+    }
 
     return View::pointer_move_event(event);
 }

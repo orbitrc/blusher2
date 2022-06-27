@@ -58,6 +58,8 @@ void ViewImpl::setX(double x)
 {
     if (this->m_x != x) {
         this->m_x = x;
+
+        this->update();
     }
 }
 
@@ -65,6 +67,8 @@ void ViewImpl::setY(double y)
 {
     if (this->m_y != y) {
         this->m_y = y;
+
+        this->update();
     }
 }
 

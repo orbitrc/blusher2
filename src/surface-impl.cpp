@@ -691,7 +691,7 @@ void SurfaceImpl::moveIfToplevel()
 {
     if (this->parent() == nullptr) {
         xdg_toplevel_move(this->_xdg_toplevel,
-            app_impl->seat()->wl_seat(), app_impl->pointerPressSerial());
+            app_impl->seat()->wl_seat(), app_impl->pointer_state.serial);
     }
 }
 
@@ -700,7 +700,7 @@ void SurfaceImpl::resizeIfToplevel()
     if (this->parent() == nullptr) {
         xdg_toplevel_resize(this->_xdg_toplevel,
             bl::app_impl->seat()->wl_seat(),
-            bl::app_impl->pointerPressSerial(),
+            bl::app_impl->pointer_state.serial,
             XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM
         );
     }

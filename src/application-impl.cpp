@@ -55,7 +55,7 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
         data);
 
     // Set pointer surface.
-    application_impl->setPointerSurface(surface);
+    application_impl->pointer_state.wl_surface = surface;
 
     bl::SurfaceImpl *surface_impl =
         application_impl->surfaceImplForWlSurface(surface);
@@ -86,7 +86,7 @@ static void pointer_leave_handler(void *data, struct wl_pointer *pointer,
         data);
 
     // Pop pointer surface.
-    application_impl->setPointerSurface(nullptr);
+    application_impl->pointer_state.wl_surface = nullptr;
 
     bl::SurfaceImpl *surface_impl =
         application_impl->surfaceImplForWlSurface(surface);
@@ -108,13 +108,13 @@ static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
     bl::app_impl->setPointerEventX(x);
     bl::app_impl->setPointerEventY(y);
 
-    struct wl_surface *active_wl_surface = bl::app_impl->pointerSurface();
+    struct wl_surface *active_wl_surface = bl::app_impl->pointer_state.wl_surface;
     if (active_wl_surface != nullptr) {
         bl::SurfaceImpl *surface_impl =
             bl::app_impl->surfaceImplForWlSurface(active_wl_surface);
 
         if (surface_impl != nullptr) {
-            QPoint pos;
+            QPoint pos(x, y);
             Qt::KeyboardModifiers mod;
             QMouseEvent event(QEvent::MouseMove, pos, Qt::MouseButton::NoButton, 0, mod);
             QCoreApplication::sendEvent(surface_impl, &event);
@@ -130,14 +130,14 @@ static void pointer_button_handler(void *data, struct wl_pointer *pointer,
     bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
         data);
 
-    struct wl_surface *surface = application_impl->pointerSurface();
+    struct wl_surface *surface = application_impl->pointer_state.wl_surface;
     if (surface != nullptr) {
         bl::SurfaceImpl *surface_impl =
             application_impl->surfaceImplForWlSurface(surface);
         if (surface_impl != nullptr) {
             // Pointer press event.
             if (state == WL_POINTER_BUTTON_STATE_PRESSED) {
-                application_impl->setPointerPressSerial(serial);
+                application_impl->pointer_state.serial = serial;
                 surface_impl->callPointerPressHandler(button,
                     application_impl->pointerEventX(),
                     application_impl->pointerEventY()
@@ -322,8 +322,8 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     this->_keyboard = NULL;
     this->_pointer = NULL;
 
-    this->_pointer_event_x = 0;
-    this->_pointer_event_y = 0;
+    this->pointer_state.x = 0;
+    this->pointer_state.y = 0;
 
     // Toy cursor. Change this later.
     this->_cursor = nullptr;
@@ -501,47 +501,27 @@ SurfaceImpl* ApplicationImpl::surfaceImplForWlSurface(
     return ret;
 }
 
-struct wl_surface* ApplicationImpl::pointerSurface() const
-{
-    return this->_pointer_surface;
-}
-
-void ApplicationImpl::setPointerSurface(struct wl_surface *surface)
-{
-    this->_pointer_surface = surface;
-}
-
-uint32_t ApplicationImpl::pointerPressSerial() const
-{
-    return this->_pointer_press_serial;
-}
-
-void ApplicationImpl::setPointerPressSerial(uint32_t serial)
-{
-    this->_pointer_press_serial = serial;
-}
-
 double ApplicationImpl::pointerEventX() const
 {
-    return this->_pointer_event_x;
+    return this->pointer_state.x;
 }
 
 double ApplicationImpl::pointerEventY() const
 {
-    return this->_pointer_event_y;
+    return this->pointer_state.y;
 }
 
 void ApplicationImpl::setPointerEventX(double x)
 {
-    if (this->_pointer_event_x != x) {
-        this->_pointer_event_x = x;
+    if (this->pointer_state.x != x) {
+        this->pointer_state.x = x;
     }
 }
 
 void ApplicationImpl::setPointerEventY(double y)
 {
-    if (this->_pointer_event_y != y) {
-        this->_pointer_event_y = y;
+    if (this->pointer_state.y != y) {
+        this->pointer_state.y = y;
     }
 }
 

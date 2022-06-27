@@ -33,6 +33,17 @@ public:
 class ApplicationImpl
 {
 public:
+    class PointerState
+    {
+    public:
+        struct wl_surface *wl_surface;
+        double x;
+        double y;
+        int button;
+        uint32_t serial;
+    };
+
+public:
     ApplicationImpl(int argc, char *argv[]);
     ~ApplicationImpl();
 
@@ -74,10 +85,6 @@ public:
     bool addSurfaceImpl(SurfaceImpl*);
     bool removeSurfaceImpl(SurfaceImpl*);
     SurfaceImpl* surfaceImplForWlSurface(struct wl_surface*);
-    struct wl_surface* pointerSurface() const;
-    void setPointerSurface(struct wl_surface*);
-    uint32_t pointerPressSerial() const;
-    void setPointerPressSerial(uint32_t serial);
 
     Cursor* cursor();
 
@@ -113,15 +120,12 @@ private:
     std::shared_ptr<XdgWmBase> _xdg_wm_base;
 
     std::vector<SurfaceImpl*> _surface_impl_list;
-    /// Some pointer handlers has not surface info. So store it when enter
-    /// and pop when leave.
-    struct wl_surface *_pointer_surface;
-    uint32_t _pointer_press_serial;
-    double _pointer_event_x;
-    double _pointer_event_y;
 
 public:
     Cursor *_cursor;
+
+    /// Store global pointer event informations.
+    PointerState pointer_state;
 
 private:
     QCoreApplication *_q_core_application;
