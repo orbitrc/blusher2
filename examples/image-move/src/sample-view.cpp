@@ -26,7 +26,14 @@ void SampleView::pointer_move_event(std::shared_ptr<bl::PointerEvent> event)
         //
         fprintf(stderr, "pointer move x, y: %f, %f\n", event->x(), event->y());
         double offset_x = event->x() - this->x();
+        double offset_y = event->y() - this->y();
+        /*
+        fprintf(stderr, " - offset x, y: %f, %f\n", offset_x, offset_y);
         this->set_x(offset_x);
+        this->set_y(offset_y);
+        */
+        this->set_x(this->x() + 1);
+        this->set_y(this->y() + 1);
     }
 
     return View::pointer_move_event(event);
