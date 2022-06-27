@@ -6,6 +6,8 @@ VERSION_PATCH = 0
 VERSION = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_PATCH)
 SONAME = libblusher-svg.so.$(VERSION_MAJOR)
 
+INSTALL_DIR = $(shell ../tools/dist-install-dir.sh)
+
 C_INCLUDES := -Iinclude/blusher/svg
 
 PKG_CONFIGS = `pkg-config --cflags --libs librsvg-2.0`
@@ -24,9 +26,9 @@ install:
 	mkdir -p /usr/include/blusher/svg
 	cp include/blusher/svg/svg-core.h /usr/include/blusher/svg/
 	cp libblusher-svg.so.$(VERSION) /usr/lib
-	cp -P libblusher-svg.so.$(VERSION_MAJOR).$(VERSION_MINOR) /usr/lib/
-	cp -p libblusher-svg.so.$(VERSION_MAJOR) /usr/lib/
-	cp -p libblusher-svg.so /usr/lib
+	cp -P libblusher-svg.so.$(VERSION_MAJOR).$(VERSION_MINOR) $(INSTALL_DIR)
+	cp -p libblusher-svg.so.$(VERSION_MAJOR) $(INSTALL_DIR)
+	cp -p libblusher-svg.so $(INSTALL_DIR)
 
 clean:
 	rm libblusher-svg.so*

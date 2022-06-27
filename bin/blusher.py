@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Do not execute this file directly. Using blusher script instead.
 import os
