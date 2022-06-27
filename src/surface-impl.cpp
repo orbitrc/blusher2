@@ -399,7 +399,7 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
 
     this->m_visible = false;
 
-    this->m_rootView = std::make_shared<View>(new View());
+    this->m_rootView = new View();
 
     this->m_pointerEnterHandler = nullptr;
     this->m_pointerLeaveHandler = nullptr;
@@ -471,6 +471,8 @@ SurfaceImpl::~SurfaceImpl()
     // wl_shm_pool_destroy(this->_shm_pool);
 
     app_impl->removeSurfaceImpl(this);
+
+//    delete this->m_rootView;
 }
 
 //===================
@@ -612,7 +614,7 @@ double SurfaceImpl::clipHeight() const
     return this->m_clipHeight;
 }
 
-std::shared_ptr<View> SurfaceImpl::rootView()
+View* SurfaceImpl::rootView()
 {
     return this->m_rootView;
 }
@@ -689,7 +691,7 @@ void SurfaceImpl::setBlSurface(Surface *blSurface)
     this->m_blSurface = blSurface;
     fprintf(stderr,
         "[LOG] SurfaceImpl::setBlSurface() - %p, surface: %p, root_view: %p\n",
-        this, blSurface, this->m_rootView.get());
+        this, blSurface, this->m_rootView);
     this->m_rootView->set_surface(blSurface);
 }
 

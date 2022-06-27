@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
     window.show();
 
-    SampleView v(window.root_view().get());
+    SampleView v(window.root_view());
 
     v.update();
 //    v.surface()->root_view()->update();

@@ -80,7 +80,7 @@ public:
     double clipWidth() const;
     double clipHeight() const;
 
-    std::shared_ptr<View> rootView();
+    View* rootView();
 
     void paint();
 
@@ -145,7 +145,7 @@ private:
 
     bool m_visible;
 
-    std::shared_ptr<View> m_rootView;
+    View *m_rootView;
 
     //===========
     // Clipping

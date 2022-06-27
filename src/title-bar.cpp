@@ -20,7 +20,7 @@ TitleBar::TitleBar(Surface *parent)
     this->set_geometry(0, 0, parent->width(), 30);
 
     // Add buttons.
-    TitleBarButton *close_button = new TitleBarButton(this->root_view().get());
+    TitleBarButton *close_button = new TitleBarButton(this->root_view());
     close_button->set_x(5);
     close_button->set_y(2);
     close_button->set_width(26);

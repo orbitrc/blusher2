@@ -105,7 +105,7 @@ void Surface::resize_if_window()
     }
 }
 
-std::shared_ptr<View> Surface::root_view()
+View* Surface::root_view()
 {
     return this->_impl->rootView();
 }
