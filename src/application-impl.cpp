@@ -7,6 +7,8 @@
 
 #include <QEnterEvent>
 
+#include <blusher/utils.h>
+
 #include "surface-impl.h"
 
 //==============
@@ -113,10 +115,14 @@ static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
         bl::SurfaceImpl *surface_impl =
             bl::app_impl->surfaceImplForWlSurface(active_wl_surface);
 
+        // Set button.
+        Qt::MouseButton q_btn = libinput_button_to_qt_mouse_button(
+            bl::app_impl->pointer_state.button);
+
         if (surface_impl != nullptr) {
             QPoint pos(x, y);
             Qt::KeyboardModifiers mod;
-            QMouseEvent event(QEvent::MouseMove, pos, Qt::MouseButton::NoButton, 0, mod);
+            QMouseEvent event(QEvent::MouseMove, pos, q_btn, 0, mod);
             QCoreApplication::sendEvent(surface_impl, &event);
         }
     }
@@ -138,6 +144,7 @@ static void pointer_button_handler(void *data, struct wl_pointer *pointer,
             // Pointer press event.
             if (state == WL_POINTER_BUTTON_STATE_PRESSED) {
                 application_impl->pointer_state.serial = serial;
+                application_impl->pointer_state.button = button;
                 surface_impl->callPointerPressHandler(button,
                     application_impl->pointerEventX(),
                     application_impl->pointerEventY()
@@ -145,6 +152,7 @@ static void pointer_button_handler(void *data, struct wl_pointer *pointer,
             }
             // Pointer release event.
             if (state == WL_POINTER_BUTTON_STATE_RELEASED) {
+                application_impl->pointer_state.button = 0;
                 surface_impl->callPointerReleaseHandler(0, 0, 0);
             }
         }

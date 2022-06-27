@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include <linux/input.h>
+
 #include <pango/pango.h>
 
 double pixel_to_pango_size(double pixel)
@@ -142,3 +144,32 @@ void get_clip_geometry(double parent_clip_x, double parent_clip_y,
         *clip_height = parent_clip_height;
     }
 }
+
+Qt::MouseButton libinput_button_to_qt_mouse_button(uint32_t libinput_button)
+{
+    switch (libinput_button) {
+    case BTN_LEFT:
+        return Qt::MouseButton::LeftButton;
+    case BTN_RIGHT:
+        return Qt::MouseButton::RightButton;
+    case BTN_MIDDLE:
+        return Qt::MouseButton::MiddleButton;
+    default:
+        return Qt::MouseButton::NoButton;
+    }
+}
+
+uint32_t qt_mouse_button_to_libinput_button(Qt::MouseButton qt_mouse_button)
+{
+    switch (qt_mouse_button) {
+    case Qt::MouseButton::LeftButton:
+        return BTN_LEFT;
+    case Qt::MouseButton::RightButton:
+        return BTN_RIGHT;
+    case Qt::MouseButton::MiddleButton:
+        return BTN_MIDDLE;
+    default:
+        return 0;
+    }
+}
+

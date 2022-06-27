@@ -31,6 +31,7 @@
 #include <blusher/utils.h>
 #include <blusher/image.h>
 #include <blusher/view.h>
+#include <blusher/utils.h>
 
 #include "application-impl.h"
 #include "view-impl.h"
@@ -879,7 +880,9 @@ bool SurfaceImpl::event(QEvent *event)
         auto mouse_event = static_cast<QMouseEvent*>(event);
         if (this->m_pointerMoveHandler != nullptr) {
             auto handler = this->m_pointerMoveHandler;
-            (this->m_blSurface->*handler)(0,
+            uint32_t button =
+                qt_mouse_button_to_libinput_button(mouse_event->button());
+            (this->m_blSurface->*handler)(button,
                 mouse_event->pos().x(),
                 mouse_event->pos().y());
         }
@@ -907,20 +910,7 @@ void SurfaceImpl::mouseMoveEvent(QMouseEvent *event)
 void SurfaceImpl::mousePressEvent(QMouseEvent *event)
 {
     if (this->m_pointerPressHandler != nullptr) {
-        int button = 0;
-        switch (event->button()) {
-        case Qt::LeftButton:
-            button = BTN_LEFT;
-            break;
-        case Qt::RightButton:
-            button = BTN_RIGHT;
-            break;
-        case Qt::MiddleButton:
-            button = BTN_MIDDLE;
-            break;
-        default:
-            break;
-        }
+        int button = qt_mouse_button_to_libinput_button(event->button());
 
         auto handler = this->m_pointerPressHandler;
         (this->m_blSurface->*handler)(button,
@@ -932,20 +922,7 @@ void SurfaceImpl::mousePressEvent(QMouseEvent *event)
 void SurfaceImpl::mouseReleaseEvent(QMouseEvent *event)
 {
     if (this->m_pointerPressHandler != nullptr) {
-        int button = 0;
-        switch (event->button()) {
-        case Qt::LeftButton:
-            button = BTN_LEFT;
-            break;
-        case Qt::RightButton:
-            button = BTN_RIGHT;
-            break;
-        case Qt::MiddleButton:
-            button = BTN_MIDDLE;
-            break;
-        default:
-            break;
-        }
+        int button = qt_mouse_button_to_libinput_button(event->button());
 
         auto handler = this->m_pointerReleaseHandler;
         (this->m_blSurface->*handler)(button,

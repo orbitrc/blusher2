@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include <Qt>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,6 +28,10 @@ void get_clip_geometry(double parent_clip_x, double parent_clip_y,
         double width, double height,
         double *clip_x, double *clip_y,
         double *clip_width, double *clip_height);
+
+Qt::MouseButton libinput_button_to_qt_mouse_button(uint32_t libinput_button);
+
+uint32_t qt_mouse_button_to_libinput_button(Qt::MouseButton qt_mouse_button);
 
 #ifdef __cplusplus
 }
