@@ -64,7 +64,7 @@ public:
             Image::Scale scale = Image::Scale::NoScale);
 
     /// Adds an image.
-    void add(const Image& image, uint64_t x, uint64_t y);
+    void add(const Image& image, int64_t x, int64_t y);
 
     /// Returns new image that format changed.
     Image converted(Image::Format format) const;

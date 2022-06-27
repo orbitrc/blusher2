@@ -311,7 +311,7 @@ void Image::resize(uint64_t width, uint64_t height, Image::Scale scale)
     }
 }
 
-void Image::add(const Image &image, uint64_t x, uint64_t y)
+void Image::add(const Image &image, int64_t x, int64_t y)
 {
     if (this->_format == Image::Format::Argb32) {
         if (image.format() == Image::Format::Argb32) {
