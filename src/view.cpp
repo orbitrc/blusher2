@@ -135,6 +135,9 @@ void View::update()
         fprintf(stderr, "[WARN] View::update() surface is null!\n");
         return;
     }
+    // Update parent.
+    this->_parent->update();
+
     this->_surface->update();
 }
 

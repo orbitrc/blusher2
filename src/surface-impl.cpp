@@ -797,6 +797,20 @@ struct wl_surface* SurfaceImpl::wlSurface() const
 void SurfaceImpl::update()
 {
     fprintf(stderr, " - update() SurfaceImpl: %p\n", this);
+    // Re-create EGL window surface.
+    EGLBoolean destroyed = eglDestroySurface(this->_egl_object.egl_display,
+        this->_egl_object.egl_surface);
+    if (!destroyed) {
+        fprintf(stderr, "[WARN] EGL surface not destroyed!\n");
+        return;
+    }
+    this->_egl_object.egl_surface = eglCreateWindowSurface(
+        this->_egl_object.egl_display,
+        this->_egl_object.egl_config,
+        this->_egl_window,
+        NULL
+    );
+
     eglMakeCurrent(this->_egl_object.egl_display,
         this->_egl_object.egl_surface,
         this->_egl_object.egl_surface,
