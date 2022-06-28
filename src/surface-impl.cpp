@@ -624,17 +624,6 @@ void SurfaceImpl::paint()
     if (this->m_visible == false) {
         return;
     }
-    fprintf(stderr, "SurfaceImpl::paint() - width: %d, height: %d\n",
-        this->width(), this->height());
-
-    /*
-    uint32_t *pixel = static_cast<uint32_t*>(this->shmData());
-
-    const uint32_t color = this->m_color.to_argb();
-    for (int n = 0; n < (this->width() * this->height()); ++n) {
-        *pixel++ = color;
-    }
-    */
 }
 
 void SurfaceImpl::show()
