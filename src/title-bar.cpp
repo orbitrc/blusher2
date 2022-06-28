@@ -28,6 +28,16 @@ TitleBar::TitleBar(Surface *parent)
     close_button->set_color(Color::from_rgb(255, 0, 0));
 }
 
+Surface* TitleBar::body()
+{
+    return this->_body;
+}
+
+void TitleBar::set_body(Surface *surface)
+{
+    this->_body = surface;
+}
+
 //===============
 // Events
 //===============
@@ -65,6 +75,8 @@ void TitleBarButton::pointer_enter_event(std::shared_ptr<PointerEvent> event)
 {
     fprintf(stderr, "[LOG] TitleBarButton::pointer_enter_event()\n");
     this->fill(Color::from_rgb(150, 0, 0));
+
+    static_cast<TitleBar*>(this->surface())->body()->update();
 
     return View::pointer_enter_event(event);
 }

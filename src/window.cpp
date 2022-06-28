@@ -41,6 +41,7 @@ Window::Window()
     this->_body->set_geometry(0, 0, this->width(), this->height());
 
     this->_title_bar = new TitleBar(this->_body);
+    this->_title_bar->set_body(this);
 
     this->_border = new Surface(this->_body);
     this->_border->place_below(this->_body);
