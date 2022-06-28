@@ -256,7 +256,7 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
     if (strcmp(interface, "wl_seat") == 0) {
         if (application_impl->seat() == nullptr) {
             auto interface = bl::WlInterface<bl::WlInterfaceType::Seat>();
-            application_impl->setSeat(reg->bind(id, interface, 7));
+            application_impl->setSeat(reg->bind(id, interface, 5));
             application_impl->seat()->add_listener(seat_listener,
                 static_cast<void*>(application_impl));
         }
