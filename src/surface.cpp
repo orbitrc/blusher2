@@ -269,7 +269,7 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
     auto root_view = this->_impl->rootView();
     View *view = root_view->child_at(Point(x, y));
     if (view != nullptr) {
-        // Send pointer enter event.
+        // Send pointer enter event to view.
         if (this->_current_view != view) {
             this->_current_view = view;
 
@@ -283,6 +283,21 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
 
         view->pointer_move_event(event);
     } else {
+        // Send pointer leave event if leaved, and send pointer enter event
+        // to the root view.
+        {
+            if (this->_current_view != nullptr) {
+                auto event = std::make_shared<PointerEvent>(Button::None, x, y);
+
+                this->_current_view->pointer_leave_event(event);
+            }
+            this->_current_view = root_view;
+
+            auto event = std::make_shared<PointerEvent>(Button::None, x, y);
+
+            root_view->pointer_enter_event(event);
+        }
+
         auto event = std::make_shared<PointerEvent>(button, x, y);
 
         root_view->pointer_move_event(event);
