@@ -221,9 +221,35 @@ Image::Image(uint64_t width, uint64_t height, Image::Format format)
     }
 }
 
+Image::Image(const Image& image)
+{
+    this->_width = image._width;
+    this->_height = image._height;
+    this->_format = image._format;
+    this->_data = nullptr;
+
+    if (image._data == nullptr) {
+        return;
+    }
+
+    if (this->_width == 0 || this->_height == 0) {
+        return;
+    }
+
+    if (this->_format == Image::Format::Argb32 ||
+            this->_format == Image::Format::Rgba32) {
+        uint32_t image_size =
+            (sizeof(uint8_t) * 4) * (this->_width * this->_height);
+        this->_data = (uint8_t*)malloc(image_size);
+        memcpy(this->_data, image._data, image_size);
+    }
+}
+
 Image::~Image()
 {
-    // TODO: Delete data.
+    if (this->_data != nullptr) {
+        free(this->_data);
+    }
 }
 
 uint64_t Image::width() const
