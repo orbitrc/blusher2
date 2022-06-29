@@ -32,6 +32,7 @@
 #include <blusher/image.h>
 #include <blusher/view.h>
 #include <blusher/utils.h>
+#include <blusher/size.h>
 
 #include "application-impl.h"
 #include "view-impl.h"
@@ -65,8 +66,10 @@ static void xdg_toplevel_configure_handler(void *data,
     // assert(xdg_toplevel == surface_impl->_xdg_toplevel);
 
     (void)xdg_toplevel;
+    /*
     fprintf(stderr, "[LOG] xdg_toplevel_configure_handler - size: %dx%d\n",
         width, height);
+    */
     // TODO: implement
 
     pr::Vector<bl::XdgToplevel::State> states_v =
@@ -79,7 +82,7 @@ static void xdg_toplevel_configure_handler(void *data,
             return;
         }
         if (surface->width() != width || surface->height() != height) {
-            fprintf(stderr, "Resizing...\n");
+            // fprintf(stderr, "Resizing...\n");
             surface->set_geometry(0, 0, width, height);
             // surface->update();
         }
@@ -404,6 +407,7 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     this->m_pointerEnterHandler = nullptr;
     this->m_pointerLeaveHandler = nullptr;
     this->m_pointerPressHandler = nullptr;
+    this->m_resizeHandler = nullptr;
 
     //===============
     // Wayland
@@ -550,6 +554,9 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
         return;
     }
 
+    uint32_t old_width = this->m_width;
+    uint32_t old_height = this->m_height;
+
     if (this->m_width != width) {
         this->m_width = width;
     }
@@ -576,8 +583,12 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
         NULL
     );
 
+    // Fire resize event.
+    QResizeEvent event(QSize(width, height), QSize(old_width, old_height));
+    this->resizeEvent(&event);
+
     if (this->m_blSurface != nullptr) {
-        fprintf(stderr, "[LOG] SurfaceImpl::setSize() - update.\n");
+        // fprintf(stderr, "[LOG] SurfaceImpl::setSize() - update.\n");
         this->m_blSurface->update();
     } else {
         fprintf(stderr, "[WARN] SurfaceImpl::setSize() - surface is null!\n");
@@ -737,6 +748,12 @@ void SurfaceImpl::setPointerMoveHandler(void (Surface::*handler)(uint32_t, doubl
     this->m_pointerMoveHandler = handler;
 }
 
+void SurfaceImpl::setResizeHandler(void (Surface::*handler)(int32_t, int32_t, int32_t, int32_t))
+{
+    this->m_resizeHandler = handler;
+}
+
+
 void SurfaceImpl::callPointerEnterHandler()
 {
     if (this->m_pointerEnterHandler != nullptr) {
@@ -774,6 +791,15 @@ void SurfaceImpl::callPointerMoveHandler(uint32_t button, double x, double y)
     if (this->m_pointerMoveHandler != nullptr) {
         auto handler = this->m_pointerMoveHandler;
         (this->m_blSurface->*handler)(button, x, y);
+    }
+}
+
+void SurfaceImpl::callResizeHandler(int32_t width, int32_t height,
+        int32_t old_width, int32_t old_height)
+{
+    if (this->m_resizeHandler != nullptr) {
+        auto handler = this->m_resizeHandler;
+        (this->m_blSurface->*handler)(width, height, old_width, old_height);
     }
 }
 
@@ -948,7 +974,15 @@ void SurfaceImpl::mouseReleaseEvent(QMouseEvent *event)
 
 void SurfaceImpl::resizeEvent(QResizeEvent *event)
 {
-//    this->m_backingStore->resize(event->size());
+    if (this->m_resizeHandler != nullptr) {
+        auto handler = this->m_resizeHandler;
+        (this->m_blSurface->*handler)(
+            event->size().width(),
+            event->size().height(),
+            event->oldSize().width(),
+            event->oldSize().height()
+        );
+    }
 }
 
 } // namespace bl

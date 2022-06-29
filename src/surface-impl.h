@@ -101,12 +101,15 @@ public:
     void setPointerPressHandler(void (Surface::*)(uint32_t button, double x, double y));
     void setPointerReleaseHandler(void (Surface::*)(uint32_t button, double x, double y));
     void setPointerMoveHandler(void (Surface::*)(uint32_t button, double x, double y));
+    void setResizeHandler(void (Surface::*)(int32_t, int32_t, int32_t, int32_t));
 
     void callPointerEnterHandler();
     void callPointerLeaveHandler();
     void callPointerPressHandler(uint32_t button, double x, double y);
     void callPointerReleaseHandler(uint32_t button, double x, double y);
     void callPointerMoveHandler(uint32_t button, double x, double y);
+    void callResizeHandler(int32_t width, int32_t height,
+            int32_t old_width, int32_t old_height);
 
 public:
     //==================
@@ -162,6 +165,7 @@ private:
     void (Surface::*m_pointerPressHandler)(uint32_t button, double x, double y);
     void (Surface::*m_pointerReleaseHandler)(uint32_t button, double x, double y);
     void (Surface::*m_pointerMoveHandler)(uint32_t button, double x, double y);
+    void (Surface::*m_resizeHandler)(int32_t, int32_t, int32_t, int32_t);
 
     //=================
     // Wayland client

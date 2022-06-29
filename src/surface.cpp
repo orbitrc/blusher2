@@ -9,6 +9,8 @@
 #include <blusher/point.h>
 #include <blusher/rect.h>
 #include <blusher/utils.h>
+#include <blusher/pointer-event.h>
+#include <blusher/resize-event.h>
 
 #ifdef emit
     #undef emit
@@ -38,6 +40,7 @@ Surface::Surface(Surface *parent)
     this->_impl->setPointerPressHandler(&Surface::pointer_press_handler);
     this->_impl->setPointerReleaseHandler(&Surface::pointer_release_handler);
     this->_impl->setPointerMoveHandler(&Surface::pointer_move_handler);
+    this->_impl->setResizeHandler(&Surface::resize_handler);
 }
 
 //=================
@@ -142,6 +145,11 @@ void Surface::pointer_release_event(std::shared_ptr<PointerEvent> event)
 }
 
 void Surface::pointer_move_event(std::shared_ptr<PointerEvent> event)
+{
+    (void)event;
+}
+
+void Surface::resize_event(std::shared_ptr<ResizeEvent> event)
 {
     (void)event;
 }
@@ -302,6 +310,18 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
 
         root_view->pointer_move_event(event);
     }
+}
+
+void Surface::resize_handler(int32_t width, int32_t height,
+        int32_t old_width, int32_t old_height)
+{
+    Size size(width, height);
+    Size old_size(old_width, old_height);
+
+    std::shared_ptr<ResizeEvent> event =
+        std::make_shared<ResizeEvent>(size, old_size);
+
+    this->resize_event(event);
 }
 
 } // namespace bl

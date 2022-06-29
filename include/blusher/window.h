@@ -26,6 +26,9 @@ private:
     void update_border();
     void update_title_bar();
 
+protected:
+    void resize_event(std::shared_ptr<ResizeEvent> event) override;
+
 private:
     Surface *_decoration;
     Resize *_resize;
