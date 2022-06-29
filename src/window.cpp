@@ -1,5 +1,7 @@
 #include <blusher/window.h>
 
+#include <stdio.h>
+
 #include <blusher/title-bar.h>
 
 #define BLUSHER_SHADOW_WIDTH 40
@@ -30,7 +32,12 @@ namespace bl {
 Window::Window()
     : Surface(nullptr)
 {
-    this->set_geometry(0, 0, 200, 200);
+    // Initialize.
+    this->_body = nullptr;
+    this->_title_bar = nullptr;
+    this->_border = nullptr;
+    this->_resize = nullptr;
+    this->_decoration = nullptr;
 
     // Load resources.
     register_resources();
@@ -38,7 +45,7 @@ Window::Window()
     // Init body.
     this->_body = static_cast<Surface*>(this);
 
-    this->_body->set_geometry(0, 0, this->width(), this->height());
+    this->_body->set_geometry(0, 0, 200, 200);
 
     this->_title_bar = new TitleBar(this->_body);
     this->_title_bar->set_body(this);
@@ -138,6 +145,24 @@ void Window::update_title_bar()
     );
     this->_title_bar->root_view()->set_color(Color::from_rgb(100, 100, 100));
 }
+
+//===============
+// Events
+//===============
+
+void Window::resize_event(std::shared_ptr<ResizeEvent> event)
+{
+    (void)event;
+    if (this->_border != nullptr) {
+        this->update_border();
+    }
+    if (this->_resize != nullptr) {
+        this->update_resize();
+    }
+
+    return Surface::resize_event(event);
+}
+
 
 //===============
 // Resize

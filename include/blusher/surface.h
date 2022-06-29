@@ -5,6 +5,8 @@
 
 #include <memory>
 
+#include <blusher/resize-event.h>
+
 #include "color.h"
 #include "signal.h"
 #include "pointer-event.h"
@@ -77,6 +79,7 @@ protected:
     virtual void pointer_press_event(std::shared_ptr<PointerEvent> event);
     virtual void pointer_release_event(std::shared_ptr<PointerEvent> event);
     virtual void pointer_move_event(std::shared_ptr<PointerEvent> event);
+    virtual void resize_event(std::shared_ptr<ResizeEvent> event);
 
     //===============
     // Protected
@@ -89,6 +92,8 @@ private:
     void pointer_press_handler(uint32_t impl_button, double x, double y);
     void pointer_release_handler(uint32_t impl_button, double x, double y);
     void pointer_move_handler(uint32_t impl_button, double x, double y);
+    void resize_handler(int32_t width, int32_t height,
+            int32_t old_width, int32_t old_height);
 
 private:
     SurfaceImpl *_impl;
