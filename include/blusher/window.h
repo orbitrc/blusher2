@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 
+#include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/surface.h>
+#include <blusher/point.h>
 
 namespace bl {
 
@@ -45,6 +47,8 @@ class Resize : public Surface
 {
 public:
     Resize(Surface *parent);
+
+    XdgToplevel::ResizeEdge resize_edge(const Point& pos) const;
 
 protected:
     void pointer_press_event(std::shared_ptr<PointerEvent> event) override;

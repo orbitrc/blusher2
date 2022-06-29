@@ -706,13 +706,22 @@ void SurfaceImpl::moveIfToplevel()
     }
 }
 
-void SurfaceImpl::resizeIfToplevel()
+void SurfaceImpl::resizeIfToplevel(XdgToplevel::ResizeEdge edge)
 {
+    uint32_t xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM;
+    switch (edge) {
+    case XdgToplevel::ResizeEdge::TopLeft:
+        xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_TOP_LEFT;
+        break;
+    default:
+        break;
+    }
+
     if (this->parent() == nullptr) {
         xdg_toplevel_resize(this->_xdg_toplevel,
             bl::app_impl->seat()->wl_seat(),
             bl::app_impl->pointer_state.serial,
-            XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM
+            xdg_edge
         );
         // Manually release button pressed state because after
         // xdg_toplevel_resize() call, xdg_toplevel.button event not called.

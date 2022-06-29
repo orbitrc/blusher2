@@ -173,13 +173,29 @@ Resize::Resize(Surface *parent)
 {
 }
 
+XdgToplevel::ResizeEdge Resize::resize_edge(const Point& pos) const
+{
+    if (pos.x() < 5 && pos.y() < 5) {
+        return XdgToplevel::ResizeEdge::TopLeft;
+    } else {
+        return XdgToplevel::ResizeEdge::Bottom;
+    }
+
+    return XdgToplevel::ResizeEdge::None;
+}
+
+//=================
+// Resize: Events
+//=================
+
 void Resize::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
     if (event->button() == Button::Left) {
         for (Surface *it = this; it->parent() != nullptr; it = it->parent()) {
             Surface *win = it->parent();
             if (win->parent() == nullptr) {
-                win->resize_if_window();
+                auto edge = this->resize_edge(Point(event->x(), event->y()));
+                win->resize_if_window(edge);
             }
         }
     }

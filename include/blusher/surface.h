@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/resize-event.h>
 
 #include "color.h"
@@ -60,7 +61,7 @@ public:
     /// This is implementation specific method. DO NOT USE THIS in an application.
     void move_if_window();
     /// This is implementation specific method. DO NOT USE THIS in an application.
-    void resize_if_window();
+    void resize_if_window(XdgToplevel::ResizeEdge edge);
 
     View* root_view();
 

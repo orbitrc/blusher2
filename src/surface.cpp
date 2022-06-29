@@ -103,10 +103,10 @@ void Surface::move_if_window()
     }
 }
 
-void Surface::resize_if_window()
+void Surface::resize_if_window(XdgToplevel::ResizeEdge edge)
 {
     if (this->_parent == nullptr) {
-        this->_impl->resizeIfToplevel();
+        this->_impl->resizeIfToplevel(edge);
     }
 }
 

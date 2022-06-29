@@ -23,6 +23,7 @@
 
 // Blusher
 #include <blusher/wayland/wl-surface.h>
+#include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/color.h>
 #include <blusher/view.h>
 
@@ -92,7 +93,7 @@ public:
     bool toplevel() const;
 
     void moveIfToplevel();
-    void resizeIfToplevel();
+    void resizeIfToplevel(XdgToplevel::ResizeEdge edge);
 
     Surface* surface();
     void setBlSurface(Surface *blSurface);
