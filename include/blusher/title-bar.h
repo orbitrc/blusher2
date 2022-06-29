@@ -2,6 +2,7 @@
 #define _BL_TITLE_BAR_H
 
 #include <blusher/view.h>
+#include <blusher/image.h>
 
 #include "surface.h"
 
@@ -37,6 +38,8 @@ protected:
 
 private:
     Surface *_body;
+
+    Image *_close_image;
 };
 
 } // namespace bl
