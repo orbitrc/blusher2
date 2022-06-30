@@ -14,6 +14,9 @@ Application::Application(int argc, char *argv[])
 
     this->_resource = new Resource();
 
+    this->_event_dispatcher =
+        std::make_shared<EventDispatcher>(EventDispatcher(this));
+
     bl::app = this;
 }
 
@@ -31,6 +34,11 @@ Application::~Application()
 Resource* Application::resource()
 {
     return this->_resource;
+}
+
+std::shared_ptr<EventDispatcher> Application::event_dispatcher()
+{
+    return this->_event_dispatcher;
 }
 
 int Application::exec()

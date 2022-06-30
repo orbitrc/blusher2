@@ -6,6 +6,7 @@
 
 // Blusher
 #include <blusher/wayland/wl-compositor.h>
+#include <blusher/event-dispatcher.h>
 
 namespace bl {
 
@@ -21,6 +22,8 @@ public:
 
     Resource* resource();
 
+    std::shared_ptr<EventDispatcher> event_dispatcher();
+
     //==================
     // Wayland Native
     //==================
@@ -33,6 +36,8 @@ private:
     ApplicationImpl *_impl;
 
     Resource *_resource;
+
+    std::shared_ptr<EventDispatcher> _event_dispatcher;
 };
 
 // Singleton object.
