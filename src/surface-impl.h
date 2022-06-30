@@ -128,10 +128,6 @@ public slots:
     void update();
 
 private slots:
-    void onImplXChanged(double x);
-    void onImplYChanged(double y);
-    void onImplWidthChanged(double width);
-    void onImplHeightChanged(double height);
 
 protected:
     bool event(QEvent *event) override;

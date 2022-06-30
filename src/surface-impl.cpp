@@ -463,11 +463,6 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
 //    this->setGeometry(this->m_x, this->m_y, this->m_width, this->m_height);
 
     app_impl->addSurfaceImpl(this);
-
-    QObject::connect(this, &SurfaceImpl::implXChanged, this, &SurfaceImpl::onImplXChanged);
-    QObject::connect(this, &SurfaceImpl::implYChanged, this, &SurfaceImpl::onImplYChanged);
-    QObject::connect(this, &SurfaceImpl::implWidthChanged, this, &SurfaceImpl::onImplWidthChanged);
-    QObject::connect(this, &SurfaceImpl::implHeightChanged, this, &SurfaceImpl::onImplHeightChanged);
 }
 
 SurfaceImpl::~SurfaceImpl()
@@ -874,33 +869,6 @@ void SurfaceImpl::update()
 // Private Slots
 //=================
 
-void SurfaceImpl::onImplXChanged(double x)
-{
-    if (this->parent() != nullptr) {
-//        QWindow::setX(x);
-    }
-//    emit this->xChanged(static_cast<int>(x));
-}
-
-void SurfaceImpl::onImplYChanged(double y)
-{
-    if (this->parent() != nullptr) {
-//        QWindow::setY(y);
-    }
-//    emit this->yChanged(static_cast<int>(y));
-}
-
-void SurfaceImpl::onImplWidthChanged(double width)
-{
-//    QWindow::setWidth(width);
-//    emit this->widthChanged(static_cast<int>(width));
-}
-
-void SurfaceImpl::onImplHeightChanged(double height)
-{
-//    QWindow::setHeight(height);
-//    emit this->heightChanged(static_cast<int>(height));
-}
 
 //===========
 // Events
