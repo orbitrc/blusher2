@@ -98,6 +98,11 @@ void Window::move()
 {
 }
 
+uint32_t Window::title_bar_height() const
+{
+    return BLUSHER_TITLE_BAR_HEIGHT;
+}
+
 //====================
 // Private Methods
 //====================

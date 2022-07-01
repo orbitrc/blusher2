@@ -22,6 +22,8 @@ public:
 
     void move();
 
+    uint32_t title_bar_height() const;
+
 private:
     void update_decoration();
     void update_resize();
