@@ -21,6 +21,12 @@ class SurfaceImpl;
 class Surface
 {
 public:
+    enum class Type {
+        Normal,
+        Toplevel,
+        Subsurface,
+    };
+
     enum class State {
         /// State is normal.
         Normal = 0,
@@ -51,6 +57,9 @@ public:
     void set_geometry(double x, double y, double width, double height);
 
     void show();
+
+    /// Returns type of this surface.
+    Surface::Type type() const;
 
     /// Returns true if this surface is a toplevel.
     bool toplevel() const;
@@ -101,6 +110,7 @@ private:
 
     Surface *_parent;
     State _state;
+    Type _type;
 
     View *_current_view;
 };

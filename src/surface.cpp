@@ -20,10 +20,13 @@ namespace bl {
 
 Surface::Surface(Surface *parent)
 {
+    this->_type = Surface::Type::Normal;
+
     if (parent != nullptr) {
         this->_impl = new SurfaceImpl(parent->_impl);
     } else {
         this->_impl = new SurfaceImpl();
+        this->_type = Surface::Type::Toplevel;
     }
 
     this->_impl->setBlSurface(this);
@@ -82,6 +85,11 @@ void Surface::set_geometry(double x, double y, double width, double height)
 void Surface::show()
 {
     this->_impl->show();
+}
+
+Surface::Type Surface::type() const
+{
+    return this->_type;
 }
 
 bool Surface::toplevel() const
