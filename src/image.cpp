@@ -371,13 +371,8 @@ void Image::add(const Image &image, int64_t x, int64_t y)
             uint8_t *new_data = cairo_image_surface_get_data(surface);
 
             // Write to this data.
-            uint32_t *pixel = (uint32_t*)this->_data;
-            uint32_t *new_pixel = (uint32_t*)new_data;
-            for (uint64_t i = 0; i < (this->_width * this->_height); ++i) {
-                *pixel = *new_pixel;
-                ++pixel;
-                ++new_pixel;
-            }
+            memcpy(this->_data, new_data,
+                (sizeof(uint8_t)) * (this->_width * this->_height));
 
             // Free the resources.
             cairo_destroy(cr);
