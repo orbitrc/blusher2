@@ -708,8 +708,26 @@ void SurfaceImpl::resizeIfToplevel(XdgToplevel::ResizeEdge edge)
     case XdgToplevel::ResizeEdge::TopLeft:
         xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_TOP_LEFT;
         break;
+    case XdgToplevel::ResizeEdge::Top:
+        xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_TOP;
+        break;
     case XdgToplevel::ResizeEdge::TopRight:
         xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_TOP_RIGHT;
+        break;
+    case XdgToplevel::ResizeEdge::Left:
+        xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_LEFT;
+        break;
+    case XdgToplevel::ResizeEdge::Right:
+        xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_RIGHT;
+        break;
+    case XdgToplevel::ResizeEdge::BottomLeft:
+        xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM_LEFT;
+        break;
+    case XdgToplevel::ResizeEdge::Bottom:
+        xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM;
+        break;
+    case XdgToplevel::ResizeEdge::BottomRight:
+        xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM_RIGHT;
         break;
     default:
         break;
