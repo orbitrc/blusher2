@@ -398,6 +398,7 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
         this->m_clipHeight = this->m_height;
     }
 
+    this->_xdg_surface = nullptr;
     this->_xdg_toplevel = nullptr;
 
     this->m_visible = false;
@@ -577,6 +578,11 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
         this->_egl_window,
         NULL
     );
+
+    // Set xdg-surface window geometry.
+    if (this->_xdg_surface != nullptr) {
+        xdg_surface_set_window_geometry(this->_xdg_surface, -1, -1, width, height);
+    }
 
     // Fire resize event.
     QResizeEvent event(QSize(width, height), QSize(old_width, old_height));
