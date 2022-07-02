@@ -182,6 +182,9 @@ XdgToplevel::ResizeEdge Resize::resize_edge(const Point& pos) const
 {
     if (pos.x() < 5 && pos.y() < 5) {
         return XdgToplevel::ResizeEdge::TopLeft;
+    } else if (pos.x() > this->width() - 5 &&
+            pos.y() < 5) {
+        return XdgToplevel::ResizeEdge::TopRight;
     } else {
         return XdgToplevel::ResizeEdge::Bottom;
     }
