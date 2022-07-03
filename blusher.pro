@@ -37,6 +37,7 @@ SOURCES += \
     src/svg.cpp \
     src/cursor.cpp \
     src/resource.cpp \
+    src/event.cpp \
     src/pointer-event.cpp \
     src/resize-event.cpp \
     src/application-impl.cpp \
@@ -75,6 +76,7 @@ HEADERS += \
     include/blusher/cursor.h \
     include/blusher/resource.h \
     include/blusher/input.h \
+    include/blusher/event.h \
     include/blusher/pointer-event.h \
     include/blusher/resize-event.h \
     src/application-impl.h \
