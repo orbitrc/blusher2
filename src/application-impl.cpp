@@ -306,6 +306,7 @@ void DisplayDispatchThread::run()
     fprintf(stderr, "result: %d\n", result);
     while (result != -1) {
         result = wl_display_dispatch(app_impl->display()->wl_display());
+        // fprintf(stderr, "result: %d\n", result);
     }
 }
 

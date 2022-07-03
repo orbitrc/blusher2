@@ -71,6 +71,10 @@ public:
     void move_if_window();
     /// This is implementation specific method. DO NOT USE THIS in an application.
     void resize_if_window(XdgToplevel::ResizeEdge edge);
+    /// This is implementation specific method. DO NOT USE THIS in an application.
+    void maximize_if_window();
+    /// This is implementation specific method. DO NOT USE THIS in an application.
+    void restore_if_window();
 
     View* root_view();
 

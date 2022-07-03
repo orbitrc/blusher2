@@ -118,6 +118,20 @@ void Surface::resize_if_window(XdgToplevel::ResizeEdge edge)
     }
 }
 
+void Surface::maximize_if_window()
+{
+    if (this->_parent == nullptr) {
+        this->_impl->maximizeIfToplevel();
+    }
+}
+
+void Surface::restore_if_window()
+{
+    if (this->_parent == nullptr) {
+        this->_impl->restoreIfToplevel();
+    }
+}
+
 View* Surface::root_view()
 {
     return this->_impl->rootView();

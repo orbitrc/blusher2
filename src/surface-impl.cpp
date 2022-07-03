@@ -398,6 +398,9 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
         this->m_clipHeight = this->m_height;
     }
 
+    // Initialize.
+    this->_toplevel_maximized = false;
+
     this->_xdg_surface = nullptr;
     this->_xdg_toplevel = nullptr;
 
@@ -748,6 +751,22 @@ void SurfaceImpl::resizeIfToplevel(XdgToplevel::ResizeEdge edge)
         // Manually release button pressed state because after
         // xdg_toplevel_resize() call, xdg_toplevel.button event not called.
         app_impl->pointer_state.button = 0;
+    }
+}
+
+void SurfaceImpl::maximizeIfToplevel()
+{
+    if (this->parent() == nullptr && this->_toplevel_maximized == false) {
+        xdg_toplevel_set_maximized(this->_xdg_toplevel);
+        this->_toplevel_maximized = true;
+    }
+}
+
+void SurfaceImpl::restoreIfToplevel()
+{
+    if (this->parent() == nullptr && this->_toplevel_maximized == true) {
+        xdg_toplevel_unset_maximized(this->_xdg_toplevel);
+        this->_toplevel_maximized = false;
     }
 }
 

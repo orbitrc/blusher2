@@ -94,6 +94,8 @@ public:
 
     void moveIfToplevel();
     void resizeIfToplevel(XdgToplevel::ResizeEdge edge);
+    void maximizeIfToplevel();
+    void restoreIfToplevel();
 
     Surface* surface();
     void setBlSurface(Surface *blSurface);
@@ -186,6 +188,11 @@ private:
     int _shm_fd;
     void *_shm_data;
     uint64_t _shm_data_size;
+
+    //===========================
+    // Toplevel surface states
+    //===========================
+    bool _toplevel_maximized;
 };
 
 } // namespace bl
