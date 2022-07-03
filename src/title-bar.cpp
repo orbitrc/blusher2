@@ -28,21 +28,14 @@ TitleBar::TitleBar(Surface *parent)
 
     // Initialize.
     this->_body = nullptr;
-    this->_close_image = nullptr;
-
-    Svg close_svg("brc:/io.orbitrc.blusher/hydrogen-close.svg"_S);
-    auto close_image = close_svg.to_image(26, 26);
-    this->_close_image = new Image(26, 26);
-    this->_close_image->add(close_image, 0, 0);
 
     // Add buttons.
     TitleBarButton *close_button = new TitleBarButton(this->root_view());
+    close_button->set_type(TitleBarButton::Type::Close);
     close_button->set_x(5);
     close_button->set_y(2);
     close_button->set_width(26);
     close_button->set_height(26);
-    close_button->set_color(Color::from_rgba(0, 0, 0, 0));
-    close_button->draw_image(Point(0, 0), *(this->_close_image));
 }
 
 Surface* TitleBar::body()
@@ -82,6 +75,22 @@ void TitleBar::pointer_press_event(std::shared_ptr<PointerEvent> event)
 TitleBarButton::TitleBarButton(View *parent)
     : View(parent)
 {
+    this->_close_image = nullptr;
+
+    Svg close_svg("brc:/io.orbitrc.blusher/hydrogen-close.svg"_S);
+    auto close_image = close_svg.to_image(26, 26);
+    this->_close_image = new Image(26, 26);
+    this->_close_image->add(close_image, 0, 0);
+
+    // Set image.
+    this->set_color(Color::from_rgb(255, 0, 0));
+    this->draw_image(Point(0, 0), *(this->_close_image));
+    this->update();
+}
+
+void TitleBarButton::set_type(TitleBarButton::Type type)
+{
+    this->_type = type;
 }
 
 //==============
@@ -91,11 +100,22 @@ TitleBarButton::TitleBarButton(View *parent)
 void TitleBarButton::pointer_enter_event(std::shared_ptr<PointerEvent> event)
 {
     fprintf(stderr, "[LOG] TitleBarButton::pointer_enter_event()\n");
-    // this->fill(Color::from_rgb(150, 0, 0));
+    this->fill(Color::from_rgb(150, 0, 0));
 
     static_cast<TitleBar*>(this->surface())->body()->update();
 
     return View::pointer_enter_event(event);
+}
+
+void TitleBarButton::pointer_leave_event(std::shared_ptr<PointerEvent> event)
+{
+    this->fill(Color::from_rgba(0, 0, 0, 0));
+    this->draw_image(Point(0, 0), *this->_close_image);
+    this->update();
+
+    static_cast<TitleBar*>(this->surface())->body()->update();
+
+    return View::pointer_leave_event(event);
 }
 
 void TitleBarButton::pointer_press_event(std::shared_ptr<PointerEvent> event)

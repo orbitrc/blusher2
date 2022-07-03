@@ -14,11 +14,27 @@ namespace bl {
 class TitleBarButton : public View
 {
 public:
+    enum class Type {
+        Close,
+        Maximize,
+        Restore,
+        Minimize,
+    };
+
+public:
     TitleBarButton(View *parent);
+
+    void set_type(TitleBarButton::Type type);
 
 protected:
     void pointer_enter_event(std::shared_ptr<PointerEvent> event) override;
+    void pointer_leave_event(std::shared_ptr<PointerEvent> event) override;
     void pointer_press_event(std::shared_ptr<PointerEvent> event) override;
+
+private:
+    TitleBarButton::Type _type;
+
+    Image *_close_image;
 };
 
 //================
