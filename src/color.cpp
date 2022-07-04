@@ -52,6 +52,26 @@ uint32_t Color::alpha() const
     return this->_a;
 }
 
+double Color::red_f() const
+{
+    return this->_r / 255.0;
+}
+
+double Color::green_f() const
+{
+    return this->_g / 255.0;
+}
+
+double Color::blue_f() const
+{
+    return this->_b / 255.0;
+}
+
+double Color::alpha_f() const
+{
+    return this->_a / 255.0;
+}
+
 uint32_t Color::to_argb() const
 {
     uint32_t ret = 0x00000000;

@@ -22,6 +22,11 @@ public:
     uint32_t blue() const;
     uint32_t alpha() const;
 
+    double red_f() const;
+    double green_f() const;
+    double blue_f() const;
+    double alpha_f() const;
+
     uint32_t to_argb() const;
 
 private:

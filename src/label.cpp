@@ -12,7 +12,7 @@
 #include <blusher/image.h>
 #include <blusher/utils.h>
 
-static void draw_text(cairo_t *cr, const char *text, int height,
+static void draw_text(cairo_t *cr, const char *text, const bl::Color& color,
         double font_size)
 {
     PangoLayout *layout;
@@ -32,7 +32,8 @@ static void draw_text(cairo_t *cr, const char *text, int height,
 
     cairo_save(cr);
 
-    cairo_set_source_rgb(cr, 1.0, 0.0, 0.0);
+    cairo_set_source_rgba(cr,
+        color.red_f(), color.green_f(), color.blue_f(), color.alpha_f());
 
     pango_cairo_update_layout(cr, layout);
 
@@ -69,7 +70,7 @@ void Label::set_text(const pr::String& text)
     this->_text = text;
 
     // Set background.
-    this->fill(Color::from_rgb(0, 255, 0));
+    this->fill(this->_background_color);
 
     // Draw text.
     cairo_surface_t *surface;
@@ -79,7 +80,7 @@ void Label::set_text(const pr::String& text)
 
     cairo_t *cr = cairo_create(surface);
 
-    draw_text(cr, text.c_str(), this->height(), 12);
+    draw_text(cr, text.c_str(), this->_color, 12);
 
     // Add image.
     Image image(cairo_image_surface_get_data(surface),
