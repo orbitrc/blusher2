@@ -15,6 +15,11 @@ double pixel_to_pango_size(double pixel)
     return (pixel * 0.75) * PANGO_SCALE;
 }
 
+double pixel_to_pango_absolute_size(double pixel)
+{
+    return pixel * PANGO_SCALE;
+}
+
 int set_cloexec_or_close(int fd)
 {
     long flags;

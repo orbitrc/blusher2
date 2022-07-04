@@ -25,7 +25,7 @@ static void draw_text(cairo_t *cr, const char *text, const bl::Color& color,
     desc = pango_font_description_from_string("Noto Serif CJK KR");
 
     pango_font_description_set_absolute_size(desc,
-        pixel_to_pango_size(font_size));
+        pixel_to_pango_absolute_size(font_size));
 
     pango_layout_set_font_description(layout, desc);
     pango_font_description_free(desc);
