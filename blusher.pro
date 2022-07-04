@@ -77,6 +77,7 @@ HEADERS += \
     include/blusher/label.h \
     include/blusher/resource.h \
     include/blusher/input.h \
+    include/blusher/text.h \
     include/blusher/pointer-event.h \
     include/blusher/resize-event.h \
     src/application-impl.h \
