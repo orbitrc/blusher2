@@ -221,6 +221,25 @@ Image::Image(uint64_t width, uint64_t height, Image::Format format)
     }
 }
 
+Image::Image(const uint8_t *data, uint64_t width, uint64_t height,
+        Image::Format format)
+{
+    this->_width = width;
+    this->_height = height;
+    this->_format = format;
+
+    if (format == Image::Format::Argb32) {
+        auto pixel_size = sizeof(uint8_t) * 4;
+        this->_data = (uint8_t*)malloc(
+            pixel_size * (width * height));
+        auto data_size = pixel_size * (width * height);
+        // Copy.
+        memcpy(this->_data, data, data_size);
+    } else {
+        this->_data = nullptr;
+    }
+}
+
 Image::Image(const Image& image)
 {
     this->_width = image._width;

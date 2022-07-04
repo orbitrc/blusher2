@@ -83,7 +83,8 @@ void Label::set_text(const pr::String& text)
 
     // Add image.
     Image image(cairo_image_surface_get_data(surface),
-        (sizeof(uint8_t) * 4) * (this->width() * this->height())
+        this->width(),
+        this->height()
     );
     this->draw_image(Point(0, 0), image);
 

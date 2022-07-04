@@ -45,6 +45,10 @@ public:
     Image(uint64_t width, uint64_t height,
             Image::Format format = Image::Format::Argb32);
 
+    /// Construct Image from raw pixels data.
+    Image(const uint8_t *data, uint64_t width, uint64_t height,
+            Image::Format format = Image::Format::Argb32);
+
     /// Copy constructor.
     Image(const Image& image);
 
