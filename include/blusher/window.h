@@ -1,8 +1,13 @@
 #ifndef _BL_WINDOW_H
 #define _BL_WINDOW_H
 
+// C
 #include <stdint.h>
 
+// Primer
+#include <primer/string.h>
+
+// Blusher
 #include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/surface.h>
 #include <blusher/point.h>
@@ -24,6 +29,10 @@ public:
 
     uint32_t title_bar_height() const;
 
+    const pr::String& title() const;
+
+    void set_title(const pr::String& title);
+
 private:
     void update_decoration();
     void update_resize();
@@ -39,6 +48,7 @@ private:
     Surface *_border;
     TitleBar *_title_bar;
     Surface *_body;
+    pr::String _title;
 };
 
 

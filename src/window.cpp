@@ -38,6 +38,7 @@ Window::Window()
     this->_border = nullptr;
     this->_resize = nullptr;
     this->_decoration = nullptr;
+    this->_title = "Application"_S;
 
     // Load resources.
     register_resources();
@@ -101,6 +102,18 @@ void Window::move()
 uint32_t Window::title_bar_height() const
 {
     return BLUSHER_TITLE_BAR_HEIGHT;
+}
+
+const pr::String& Window::title() const
+{
+    return this->_title;
+}
+
+void Window::set_title(const pr::String& title)
+{
+    if (this->_title != title) {
+        this->_title = title;
+    }
 }
 
 //====================
