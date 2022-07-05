@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="48" height="48" version="1.1" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <linearGradient id="linearGradient11441" x1="20" x2="20.051" y1="44" y2="3" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#eae9e9" offset="0"/>
+   <stop stop-color="#f9f7f7" offset="1"/>
+  </linearGradient>
+  <filter id="filter205" x="-.043636" y="-.044651" width="1.0873" height="1.1126" color-interpolation-filters="sRGB">
+   <feFlood flood-color="rgb(0,0,0)" flood-opacity=".49804" result="flood"/>
+   <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite1"/>
+   <feGaussianBlur in="composite1" result="blur" stdDeviation="0.8"/>
+   <feOffset dx="0" dy="1" result="offset"/>
+   <feComposite in="SourceGraphic" in2="offset" result="composite2"/>
+  </filter>
+ </defs>
+ <g stroke-width="0">
+  <rect id="shadow-base" x="2" y="2" width="44" height="43" ry="5" fill="#a7a3a0" filter="url(#filter205)"/>
+  <path d="m4 44c0.83499 0.62581 1.8699 1 2.9983 1h34.003c1.1284 0 2.1633-0.37419 2.9983-1z" fill="#85817f"/>
+  <path d="m44 3c-0.83499-0.62581-1.8699-1-2.9983-1h-34.003c-1.1284 0-2.1633 0.37419-2.9983 1z" fill="#c1bcb9"/>
+  <rect x="3" y="3" width="42" height="41" ry="4" fill="url(#linearGradient11441)"/>
+ </g>
+</svg>
