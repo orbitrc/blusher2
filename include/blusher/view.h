@@ -81,6 +81,8 @@ protected:
     virtual void pointer_leave_event(std::shared_ptr<PointerEvent> event);
     virtual void pointer_press_event(std::shared_ptr<PointerEvent> event);
     virtual void pointer_release_event(std::shared_ptr<PointerEvent> event);
+    virtual void pointer_click_event(std::shared_ptr<PointerEvent> event);
+    virtual void pointer_double_click_event(std::shared_ptr<PointerEvent> event);
     virtual void pointer_move_event(std::shared_ptr<PointerEvent> event);
 
 private:

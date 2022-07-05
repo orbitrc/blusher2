@@ -30,6 +30,7 @@ protected:
     void pointer_enter_event(std::shared_ptr<PointerEvent> event) override;
     void pointer_leave_event(std::shared_ptr<PointerEvent> event) override;
     void pointer_press_event(std::shared_ptr<PointerEvent> event) override;
+    void pointer_click_event(std::shared_ptr<PointerEvent> event) override;
 
 private:
     TitleBarButton::Type _type;

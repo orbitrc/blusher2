@@ -125,4 +125,11 @@ void TitleBarButton::pointer_press_event(std::shared_ptr<PointerEvent> event)
     return View::pointer_press_event(event);
 }
 
+void TitleBarButton::pointer_click_event(std::shared_ptr<PointerEvent> event)
+{
+    fprintf(stderr, "Title bar button clicked.\n");
+
+    return View::pointer_click_event(event);
+}
+
 } // namespace bl

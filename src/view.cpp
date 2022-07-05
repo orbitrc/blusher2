@@ -167,9 +167,24 @@ void View::pointer_leave_event(std::shared_ptr<PointerEvent> event)
 void View::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
     (void)event;
+    this->_state = View::State::Active;
 }
 
 void View::pointer_release_event(std::shared_ptr<PointerEvent> event)
+{
+    if (this->_state == View::State::Active) {
+        this->_state = View::State::Normal;
+
+        this->pointer_click_event(event);
+    }
+}
+
+void View::pointer_click_event(std::shared_ptr<PointerEvent> event)
+{
+    (void)event;
+}
+
+void View::pointer_double_click_event(std::shared_ptr<PointerEvent> event)
 {
     (void)event;
 }
