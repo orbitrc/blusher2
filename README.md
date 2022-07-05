@@ -15,7 +15,7 @@ Blusher 2.0 using Cairo as a 2D graphics engine and Pango for text rendering.
 
 Dependencies
 ------------
-Blusher has a dependency on `libblusher`. And it depends on `blusher-core` and `blusher-svg`.
+Blusher has a dependency on `libblusher-svg`.
 
 Below is the list of all dependencies of those.
 
@@ -24,17 +24,13 @@ Below is the list of all dependencies of those.
 - librsvg
 
 
-libblusher
-----------
-Wayland client library is written in C. Blusher depends on Wayland client library, so core logic is written in C. libblusher is a C bridge of Blusher.
+libblusher-svg
+--------------
+Rendering SVG is not a simple thing. Currently Blusher using `librsvg` for that.
+But it could be changed in the future. So we split SVG library as a dependency.
+It called `libblusher-svg`.
 
-First you need to install `libblusher-core.so` and `libblusher-svg.so` shared libraries.
-
-```sh
-$ cd libblusher-core
-$ make
-$ sudo make install
-```
+First you need to install `libblusher-svg.so` shared libraries.
 
 ```sh
 $ cd libblusher-svg
@@ -44,13 +40,9 @@ $ sudo make install
 
 You can build it with command
 ```sh
+$ make wayland-protocols
 $ make resources
 $ make
-```
-
-and you can run the demo with simply run
-```sh
-$ make run
 ```
 
 Blusher is not...
