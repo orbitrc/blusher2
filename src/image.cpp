@@ -441,4 +441,40 @@ Image Image::converted(Image::Format format) const
     return ret;
 }
 
+Image Image::cropped(const Rect& rect) const
+{
+    if (this->_format == Image::Format::Argb32) {
+        int stride = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
+            rect.width());
+        cairo_surface_t *source = cairo_image_surface_create_for_data(
+            this->_data, CAIRO_FORMAT_ARGB32, this->_width, this->_height,
+            stride);
+        cairo_surface_t *target = cairo_image_surface_create(
+            CAIRO_FORMAT_ARGB32,
+            rect.width(), rect.height());
+
+        cairo_t *cr = cairo_create(target);
+
+        cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
+
+        uint32_t offset_x = -(uint32_t)(rect.x());
+        uint32_t offset_y = -(uint32_t)(rect.y());
+        cairo_set_source_surface(cr, source, offset_x, offset_y);
+        cairo_paint(cr);
+
+        // Create a new image.
+        uint8_t *data = cairo_image_surface_get_data(target);
+        Image image(rect.width(), rect.height());
+        memcpy(image._data, data,
+            (sizeof(uint8_t) * 4) * (rect.width() * rect.height()));
+
+        return image;
+    } else {
+        fprintf(stderr,
+            "[WARN] Image::cropped() - Only Argb32 format implemented!\n");
+
+        return Image(rect.width(), rect.height(), this->_format);
+    }
+}
+
 } // namespace bl

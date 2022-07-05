@@ -9,6 +9,7 @@
 
 // Blusher
 #include <blusher/color.h>
+#include <blusher/rect.h>
 
 namespace bl {
 
@@ -75,6 +76,9 @@ public:
 
     /// Returns new image that format changed.
     Image converted(Image::Format format) const;
+
+    /// Returns cropped new image.
+    Image cropped(const Rect& rect) const;
 
 private:
     uint64_t _width;
