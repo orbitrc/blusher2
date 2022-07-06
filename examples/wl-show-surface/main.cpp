@@ -250,7 +250,7 @@ static void init_egl()
     };
 
     egl_display = eglGetDisplay(
-        (EGLNativeDisplayType)bl::WlDisplay::instance()->wl_display()
+        (EGLNativeDisplayType)bl::WlDisplay::instance()->c_ptr()
     );
     if (egl_display == EGL_NO_DISPLAY) {
         fprintf(stderr, "Can't create egl display.\n");
@@ -388,22 +388,24 @@ int main(int argc, char *argv[])
         fprintf(stderr, "WlCompositor singleton not ready.\n");
     }
     fprintf(stderr, "Before create surface. wl_compositor: %p\n",
-        bl::WlCompositor::instance()->wl_compositor());
+        bl::WlCompositor::instance()->c_ptr());
     bl::WlSurface surface = bl::WlCompositor::instance()->create_surface();
     fprintf(stderr, "Surface created!\n");
 
-    fprintf(stderr, "xdg_wm_base: %p\n", xdg_wm_base->xdg_wm_base());
+    fprintf(stderr, "xdg_wm_base: %p\n", xdg_wm_base->c_ptr());
     xdg_wm_base->add_listener(xdg_wm_base_listener);
     fprintf(stderr, "xdg_wm_base listener added.\n");
 
     // Get XDG surface.
-    bl::XdgSurface xdg_surface = xdg_wm_base->get_xdg_surface(surface);
+    std::shared_ptr<bl::XdgSurface> xdg_surface =
+        xdg_wm_base->get_xdg_surface(surface);
     fprintf(stderr, "Got XDG surface.\n");
-    xdg_surface.add_listener(xdg_surface_listener);
+    xdg_surface->add_listener(xdg_surface_listener);
 
     // Get XDG toplevel.
-    bl::XdgToplevel xdg_toplevel = xdg_surface.get_toplevel();
-    xdg_toplevel.add_listener(xdg_toplevel_listener);
+    std::shared_ptr<bl::XdgToplevel> xdg_toplevel =
+        xdg_surface->get_toplevel();
+    xdg_toplevel->add_listener(xdg_toplevel_listener);
 
     // Commit before roundtrip.
     fprintf(stderr, "Before commit.\n");
@@ -417,7 +419,7 @@ int main(int argc, char *argv[])
     // GL/EGL
     init_egl();
     //== CREATE WINDOW ==//
-    egl_window = wl_egl_window_create(surface.wl_surface(),
+    egl_window = wl_egl_window_create(surface.c_ptr(),
         WINDOW_WIDTH, WINDOW_HEIGHT);
     egl_surface = eglCreateWindowSurface(egl_display, egl_config, egl_window,
         NULL);
