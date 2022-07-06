@@ -38,69 +38,6 @@
 #include "view-impl.h"
 #include "egl-utils.h"
 
-//=========
-// XDG
-//=========
-
-// XDG surface
-static void xdg_surface_configure_handler(void *data,
-        struct xdg_surface *xdg_surface, uint32_t serial)
-{
-    (void)data;
-    xdg_surface_ack_configure(xdg_surface, serial);
-}
-
-static const bl::XdgSurface::Listener xdg_surface_listener = (
-    xdg_surface_configure_handler
-);
-
-// XDG toplevel
-static void xdg_toplevel_configure_handler(void *data,
-        struct xdg_toplevel *xdg_toplevel, int32_t width, int32_t height,
-        struct wl_array *states)
-{
-    bl::SurfaceImpl *surface_impl = static_cast<bl::SurfaceImpl*>(data);
-    bl::Surface *surface = surface_impl->surface();
-
-    // Check if same.
-    // assert(xdg_toplevel == surface_impl->_xdg_toplevel);
-
-    (void)xdg_toplevel;
-    /*
-    fprintf(stderr, "[LOG] xdg_toplevel_configure_handler - size: %dx%d\n",
-        width, height);
-    */
-    // TODO: implement
-
-    pr::Vector<bl::XdgToplevel::State> states_v =
-        bl::XdgToplevel::states_to_vector(states);
-
-    // State is resizing.
-    if (states_v.index(bl::XdgToplevel::State::Resizing) != std::nullopt) {
-        // Sometimes width and height could be zero.
-        if (width == 0 && height == 0) {
-            return;
-        }
-        if (surface->width() != width || surface->height() != height) {
-            // fprintf(stderr, "Resizing...\n");
-            surface->set_geometry(0, 0, width, height);
-            // surface->update();
-        }
-    }
-}
-
-static void xdg_toplevel_close_handler(void *data,
-        struct xdg_toplevel *xdg_toplevel)
-{
-    fprintf(stderr, "Closing...\n");
-}
-
-static const bl::XdgToplevel::Listener xdg_toplevel_listener =
-    bl::XdgToplevel::Listener(
-        xdg_toplevel_configure_handler,
-        xdg_toplevel_close_handler
-    );
-
 //================
 // Manage buffers
 //================

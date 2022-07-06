@@ -6,6 +6,8 @@
 // Blusher
 #include <blusher/application.h>
 
+#include "application-impl.h"
+
 //=========
 // XDG
 //=========
