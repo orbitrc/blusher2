@@ -18,16 +18,20 @@ public:
     };
 
 public:
-    DesktopSurface(Surface *surface);
+    DesktopSurface(DesktopSurface::Role role, DesktopSurface *parent = nullptr);
 
-    DesktopSurface(DesktopSurface *parent);
+    DesktopSurface* parent() const;
+
+    DesktopSurface::Role role() const;
 
 private:
     std::shared_ptr<XdgSurface> _xdg_surface;
     std::shared_ptr<XdgToplevel> _xdg_toplevel;
     // std::shared_ptr<XdgPopup> _xdg_popup;
 
-    DesktopSurface::Type _type;
+    std::shared_ptr<Surface> _surface;
+    DesktopSurface::Role _role;
+    DesktopSurface *_parent;
 };
 
 } // namespace bl
