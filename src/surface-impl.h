@@ -170,7 +170,7 @@ private:
     //=================
     // Wayland client
     //=================
-    struct wl_subsurface *_subsurface;
+    std::shared_ptr<WlSubsurface> _subsurface;
     struct wl_callback *_frame_callback;
 
     //==================

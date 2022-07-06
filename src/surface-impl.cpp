@@ -426,9 +426,9 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     this->_shm_data_size = 0;
 
     if (this->isToplevel() != true) {
-        this->_subsurface = wl_subcompositor_get_subsurface(app_impl->subcompositor(),
-            this->m_blSurface->wl_surface().wl_surface(),
-            static_cast<SurfaceImpl*>(this->parent())->wlSurface()
+        this->_subsurface = app_impl->subcompositor()->get_subsurface(
+            this->m_blSurface->wl_surface(),
+            static_cast<SurfaceImpl*>(this->parent())->m_blSurface->wl_surface()
         );
     }
 
