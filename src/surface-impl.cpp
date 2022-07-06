@@ -379,8 +379,7 @@ static void init_egl(bl::SurfaceImpl::EglObject *egl_object)
 namespace bl {
 
 SurfaceImpl::SurfaceImpl(QObject *parent)
-    : QObject(parent),
-      _surface(bl::app_impl->compositor()->create_surface())
+    : QObject(parent)
 {
     this->m_x = 0;
     this->m_y = 0;

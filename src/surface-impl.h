@@ -171,7 +171,6 @@ private:
     //=================
     // Wayland client
     //=================
-    WlSurface _surface;
     struct wl_subsurface *_subsurface;
     struct wl_callback *_frame_callback;
 

@@ -5,8 +5,9 @@
 
 #include <memory>
 
-#include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/resize-event.h>
+#include <blusher/wayland/wl-surface.h>
+#include <blusher/wayland/xdg-surface.h> // REMOVE THIS LATER!!
 
 #include "color.h"
 #include "signal.h"
@@ -111,6 +112,7 @@ private:
 
 private:
     SurfaceImpl *_impl;
+    WlSurface _wl_surface;
 
     Surface *_parent;
     State _state;

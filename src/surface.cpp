@@ -6,6 +6,7 @@
 
 #include <linux/input.h>
 
+#include <blusher/application.h>
 #include <blusher/point.h>
 #include <blusher/rect.h>
 #include <blusher/utils.h>
@@ -19,6 +20,7 @@
 namespace bl {
 
 Surface::Surface(Surface *parent)
+    : _wl_surface(app->compositor()->create_surface())
 {
     this->_type = Surface::Type::Normal;
 

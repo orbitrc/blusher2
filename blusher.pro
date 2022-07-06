@@ -25,6 +25,7 @@ SOURCES += \
     src/application.cpp \
     src/event-dispatcher.cpp \
     src/surface.cpp \
+    src/desktop-surface.cpp \
     src/window.cpp \
     src/title-bar.cpp \
     src/view.cpp \
@@ -52,6 +53,7 @@ SOURCES += \
     src/wl-compositor.cpp \
     src/wl-subcompositor.cpp \
     src/wl-surface.cpp \
+    src/wl-subsurface.cpp \
     src/wl-output.cpp \
     src/wl-seat.cpp \
     src/xdg-wm-base.cpp \
@@ -63,6 +65,7 @@ HEADERS += \
     include/blusher/application.h \
     include/blusher/event-dispatcher.h \
     include/blusher/surface.h \
+    include/blusher/desktop-surface.h \
     include/blusher/window.h \
     include/blusher/title-bar.h \
     include/blusher/view.h \
@@ -90,6 +93,7 @@ HEADERS += \
     include/blusher/wayland/wl-compositor.h \
     include/blusher/wayland/wl-subcompositor.h \
     include/blusher/wayland/wl-surface.h \
+    include/blusher/wayland/wl-subsurface.h \
     include/blusher/wayland/wl-output.h \
     include/blusher/wayland/wl-seat.h \
     include/blusher/wayland/xdg-wm-base.h \
