@@ -51,4 +51,9 @@ std::shared_ptr<WlCompositor> Application::compositor()
     return this->_impl->compositor();
 }
 
+std::shared_ptr<XdgWmBase> Application::wm_base()
+{
+    return this->_impl->xdgWmBase();
+}
+
 } // namespace bl

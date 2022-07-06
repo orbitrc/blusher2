@@ -24,6 +24,10 @@ public:
 
     DesktopSurface::Role role() const;
 
+    void toplevel_move();
+
+    void toplevel_resize(XdgToplevel::ResizeEdge edge);
+
 private:
     std::shared_ptr<XdgSurface> _xdg_surface;
     std::shared_ptr<XdgToplevel> _xdg_toplevel;

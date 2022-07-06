@@ -7,6 +7,9 @@
 // Primer
 #include <primer/vector.h>
 
+// Blusher
+#include <blusher/wayland/wl-seat.h>
+
 struct wl_array;
 struct xdg_toplevel;
 struct xdg_toplevel_listener;
@@ -70,6 +73,15 @@ public:
 
     void add_listener(const XdgToplevel::Listener& listener,
             void *data = nullptr);
+
+    void move(const WlSeat& seat, uint32_t serial);
+
+    void resize(const WlSeat& seat, uint32_t serial,
+            XdgToplevel::ResizeEdge edge);
+
+    void set_maximized();
+
+    void unset_maximized();
 
     /// wl_array states to Vector. ConfigureHandler's last argument.
     static pr::Vector<XdgToplevel::State> states_to_vector(

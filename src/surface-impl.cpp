@@ -378,7 +378,7 @@ static void init_egl(bl::SurfaceImpl::EglObject *egl_object)
 
 namespace bl {
 
-SurfaceImpl::SurfaceImpl(QObject *parent)
+SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     : QObject(parent)
 {
     this->m_x = 0;
@@ -404,9 +404,12 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     this->_xdg_surface = nullptr;
     this->_xdg_toplevel = nullptr;
 
+    this->m_blSurface = surface;
+
     this->m_visible = false;
 
     this->m_rootView = new View();
+    this->m_rootView->set_surface(surface);
 
     this->m_pointerEnterHandler = nullptr;
     this->m_pointerLeaveHandler = nullptr;
@@ -424,31 +427,9 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
 
     if (this->isToplevel() != true) {
         this->_subsurface = wl_subcompositor_get_subsurface(app_impl->subcompositor(),
-            this->_surface.wl_surface(),
+            this->m_blSurface->wl_surface().wl_surface(),
             static_cast<SurfaceImpl*>(this->parent())->wlSurface()
         );
-    }
-
-    //=============
-    // XDG shell
-    //=============
-    if (this->parent() == nullptr) {
-        this->_xdg_surface =
-            app_impl->xdgWmBase()->get_xdg_surface(this->_surface);
-        this->_xdg_surface->add_listener(xdg_surface_listener);
-
-        this->_xdg_toplevel = this->_xdg_surface->get_toplevel();
-        this->_xdg_toplevel->add_listener(
-            xdg_toplevel_listener,
-            static_cast<void*>(this)
-        );
-
-        // Signal that the surface is ready to be configured.
-        this->_surface.commit();
-        // Wait for the surface to be configured.
-        app_impl->display()->roundtrip();
-
-        this->_xdg_surface->set_window_geometry(0, 0, 200, 200);
     }
 
     //============
@@ -695,15 +676,6 @@ Surface* SurfaceImpl::surface()
     return this->m_blSurface;
 }
 
-void SurfaceImpl::setBlSurface(Surface *blSurface)
-{
-    this->m_blSurface = blSurface;
-    fprintf(stderr,
-        "[LOG] SurfaceImpl::setBlSurface() - %p, surface: %p, root_view: %p\n",
-        this, blSurface, this->m_rootView);
-    this->m_rootView->set_surface(blSurface);
-}
-
 void SurfaceImpl::moveIfToplevel()
 {
     if (this->parent() == nullptr) {
@@ -717,6 +689,7 @@ void SurfaceImpl::moveIfToplevel()
 
 void SurfaceImpl::resizeIfToplevel(XdgToplevel::ResizeEdge edge)
 {
+    /*
     uint32_t xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM;
     switch (edge) {
     case XdgToplevel::ResizeEdge::TopLeft:
@@ -757,22 +730,27 @@ void SurfaceImpl::resizeIfToplevel(XdgToplevel::ResizeEdge edge)
         // xdg_toplevel_resize() call, xdg_toplevel.button event not called.
         app_impl->pointer_state.button = 0;
     }
+    */
 }
 
 void SurfaceImpl::maximizeIfToplevel()
 {
+    /*
     if (this->parent() == nullptr && this->_toplevel_maximized == false) {
         xdg_toplevel_set_maximized(this->_xdg_toplevel->xdg_toplevel());
         this->_toplevel_maximized = true;
     }
+    */
 }
 
 void SurfaceImpl::restoreIfToplevel()
 {
+    /*
     if (this->parent() == nullptr && this->_toplevel_maximized == true) {
         xdg_toplevel_unset_maximized(this->_xdg_toplevel->xdg_toplevel());
         this->_toplevel_maximized = false;
     }
+    */
 }
 
 //===================

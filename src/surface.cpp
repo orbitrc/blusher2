@@ -26,13 +26,11 @@ Surface::Surface(Surface *parent)
     this->_wl_subsurface = nullptr;
 
     if (parent != nullptr) {
-        this->_impl = new SurfaceImpl(parent->_impl);
+        this->_impl = new SurfaceImpl(this, parent->_impl);
     } else {
-        this->_impl = new SurfaceImpl();
+        this->_impl = new SurfaceImpl(this);
         this->_type = Surface::Type::Toplevel;
     }
-
-    this->_impl->setBlSurface(this);
 
     this->_parent = parent;
     this->_state = State::Normal;

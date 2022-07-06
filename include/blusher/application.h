@@ -6,6 +6,7 @@
 
 // Blusher
 #include <blusher/wayland/wl-compositor.h>
+#include <blusher/wayland/xdg-wm-base.h>
 #include <blusher/event-dispatcher.h>
 
 namespace bl {
@@ -28,6 +29,8 @@ public:
     // Wayland Native
     //==================
     std::shared_ptr<WlCompositor> compositor();
+
+    std::shared_ptr<XdgWmBase> wm_base();
 
 
     int exec();
