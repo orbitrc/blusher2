@@ -54,7 +54,7 @@ XdgToplevel::~XdgToplevel()
     xdg_toplevel_destroy(this->_xdg_toplevel);
 }
 
-struct xdg_toplevel* XdgToplevel::xdg_toplevel()
+struct xdg_toplevel* XdgToplevel::c_ptr()
 {
     return this->_xdg_toplevel;
 }
@@ -69,7 +69,9 @@ void XdgToplevel::add_listener(const XdgToplevel::Listener &listener,
 
 void XdgToplevel::move(const WlSeat& seat, uint32_t serial)
 {
-    xdg_toplevel_move(this->_xdg_toplevel, seat.wl_seat(), serial);
+    xdg_toplevel_move(this->_xdg_toplevel,
+        const_cast<WlSeat&>(seat).c_ptr(),
+        serial);
 }
 
 void XdgToplevel::resize(const WlSeat &seat, uint32_t serial, ResizeEdge edge)
@@ -105,7 +107,7 @@ void XdgToplevel::resize(const WlSeat &seat, uint32_t serial, ResizeEdge edge)
     }
 
     xdg_toplevel_resize(this->_xdg_toplevel,
-        seat.wl_seat(),
+        const_cast<WlSeat&>(seat).c_ptr(),
         serial,
         xdg_edge
     );

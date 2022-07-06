@@ -17,7 +17,7 @@ public:
 
     ~WlSubcompositor();
 
-    struct wl_subcompositor* wl_subcompositor();
+    struct wl_subcompositor* c_ptr();
 
     std::shared_ptr<WlSubsurface> get_subsurface(const WlSurface& surface,
             const WlSurface& parent);

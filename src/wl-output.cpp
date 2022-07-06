@@ -12,4 +12,9 @@ WlOutput::~WlOutput()
     // TODO
 }
 
+struct wl_output* WlOutput::c_ptr()
+{
+    return this->_wl_output;
+}
+
 } // namespace bl

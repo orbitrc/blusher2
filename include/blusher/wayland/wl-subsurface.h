@@ -20,7 +20,7 @@ public:
     ~WlSubsurface();
 
     /// Get the underlying struct wl_subsurface pointer.
-    struct wl_subsurface* wl_subsurface();
+    struct wl_subsurface* c_ptr();
 
     void set_position(uint32_t x, uint32_t y);
 

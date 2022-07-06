@@ -12,7 +12,7 @@ WlSurface::~WlSurface()
     wl_surface_destroy(this->_wl_surface);
 }
 
-struct wl_surface* WlSurface::wl_surface()
+struct wl_surface* WlSurface::c_ptr()
 {
     return this->_wl_surface;
 }

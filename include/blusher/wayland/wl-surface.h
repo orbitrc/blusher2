@@ -12,7 +12,7 @@ public:
 
     ~WlSurface();
 
-    struct wl_surface* wl_surface();
+    struct wl_surface* c_ptr();
 
     void commit();
 

@@ -53,7 +53,7 @@ public:
 public:
     WlInterface();
 
-    const struct wl_interface* wl_interface()
+    const struct wl_interface* c_ptr()
     {
         return this->_wl_interface;
     }

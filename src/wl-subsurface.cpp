@@ -12,7 +12,7 @@ WlSubsurface::~WlSubsurface()
     wl_subsurface_destroy(this->_wl_subsurface);
 }
 
-struct wl_subsurface* WlSubsurface::wl_subsurface()
+struct wl_subsurface* WlSubsurface::c_ptr()
 {
     return this->_wl_subsurface;
 }
@@ -20,13 +20,13 @@ struct wl_subsurface* WlSubsurface::wl_subsurface()
 void WlSubsurface::place_above(const WlSurface& sibling)
 {
     wl_subsurface_place_above(this->_wl_subsurface,
-        const_cast<WlSurface&>(sibling).wl_surface());
+        const_cast<WlSurface&>(sibling).c_ptr());
 }
 
 void WlSubsurface::place_below(const WlSurface& sibling)
 {
     wl_subsurface_place_below(this->_wl_subsurface,
-        const_cast<WlSurface&>(sibling).wl_surface());
+        const_cast<WlSurface&>(sibling).c_ptr());
 }
 
 void WlSubsurface::set_sync()

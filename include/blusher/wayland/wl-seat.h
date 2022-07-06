@@ -46,7 +46,7 @@ public:
 
     ~WlSeat();
 
-    struct wl_seat* wl_seat();
+    struct wl_seat* c_ptr();
 
     void add_listener(const WlSeat::Listener& listener);
 

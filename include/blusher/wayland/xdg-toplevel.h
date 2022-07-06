@@ -69,7 +69,7 @@ public:
 
     ~XdgToplevel();
 
-    struct xdg_toplevel* xdg_toplevel();
+    struct xdg_toplevel* c_ptr();
 
     void add_listener(const XdgToplevel::Listener& listener,
             void *data = nullptr);

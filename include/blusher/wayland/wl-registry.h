@@ -53,7 +53,7 @@ public:
 
     ~WlRegistry();
 
-    struct wl_registry* wl_registry();
+    struct wl_registry* c_ptr();
 
     void add_listener(const WlRegistry::Listener& listener);
 

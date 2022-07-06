@@ -63,7 +63,7 @@ WlRegistry::~WlRegistry()
 {
 }
 
-struct wl_registry* WlRegistry::wl_registry()
+struct wl_registry* WlRegistry::c_ptr()
 {
     return this->_wl_registry;
 }
