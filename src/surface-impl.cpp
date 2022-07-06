@@ -649,7 +649,7 @@ void SurfaceImpl::show()
             this->width(), this->height());
 
         // wl_surface_attach(this->_surface, this->_buffer, 0, 0);
-        this->_surface.commit();
+        const_cast<WlSurface&>(this->m_blSurface->wl_surface()).commit();
 
         if (this->parent() != nullptr) {
             wl_surface_commit(static_cast<SurfaceImpl*>(this->parent())->wlSurface());
@@ -863,7 +863,8 @@ void SurfaceImpl::callResizeHandler(int32_t width, int32_t height,
 //==================
 struct wl_surface* SurfaceImpl::wlSurface() const
 {
-    return const_cast<WlSurface&>(this->_surface).wl_surface();
+    return const_cast<WlSurface&>(
+        this->m_blSurface->wl_surface()).wl_surface();
 }
 
 

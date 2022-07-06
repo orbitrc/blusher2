@@ -82,6 +82,13 @@ public:
 
     void update();
 
+    //=================
+    // Wayland Access
+    //=================
+    const WlSurface& wl_surface() const;
+
+    std::shared_ptr<WlSubsurface> wl_subsurface();
+
 public:
     Signal<> color_changed;
     Signal<> clicked;

@@ -145,6 +145,16 @@ void Surface::update()
     this->_impl->update();
 }
 
+const WlSurface& Surface::wl_surface() const
+{
+    return this->_wl_surface;
+}
+
+std::shared_ptr<WlSubsurface> Surface::wl_subsurface()
+{
+    return this->_wl_subsurface;
+}
+
 //=================
 // Events
 //=================
