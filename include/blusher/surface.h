@@ -7,6 +7,7 @@
 
 #include <blusher/resize-event.h>
 #include <blusher/wayland/wl-surface.h>
+#include <blusher/wayland/wl-subsurface.h>
 #include <blusher/wayland/xdg-surface.h> // REMOVE THIS LATER!!
 
 #include "color.h"
@@ -113,6 +114,7 @@ private:
 private:
     SurfaceImpl *_impl;
     WlSurface _wl_surface;
+    std::shared_ptr<WlSubsurface> _wl_subsurface;
 
     Surface *_parent;
     State _state;

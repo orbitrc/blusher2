@@ -58,8 +58,8 @@ public:
     std::shared_ptr<WlCompositor> compositor() const;
     void setCompositor(std::shared_ptr<WlCompositor>);
 
-    struct wl_subcompositor* subcompositor() const;
-    void setSubcompositor(struct wl_subcompositor*);
+    std::shared_ptr<WlSubcompositor> subcompositor() const;
+    void setSubcompositor(std::shared_ptr<WlSubcompositor>);
 
     WlRegistry* registry();
 
@@ -107,7 +107,7 @@ private:
     //=================
     WlDisplay _display;
     std::shared_ptr<WlCompositor> _compositor;
-    struct wl_subcompositor *_subcompositor;
+    std::shared_ptr<WlSubcompositor> _subcompositor;
     WlRegistry _registry;
     struct wl_shm *_shm;
     std::shared_ptr<WlSeat> _seat;

@@ -23,6 +23,7 @@ Surface::Surface(Surface *parent)
     : _wl_surface(app->compositor()->create_surface())
 {
     this->_type = Surface::Type::Normal;
+    this->_wl_subsurface = nullptr;
 
     if (parent != nullptr) {
         this->_impl = new SurfaceImpl(parent->_impl);

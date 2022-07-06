@@ -266,9 +266,10 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
             application_impl->setCompositor(reg->bind(id, interface, 3));
         }
     } else if (strcmp(interface, "wl_subcompositor") == 0) {
-        if (application_impl->subcompositor() == NULL) {
-            application_impl->setSubcompositor(static_cast<struct wl_subcompositor*>(
-                wl_registry_bind(registry, id, &wl_subcompositor_interface, 1)));
+        if (application_impl->subcompositor() == nullptr) {
+            auto interface = bl::WlInterface<bl::WlInterfaceType::Subcompositor>();
+            application_impl->setSubcompositor(
+                reg->bind(id, interface, 1));
         }
     } else if (strcmp(interface, "wl_shm") == 0) {
         if (application_impl->shm() == NULL) {
@@ -392,12 +393,13 @@ void ApplicationImpl::setCompositor(std::shared_ptr<WlCompositor> compositor)
 }
 
 // Subcompositor
-struct wl_subcompositor* ApplicationImpl::subcompositor() const
+std::shared_ptr<WlSubcompositor> ApplicationImpl::subcompositor() const
 {
     return this->_subcompositor;
 }
 
-void ApplicationImpl::setSubcompositor(struct wl_subcompositor *subcompositor)
+void ApplicationImpl::setSubcompositor(
+        std::shared_ptr<WlSubcompositor> subcompositor)
 {
     this->_subcompositor = subcompositor;
 }
