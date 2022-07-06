@@ -1,6 +1,9 @@
 #ifndef _BL_XDG_WM_BASE_H
 #define _BL_XDG_WM_BASE_H
 
+// C++
+#include <memory>
+
 // Blusher
 #include <blusher/wayland/xdg-surface.h>
 
@@ -40,7 +43,7 @@ public:
 
     void add_listener(const XdgWmBase::Listener& listener);
 
-    XdgSurface get_xdg_surface(WlSurface& surface);
+    std::shared_ptr<XdgSurface> get_xdg_surface(WlSurface& surface);
 
     void pong(uint32_t serial);
 

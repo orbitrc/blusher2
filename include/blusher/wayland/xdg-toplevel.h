@@ -68,7 +68,8 @@ public:
 
     struct xdg_toplevel* xdg_toplevel();
 
-    void add_listener(const XdgToplevel::Listener& listener);
+    void add_listener(const XdgToplevel::Listener& listener,
+            void *data = nullptr);
 
     /// wl_array states to Vector. ConfigureHandler's last argument.
     static pr::Vector<XdgToplevel::State> states_to_vector(

@@ -23,6 +23,7 @@
 
 // Blusher
 #include <blusher/wayland/wl-surface.h>
+#include <blusher/wayland/xdg-surface.h>
 #include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/color.h>
 #include <blusher/view.h>
@@ -176,8 +177,8 @@ private:
     //============================
     // Wayland XDG shell objects
     //============================
-    struct xdg_surface *_xdg_surface;
-    struct xdg_toplevel *_xdg_toplevel;
+    std::shared_ptr<XdgSurface> _xdg_surface;
+    std::shared_ptr<XdgToplevel> _xdg_toplevel;
 
     //==================
     // EGL/OpenGL

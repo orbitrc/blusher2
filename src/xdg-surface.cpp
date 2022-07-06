@@ -63,14 +63,20 @@ void XdgSurface::add_listener(const XdgSurface::Listener& listener)
         listener.xdg_surface_listener(), NULL);
 }
 
-XdgToplevel XdgSurface::get_toplevel()
+std::shared_ptr<XdgToplevel> XdgSurface::get_toplevel()
 {
     struct xdg_toplevel *xdg_toplevel =
         xdg_surface_get_toplevel(this->_xdg_surface);
 
-    XdgToplevel toplevel(xdg_toplevel);
+    std::shared_ptr<XdgToplevel> toplevel(new XdgToplevel(xdg_toplevel));
 
     return toplevel;
+}
+
+void XdgSurface::set_window_geometry(int32_t x, int32_t y,
+        int32_t width, int32_t height)
+{
+    xdg_surface_set_window_geometry(this->_xdg_surface, x, y, width, height);
 }
 
 void XdgSurface::ack_configure(struct xdg_surface *xdg_surface, uint32_t serial)

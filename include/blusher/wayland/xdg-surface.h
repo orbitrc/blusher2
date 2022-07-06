@@ -1,6 +1,9 @@
 #ifndef _BL_XDG_SURFACE_H
 #define _BL_XDG_SURFACE_H
 
+// C++
+#include <memory>
+
 // Wayland
 #include <wayland-client.h>
 
@@ -44,7 +47,10 @@ public:
 
     void add_listener(const XdgSurface::Listener& listener);
 
-    XdgToplevel get_toplevel();
+    std::shared_ptr<XdgToplevel> get_toplevel();
+
+    void set_window_geometry(int32_t x, int32_t y,
+            int32_t width, int32_t height);
 
     /// Call xdg_surface_ack_configure.
     /// This needed in listener handler, so it is a static method.

@@ -50,9 +50,9 @@ static void xdg_surface_configure_handler(void *data,
     xdg_surface_ack_configure(xdg_surface, serial);
 }
 
-static const struct xdg_surface_listener xdg_surface_listener = {
-    .configure = xdg_surface_configure_handler,
-};
+static const bl::XdgSurface::Listener xdg_surface_listener = (
+    xdg_surface_configure_handler
+);
 
 // XDG toplevel
 static void xdg_toplevel_configure_handler(void *data,
@@ -95,10 +95,11 @@ static void xdg_toplevel_close_handler(void *data,
     fprintf(stderr, "Closing...\n");
 }
 
-static const struct xdg_toplevel_listener xdg_toplevel_listener = {
-    .configure = xdg_toplevel_configure_handler,
-    .close = xdg_toplevel_close_handler,
-};
+static const bl::XdgToplevel::Listener xdg_toplevel_listener =
+    bl::XdgToplevel::Listener(
+        xdg_toplevel_configure_handler,
+        xdg_toplevel_close_handler
+    );
 
 //================
 // Manage buffers
@@ -434,21 +435,21 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     //=============
     if (this->parent() == nullptr) {
         this->_xdg_surface =
-            xdg_wm_base_get_xdg_surface(app_impl->xdgWmBase()->xdg_wm_base(),
-                this->_surface.wl_surface());
-        xdg_surface_add_listener(this->_xdg_surface, &xdg_surface_listener, NULL);
+            app_impl->xdgWmBase()->get_xdg_surface(this->_surface);
+        this->_xdg_surface->add_listener(xdg_surface_listener);
 
-        this->_xdg_toplevel = xdg_surface_get_toplevel(this->_xdg_surface);
-        xdg_toplevel_add_listener(this->_xdg_toplevel,
-            &xdg_toplevel_listener,
-            static_cast<void*>(this));
+        this->_xdg_toplevel = this->_xdg_surface->get_toplevel();
+        this->_xdg_toplevel->add_listener(
+            xdg_toplevel_listener,
+            static_cast<void*>(this)
+        );
 
         // Signal that the surface is ready to be configured.
         this->_surface.commit();
         // Wait for the surface to be configured.
         app_impl->display()->roundtrip();
 
-        xdg_surface_set_window_geometry(this->_xdg_surface, 0, 0, 200, 200);
+        this->_xdg_surface->set_window_geometry(0, 0, 200, 200);
     }
 
     //============
@@ -584,7 +585,7 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
 
     // Set xdg-surface window geometry.
     if (this->_xdg_surface != nullptr) {
-        xdg_surface_set_window_geometry(this->_xdg_surface, -1, -1, width, height);
+        this->_xdg_surface->set_window_geometry(-1, -1, width, height);
     }
 
     // Fire resize event.
@@ -702,7 +703,7 @@ void SurfaceImpl::setBlSurface(Surface *blSurface)
 void SurfaceImpl::moveIfToplevel()
 {
     if (this->parent() == nullptr) {
-        xdg_toplevel_move(this->_xdg_toplevel,
+        xdg_toplevel_move(this->_xdg_toplevel->xdg_toplevel(),
             app_impl->seat()->wl_seat(), app_impl->pointer_state.serial);
         // Manually release button pressed state because after
         // xdg_toplevel_move() call, xdg_toplevel.button event not called.
@@ -743,7 +744,7 @@ void SurfaceImpl::resizeIfToplevel(XdgToplevel::ResizeEdge edge)
     }
 
     if (this->parent() == nullptr) {
-        xdg_toplevel_resize(this->_xdg_toplevel,
+        xdg_toplevel_resize(this->_xdg_toplevel->xdg_toplevel(),
             bl::app_impl->seat()->wl_seat(),
             bl::app_impl->pointer_state.serial,
             xdg_edge
@@ -757,7 +758,7 @@ void SurfaceImpl::resizeIfToplevel(XdgToplevel::ResizeEdge edge)
 void SurfaceImpl::maximizeIfToplevel()
 {
     if (this->parent() == nullptr && this->_toplevel_maximized == false) {
-        xdg_toplevel_set_maximized(this->_xdg_toplevel);
+        xdg_toplevel_set_maximized(this->_xdg_toplevel->xdg_toplevel());
         this->_toplevel_maximized = true;
     }
 }
@@ -765,7 +766,7 @@ void SurfaceImpl::maximizeIfToplevel()
 void SurfaceImpl::restoreIfToplevel()
 {
     if (this->parent() == nullptr && this->_toplevel_maximized == true) {
-        xdg_toplevel_unset_maximized(this->_xdg_toplevel);
+        xdg_toplevel_unset_maximized(this->_xdg_toplevel->xdg_toplevel());
         this->_toplevel_maximized = false;
     }
 }

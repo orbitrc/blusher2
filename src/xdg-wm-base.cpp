@@ -67,13 +67,15 @@ void XdgWmBase::add_listener(const XdgWmBase::Listener& listener)
         listener.xdg_wm_base_listener(), NULL);
 }
 
-XdgSurface XdgWmBase::get_xdg_surface(WlSurface& surface)
+std::shared_ptr<XdgSurface> XdgWmBase::get_xdg_surface(WlSurface& surface)
 {
     struct xdg_surface *xdg_surface =
         xdg_wm_base_get_xdg_surface(this->_xdg_wm_base, surface.wl_surface());
     assert(xdg_surface != NULL);
 
-    XdgSurface bl_xdg_surface = XdgSurface(xdg_surface, &surface);
+    std::shared_ptr<XdgSurface> bl_xdg_surface(
+        new XdgSurface(xdg_surface, &surface)
+    );
 
     return bl_xdg_surface;
 }

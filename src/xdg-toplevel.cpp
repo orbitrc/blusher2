@@ -59,11 +59,12 @@ struct xdg_toplevel* XdgToplevel::xdg_toplevel()
     return this->_xdg_toplevel;
 }
 
-void XdgToplevel::add_listener(const XdgToplevel::Listener &listener)
+void XdgToplevel::add_listener(const XdgToplevel::Listener &listener,
+        void *data)
 {
     this->_listener = listener;
     xdg_toplevel_add_listener(this->_xdg_toplevel,
-        listener.xdg_toplevel_listener(), NULL);
+        listener.xdg_toplevel_listener(), data);
 }
 
 //===================
