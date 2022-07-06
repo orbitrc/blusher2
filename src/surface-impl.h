@@ -92,6 +92,7 @@ public:
     void placeBelow(SurfaceImpl*);
 
     bool toplevel() const;
+    bool isToplevel() const;
 
     void moveIfToplevel();
     void resizeIfToplevel(XdgToplevel::ResizeEdge edge);

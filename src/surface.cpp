@@ -92,9 +92,9 @@ Surface::Type Surface::type() const
     return this->_type;
 }
 
-bool Surface::toplevel() const
+bool Surface::is_toplevel() const
 {
-    return this->_impl->toplevel();
+    return this->_impl->isToplevel();
 }
 
 uint32_t Surface::width() const

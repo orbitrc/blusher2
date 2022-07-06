@@ -423,7 +423,7 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     this->_shm_data = NULL;
     this->_shm_data_size = 0;
 
-    if (this->toplevel() != true) {
+    if (this->isToplevel() != true) {
         this->_subsurface = wl_subcompositor_get_subsurface(app_impl->subcompositor(),
             this->_surface.wl_surface(),
             static_cast<SurfaceImpl*>(this->parent())->wlSurface()
@@ -508,7 +508,7 @@ void SurfaceImpl::setX(uint32_t x)
     if (this->m_x != x) {
         this->m_x = x;
 
-        if (!this->toplevel()) {
+        if (!this->isToplevel()) {
             wl_subsurface_set_position(this->_subsurface, x, this->y());
         }
 
@@ -521,7 +521,7 @@ void SurfaceImpl::setY(uint32_t y)
     if (this->m_y != y) {
         this->m_y = y;
 
-        if (!this->toplevel()) {
+        if (!this->isToplevel()) {
             wl_subsurface_set_position(this->_subsurface, this->x(), y);
         }
 
@@ -682,6 +682,11 @@ void SurfaceImpl::placeBelow(SurfaceImpl *surface_impl)
 }
 
 bool SurfaceImpl::toplevel() const
+{
+    return this->parent() == nullptr;
+}
+
+bool SurfaceImpl::isToplevel() const
 {
     return this->parent() == nullptr;
 }

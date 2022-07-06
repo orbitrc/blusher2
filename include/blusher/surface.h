@@ -62,7 +62,7 @@ public:
     Surface::Type type() const;
 
     /// Returns true if this surface is a toplevel.
-    bool toplevel() const;
+    bool is_toplevel() const;
 
     /// Width of the surface.
     uint32_t width() const;
