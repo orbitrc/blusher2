@@ -20,6 +20,13 @@ WlInterface<WlInterfaceType::Compositor>::WlInterface()
 }
 
 template<>
+WlInterface<WlInterfaceType::Subcompositor>::WlInterface()
+{
+    this->_wl_interface = &wl_subcompositor_interface;
+    this->_type = WlInterfaceType::Subcompositor;
+}
+
+template<>
 WlInterface<WlInterfaceType::Seat>::WlInterface()
 {
     this->_wl_interface = &wl_seat_interface;
