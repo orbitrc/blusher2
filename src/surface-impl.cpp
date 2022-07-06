@@ -401,9 +401,6 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     // Initialize.
     this->_toplevel_maximized = false;
 
-    this->_xdg_surface = nullptr;
-    this->_xdg_toplevel = nullptr;
-
     this->m_blSurface = surface;
 
     this->m_visible = false;
