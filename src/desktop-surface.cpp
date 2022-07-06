@@ -29,8 +29,7 @@ static void xdg_toplevel_configure_handler(void *data,
         struct xdg_toplevel *xdg_toplevel, int32_t width, int32_t height,
         struct wl_array *states)
 {
-    bl::SurfaceImpl *surface_impl = static_cast<bl::SurfaceImpl*>(data);
-    bl::Surface *surface = surface_impl->surface();
+    bl::DesktopSurface *desktop_surface = static_cast<bl::DesktopSurface*>(data);
 
     // Check if same.
     // assert(xdg_toplevel == surface_impl->_xdg_toplevel);
@@ -51,9 +50,10 @@ static void xdg_toplevel_configure_handler(void *data,
         if (width == 0 && height == 0) {
             return;
         }
-        if (surface->width() != width || surface->height() != height) {
+        if (desktop_surface->width() != width ||
+                desktop_surface->height() != height) {
             // fprintf(stderr, "Resizing...\n");
-            surface->set_geometry(0, 0, width, height);
+            desktop_surface->set_geometry(0, 0, width, height);
             // surface->update();
         }
     }
@@ -92,7 +92,7 @@ DesktopSurface::DesktopSurface(DesktopSurface::Role role,
     //=============
     // XDG shell
     //=============
-    this->_xdg_surface = app->wm_base()->get_xdg_surface(
+    this->_xdg_surface = app->xdg_wm_base()->get_xdg_surface(
         const_cast<WlSurface&>(this->_surface->wl_surface()));
     this->_xdg_surface->add_listener(xdg_surface_listener);
 
@@ -103,7 +103,7 @@ DesktopSurface::DesktopSurface(DesktopSurface::Role role,
     );
 
     // Signal that the surface is ready to be configured.
-    this->_surface.commit();
+    const_cast<WlSurface&>(this->_surface->wl_surface()).commit();
     // Wait for the surface to be configured.
     app_impl->display()->roundtrip();
 

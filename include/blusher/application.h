@@ -28,9 +28,9 @@ public:
     //==================
     // Wayland Native
     //==================
-    std::shared_ptr<WlCompositor> compositor();
+    std::shared_ptr<WlCompositor> wl_compositor();
 
-    std::shared_ptr<XdgWmBase> wm_base();
+    std::shared_ptr<XdgWmBase> xdg_wm_base();
 
 
     int exec();
