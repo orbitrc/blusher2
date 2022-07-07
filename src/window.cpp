@@ -55,6 +55,7 @@ Window::Window()
     this->_border->place_below(this->_body);
 
     this->_resize = new Resize(this->_body);
+    this->_resize->set_body(this);
     this->_resize->place_below(this->_border);
 
     this->_decoration = new Surface(this->_body);
@@ -205,6 +206,16 @@ XdgToplevel::ResizeEdge Resize::resize_edge(const Point& pos) const
     return XdgToplevel::ResizeEdge::None;
 }
 
+Surface* Resize::body()
+{
+    return this->_body;
+}
+
+void Resize::set_body(Surface *surface)
+{
+    this->_body = surface;
+}
+
 //=================
 // Resize: Events
 //=================
@@ -212,12 +223,10 @@ XdgToplevel::ResizeEdge Resize::resize_edge(const Point& pos) const
 void Resize::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
     if (event->button() == Button::Left) {
-        for (Surface *it = this; it->parent() != nullptr; it = it->parent()) {
-            Surface *win = it->parent();
-            if (win->parent() == nullptr) {
-                auto edge = this->resize_edge(Point(event->x(), event->y()));
-                win->resize_if_window(edge);
-            }
+        if (this->_body != nullptr) {
+            DesktopSurface *body = static_cast<DesktopSurface*>(this->_body);
+            auto edge = this->resize_edge(Point(event->x(), event->y()));
+            body->toplevel_resize(edge);
         }
     }
 

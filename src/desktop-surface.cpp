@@ -135,4 +135,16 @@ void DesktopSurface::toplevel_move()
     }
 }
 
+void DesktopSurface::toplevel_resize(XdgToplevel::ResizeEdge edge)
+{
+    if (this->_role == DesktopSurface::Role::Toplevel) {
+        this->_xdg_toplevel->resize(*app_impl->seat(),
+            app_impl->pointer_state.serial,
+            edge);
+        // Manually release button pressed state because after
+        // xdg_toplevel_move() call, xdg_toplevel.button event not called.
+        app_impl->pointer_state.button = 0;
+    }
+}
+
 } // namespace bl

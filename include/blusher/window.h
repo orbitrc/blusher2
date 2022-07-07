@@ -62,10 +62,14 @@ public:
 
     XdgToplevel::ResizeEdge resize_edge(const Point& pos) const;
 
+    Surface* body();
+    void set_body(Surface *surface);
+
 protected:
     void pointer_press_event(std::shared_ptr<PointerEvent> event) override;
 
 private:
+    Surface *_body;
 };
 
 } // namespace bl
