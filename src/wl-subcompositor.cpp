@@ -12,9 +12,20 @@ WlSubcompositor::~WlSubcompositor()
     // TODO
 }
 
-struct wl_subcompositor* WlSubcompositor::wl_subcompositor()
+struct wl_subcompositor* WlSubcompositor::c_ptr()
 {
     return this->_wl_subcompositor;
+}
+
+std::shared_ptr<WlSubsurface> WlSubcompositor::get_subsurface(
+        const WlSurface& surface, const WlSurface& parent)
+{
+    struct wl_subsurface *subsurface = wl_subcompositor_get_subsurface(
+        this->_wl_subcompositor,
+        const_cast<WlSurface&>(surface).c_ptr(),
+        const_cast<WlSurface&>(parent).c_ptr());
+
+    return std::shared_ptr<WlSubsurface>(new WlSubsurface(subsurface));
 }
 
 } // namespace bl

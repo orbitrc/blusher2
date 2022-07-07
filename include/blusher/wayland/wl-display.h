@@ -25,7 +25,7 @@ public:
 
     static WlDisplay connect(const pr::String& name);
 
-    struct wl_display* wl_display();
+    struct wl_display* c_ptr();
 
     WlRegistry get_registry();
 

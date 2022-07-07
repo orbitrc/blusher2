@@ -19,7 +19,7 @@ public:
 
     ~WlCompositor();
 
-    struct wl_compositor* wl_compositor();
+    struct wl_compositor* c_ptr();
 
     WlSurface create_surface();
 

@@ -25,7 +25,7 @@ WlCompositor::~WlCompositor()
 {
 }
 
-struct wl_compositor* WlCompositor::wl_compositor()
+struct wl_compositor* WlCompositor::c_ptr()
 {
     return this->_wl_compositor;
 }

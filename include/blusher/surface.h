@@ -5,8 +5,10 @@
 
 #include <memory>
 
-#include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/resize-event.h>
+#include <blusher/wayland/wl-surface.h>
+#include <blusher/wayland/wl-subsurface.h>
+#include <blusher/wayland/xdg-surface.h> // REMOVE THIS LATER!!
 
 #include "color.h"
 #include "signal.h"
@@ -80,6 +82,13 @@ public:
 
     void update();
 
+    //=================
+    // Wayland Access
+    //=================
+    const WlSurface& wl_surface() const;
+
+    std::shared_ptr<WlSubsurface> wl_subsurface();
+
 public:
     Signal<> color_changed;
     Signal<> clicked;
@@ -111,6 +120,8 @@ private:
 
 private:
     SurfaceImpl *_impl;
+    WlSurface _wl_surface;
+    std::shared_ptr<WlSubsurface> _wl_subsurface;
 
     Surface *_parent;
     State _state;

@@ -267,7 +267,7 @@ static void init_egl(EglObject *egl_object)
     };
 
     egl_object->egl_display = eglGetDisplay(
-        (EGLNativeDisplayType)bl::WlDisplay::instance()->wl_display()
+        (EGLNativeDisplayType)bl::WlDisplay::instance()->c_ptr()
     );
     if (egl_object->egl_display == EGL_NO_DISPLAY) {
         fprintf(stderr, "Can't create egl display.\n");
@@ -313,7 +313,7 @@ class CursorImpl
 {
 public:
     CursorImpl(Cursor *cursor)
-        : _surface(bl::app->compositor()->create_surface())
+        : _surface(bl::app->wl_compositor()->create_surface())
     {
         this->_cursor = cursor;
 
@@ -324,7 +324,7 @@ public:
         // EGL/OpenGL
         //================
         init_egl(&this->_egl_object);
-        this->_egl_window = wl_egl_window_create(this->_surface.wl_surface(),
+        this->_egl_window = wl_egl_window_create(this->_surface.c_ptr(),
             24, 24);
         this->_egl_object.egl_surface = eglCreateWindowSurface(
             this->_egl_object.egl_display, this->_egl_object.egl_config,
@@ -356,7 +356,7 @@ public:
 
     struct wl_surface* wl_surface()
     {
-        return this->_surface.wl_surface();
+        return this->_surface.c_ptr();
     }
 
 private:

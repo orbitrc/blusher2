@@ -38,69 +38,6 @@
 #include "view-impl.h"
 #include "egl-utils.h"
 
-//=========
-// XDG
-//=========
-
-// XDG surface
-static void xdg_surface_configure_handler(void *data,
-        struct xdg_surface *xdg_surface, uint32_t serial)
-{
-    (void)data;
-    xdg_surface_ack_configure(xdg_surface, serial);
-}
-
-static const bl::XdgSurface::Listener xdg_surface_listener = (
-    xdg_surface_configure_handler
-);
-
-// XDG toplevel
-static void xdg_toplevel_configure_handler(void *data,
-        struct xdg_toplevel *xdg_toplevel, int32_t width, int32_t height,
-        struct wl_array *states)
-{
-    bl::SurfaceImpl *surface_impl = static_cast<bl::SurfaceImpl*>(data);
-    bl::Surface *surface = surface_impl->surface();
-
-    // Check if same.
-    // assert(xdg_toplevel == surface_impl->_xdg_toplevel);
-
-    (void)xdg_toplevel;
-    /*
-    fprintf(stderr, "[LOG] xdg_toplevel_configure_handler - size: %dx%d\n",
-        width, height);
-    */
-    // TODO: implement
-
-    pr::Vector<bl::XdgToplevel::State> states_v =
-        bl::XdgToplevel::states_to_vector(states);
-
-    // State is resizing.
-    if (states_v.index(bl::XdgToplevel::State::Resizing) != std::nullopt) {
-        // Sometimes width and height could be zero.
-        if (width == 0 && height == 0) {
-            return;
-        }
-        if (surface->width() != width || surface->height() != height) {
-            // fprintf(stderr, "Resizing...\n");
-            surface->set_geometry(0, 0, width, height);
-            // surface->update();
-        }
-    }
-}
-
-static void xdg_toplevel_close_handler(void *data,
-        struct xdg_toplevel *xdg_toplevel)
-{
-    fprintf(stderr, "Closing...\n");
-}
-
-static const bl::XdgToplevel::Listener xdg_toplevel_listener =
-    bl::XdgToplevel::Listener(
-        xdg_toplevel_configure_handler,
-        xdg_toplevel_close_handler
-    );
-
 //================
 // Manage buffers
 //================
@@ -340,7 +277,7 @@ static void init_egl(bl::SurfaceImpl::EglObject *egl_object)
     };
 
     egl_object->egl_display = eglGetDisplay(
-        (EGLNativeDisplayType)bl::WlDisplay::instance()->wl_display()
+        (EGLNativeDisplayType)bl::WlDisplay::instance()->c_ptr()
     );
     if (egl_object->egl_display == EGL_NO_DISPLAY) {
         fprintf(stderr, "Can't create egl display.\n");
@@ -378,9 +315,8 @@ static void init_egl(bl::SurfaceImpl::EglObject *egl_object)
 
 namespace bl {
 
-SurfaceImpl::SurfaceImpl(QObject *parent)
-    : QObject(parent),
-      _surface(bl::app_impl->compositor()->create_surface())
+SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
+    : QObject(parent)
 {
     this->m_x = 0;
     this->m_y = 0;
@@ -402,12 +338,14 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     // Initialize.
     this->_toplevel_maximized = false;
 
-    this->_xdg_surface = nullptr;
-    this->_xdg_toplevel = nullptr;
+    this->_wl_subsurface = nullptr;
+
+    this->m_blSurface = surface;
 
     this->m_visible = false;
 
     this->m_rootView = new View();
+    this->m_rootView->set_surface(surface);
 
     this->m_pointerEnterHandler = nullptr;
     this->m_pointerLeaveHandler = nullptr;
@@ -417,39 +355,16 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     //===============
     // Wayland
     //===============
-    this->_subsurface = NULL;
     this->_frame_callback = NULL;
 
     this->_shm_data = NULL;
     this->_shm_data_size = 0;
 
     if (this->isToplevel() != true) {
-        this->_subsurface = wl_subcompositor_get_subsurface(app_impl->subcompositor(),
-            this->_surface.wl_surface(),
-            static_cast<SurfaceImpl*>(this->parent())->wlSurface()
+        this->_wl_subsurface = app_impl->subcompositor()->get_subsurface(
+            this->m_blSurface->wl_surface(),
+            static_cast<SurfaceImpl*>(this->parent())->m_blSurface->wl_surface()
         );
-    }
-
-    //=============
-    // XDG shell
-    //=============
-    if (this->parent() == nullptr) {
-        this->_xdg_surface =
-            app_impl->xdgWmBase()->get_xdg_surface(this->_surface);
-        this->_xdg_surface->add_listener(xdg_surface_listener);
-
-        this->_xdg_toplevel = this->_xdg_surface->get_toplevel();
-        this->_xdg_toplevel->add_listener(
-            xdg_toplevel_listener,
-            static_cast<void*>(this)
-        );
-
-        // Signal that the surface is ready to be configured.
-        this->_surface.commit();
-        // Wait for the surface to be configured.
-        app_impl->display()->roundtrip();
-
-        this->_xdg_surface->set_window_geometry(0, 0, 200, 200);
     }
 
     //============
@@ -458,7 +373,8 @@ SurfaceImpl::SurfaceImpl(QObject *parent)
     this->_egl_object = EglObject();
 
     init_egl(&this->_egl_object);
-    this->_egl_window = wl_egl_window_create(this->_surface.wl_surface(),
+    this->_egl_window = wl_egl_window_create(
+        const_cast<WlSurface&>(this->surface()->wl_surface()).c_ptr(),
         this->width(), this->height());
     this->_egl_object.egl_surface = eglCreateWindowSurface(
         this->_egl_object.egl_display, this->_egl_object.egl_config,
@@ -509,7 +425,8 @@ void SurfaceImpl::setX(uint32_t x)
         this->m_x = x;
 
         if (!this->isToplevel()) {
-            wl_subsurface_set_position(this->_subsurface, x, this->y());
+            wl_subsurface_set_position(this->_wl_subsurface->c_ptr(),
+                x, this->y());
         }
 
         emit this->implXChanged(x);
@@ -522,7 +439,8 @@ void SurfaceImpl::setY(uint32_t y)
         this->m_y = y;
 
         if (!this->isToplevel()) {
-            wl_subsurface_set_position(this->_subsurface, this->x(), y);
+            wl_subsurface_set_position(this->_wl_subsurface->c_ptr(),
+                this->x(), y);
         }
 
         emit this->implYChanged(y);
@@ -584,9 +502,11 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
     );
 
     // Set xdg-surface window geometry.
+    /*
     if (this->_xdg_surface != nullptr) {
         this->_xdg_surface->set_window_geometry(-1, -1, width, height);
     }
+    */
 
     // Fire resize event.
     QResizeEvent event(QSize(width, height), QSize(old_width, old_height));
@@ -650,7 +570,7 @@ void SurfaceImpl::show()
             this->width(), this->height());
 
         // wl_surface_attach(this->_surface, this->_buffer, 0, 0);
-        this->_surface.commit();
+        const_cast<WlSurface&>(this->m_blSurface->wl_surface()).commit();
 
         if (this->parent() != nullptr) {
             wl_surface_commit(static_cast<SurfaceImpl*>(this->parent())->wlSurface());
@@ -667,17 +587,17 @@ void SurfaceImpl::show()
 
 void SurfaceImpl::placeAbove(SurfaceImpl *surface_impl)
 {
-    if (this->_subsurface != nullptr) {
-        wl_subsurface_place_above(this->_subsurface,
-            surface_impl->wlSurface());
+    if (this->_wl_subsurface != nullptr) {
+        this->_wl_subsurface->place_above(
+            surface_impl->surface()->wl_surface());
     }
 }
 
 void SurfaceImpl::placeBelow(SurfaceImpl *surface_impl)
 {
-    if (this->_subsurface != nullptr) {
-        wl_subsurface_place_below(this->_subsurface,
-            surface_impl->wlSurface());
+    if (this->_wl_subsurface != nullptr) {
+        this->_wl_subsurface->place_below(
+            surface_impl->surface()->wl_surface());
     }
 }
 
@@ -696,17 +616,9 @@ Surface* SurfaceImpl::surface()
     return this->m_blSurface;
 }
 
-void SurfaceImpl::setBlSurface(Surface *blSurface)
-{
-    this->m_blSurface = blSurface;
-    fprintf(stderr,
-        "[LOG] SurfaceImpl::setBlSurface() - %p, surface: %p, root_view: %p\n",
-        this, blSurface, this->m_rootView);
-    this->m_rootView->set_surface(blSurface);
-}
-
 void SurfaceImpl::moveIfToplevel()
 {
+    /*
     if (this->parent() == nullptr) {
         xdg_toplevel_move(this->_xdg_toplevel->xdg_toplevel(),
             app_impl->seat()->wl_seat(), app_impl->pointer_state.serial);
@@ -714,10 +626,12 @@ void SurfaceImpl::moveIfToplevel()
         // xdg_toplevel_move() call, xdg_toplevel.button event not called.
         app_impl->pointer_state.button = 0;
     }
+    */
 }
 
 void SurfaceImpl::resizeIfToplevel(XdgToplevel::ResizeEdge edge)
 {
+    /*
     uint32_t xdg_edge = XDG_TOPLEVEL_RESIZE_EDGE_BOTTOM;
     switch (edge) {
     case XdgToplevel::ResizeEdge::TopLeft:
@@ -758,22 +672,27 @@ void SurfaceImpl::resizeIfToplevel(XdgToplevel::ResizeEdge edge)
         // xdg_toplevel_resize() call, xdg_toplevel.button event not called.
         app_impl->pointer_state.button = 0;
     }
+    */
 }
 
 void SurfaceImpl::maximizeIfToplevel()
 {
+    /*
     if (this->parent() == nullptr && this->_toplevel_maximized == false) {
         xdg_toplevel_set_maximized(this->_xdg_toplevel->xdg_toplevel());
         this->_toplevel_maximized = true;
     }
+    */
 }
 
 void SurfaceImpl::restoreIfToplevel()
 {
+    /*
     if (this->parent() == nullptr && this->_toplevel_maximized == true) {
         xdg_toplevel_unset_maximized(this->_xdg_toplevel->xdg_toplevel());
         this->_toplevel_maximized = false;
     }
+    */
 }
 
 //===================
@@ -864,7 +783,8 @@ void SurfaceImpl::callResizeHandler(int32_t width, int32_t height,
 //==================
 struct wl_surface* SurfaceImpl::wlSurface() const
 {
-    return const_cast<WlSurface&>(this->_surface).wl_surface();
+    return const_cast<WlSurface&>(
+        this->m_blSurface->wl_surface()).c_ptr();
 }
 
 

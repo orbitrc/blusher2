@@ -214,13 +214,13 @@ static void seat_capabilities_handler(void *data, struct wl_seat *seat,
     if (caps & WL_SEAT_CAPABILITY_POINTER &&
             application_impl->pointer() == nullptr) {
         application_impl->setPointer(
-            wl_seat_get_pointer(application_impl->seat()->wl_seat()));
+            wl_seat_get_pointer(application_impl->seat()->c_ptr()));
         wl_pointer_add_listener(application_impl->pointer(),
             &pointer_listener, (void*)application_impl);
     } else if (caps & WL_SEAT_CAPABILITY_KEYBOARD &&
             application_impl->keyboard() == nullptr) {
         application_impl->setKeyboard(
-            wl_seat_get_keyboard(application_impl->seat()->wl_seat()));
+            wl_seat_get_keyboard(application_impl->seat()->c_ptr()));
     }
 }
 
@@ -250,7 +250,7 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
 
     bl::WlRegistry *reg = bl::WlRegistry::instance();
     // Check singleton registry is correct.
-    assert(reg->wl_registry() == registry);
+    assert(reg->c_ptr() == registry);
 
     fprintf(stderr, "<%s %d>\n", interface, version);
     if (strcmp(interface, "wl_seat") == 0) {
@@ -266,9 +266,10 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
             application_impl->setCompositor(reg->bind(id, interface, 3));
         }
     } else if (strcmp(interface, "wl_subcompositor") == 0) {
-        if (application_impl->subcompositor() == NULL) {
-            application_impl->setSubcompositor(static_cast<struct wl_subcompositor*>(
-                wl_registry_bind(registry, id, &wl_subcompositor_interface, 1)));
+        if (application_impl->subcompositor() == nullptr) {
+            auto interface = bl::WlInterface<bl::WlInterfaceType::Subcompositor>();
+            application_impl->setSubcompositor(
+                reg->bind(id, interface, 1));
         }
     } else if (strcmp(interface, "wl_shm") == 0) {
         if (application_impl->shm() == NULL) {
@@ -302,10 +303,10 @@ namespace bl {
 void DisplayDispatchThread::run()
 {
     fprintf(stderr, "before wl_display_dispatch %p\n", app_impl->display());
-    int result = wl_display_dispatch(app_impl->display()->wl_display());
+    int result = wl_display_dispatch(app_impl->display()->c_ptr());
     fprintf(stderr, "result: %d\n", result);
     while (result != -1) {
-        result = wl_display_dispatch(app_impl->display()->wl_display());
+        result = wl_display_dispatch(app_impl->display()->c_ptr());
         // fprintf(stderr, "result: %d\n", result);
     }
 }
@@ -340,7 +341,7 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     fprintf(stderr, "!!! get_registry()\n");
     this->_registry = this->_display.get_registry();
 
-    wl_registry_add_listener(this->_registry.wl_registry(),
+    wl_registry_add_listener(this->_registry.c_ptr(),
         &registry_listener, (void*)this);
 
     this->_display.dispatch();
@@ -392,12 +393,13 @@ void ApplicationImpl::setCompositor(std::shared_ptr<WlCompositor> compositor)
 }
 
 // Subcompositor
-struct wl_subcompositor* ApplicationImpl::subcompositor() const
+std::shared_ptr<WlSubcompositor> ApplicationImpl::subcompositor() const
 {
     return this->_subcompositor;
 }
 
-void ApplicationImpl::setSubcompositor(struct wl_subcompositor *subcompositor)
+void ApplicationImpl::setSubcompositor(
+        std::shared_ptr<WlSubcompositor> subcompositor)
 {
     this->_subcompositor = subcompositor;
 }

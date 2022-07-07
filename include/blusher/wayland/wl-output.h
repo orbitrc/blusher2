@@ -12,6 +12,8 @@ public:
 
     ~WlOutput();
 
+    struct wl_output* c_ptr();
+
 private:
     struct wl_output *_wl_output;
 };

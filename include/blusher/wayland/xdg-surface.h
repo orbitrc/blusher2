@@ -43,7 +43,7 @@ public:
 
     ~XdgSurface();
 
-    struct xdg_surface* xdg_surface();
+    struct xdg_surface* c_ptr();
 
     void add_listener(const XdgSurface::Listener& listener);
 

@@ -51,7 +51,7 @@ XdgSurface::~XdgSurface()
     xdg_surface_destroy(this->_xdg_surface);
 }
 
-struct xdg_surface* XdgSurface::xdg_surface()
+struct xdg_surface* XdgSurface::c_ptr()
 {
     return this->_xdg_surface;
 }

@@ -49,7 +49,7 @@ WlSeat::~WlSeat()
 //    wl_seat_release(this->_wl_seat);
 }
 
-struct wl_seat* WlSeat::wl_seat()
+struct wl_seat* WlSeat::c_ptr()
 {
     return this->_wl_seat;
 }

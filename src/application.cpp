@@ -46,9 +46,14 @@ int Application::exec()
     return this->_impl->exec();
 }
 
-std::shared_ptr<WlCompositor> Application::compositor()
+std::shared_ptr<WlCompositor> Application::wl_compositor()
 {
     return this->_impl->compositor();
+}
+
+std::shared_ptr<XdgWmBase> Application::xdg_wm_base()
+{
+    return this->_impl->xdgWmBase();
 }
 
 } // namespace bl

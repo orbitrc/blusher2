@@ -39,7 +39,7 @@ public:
 
     ~XdgWmBase();
 
-    struct xdg_wm_base* xdg_wm_base();
+    struct xdg_wm_base* c_ptr();
 
     void add_listener(const XdgWmBase::Listener& listener);
 

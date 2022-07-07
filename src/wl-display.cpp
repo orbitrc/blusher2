@@ -44,7 +44,7 @@ WlDisplay WlDisplay::connect(const pr::String &name)
     return ret;
 }
 
-struct wl_display* WlDisplay::wl_display()
+struct wl_display* WlDisplay::c_ptr()
 {
     return this->_wl_display;
 }

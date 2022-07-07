@@ -6,6 +6,7 @@
 
 #include <linux/input.h>
 
+#include <blusher/application.h>
 #include <blusher/point.h>
 #include <blusher/rect.h>
 #include <blusher/utils.h>
@@ -19,17 +20,18 @@
 namespace bl {
 
 Surface::Surface(Surface *parent)
+    : _wl_surface(app->wl_compositor()->create_surface())
 {
+    fprintf(stderr, "Surface::Surface() - parent: %p\n", parent);
     this->_type = Surface::Type::Normal;
+    this->_wl_subsurface = nullptr;
 
     if (parent != nullptr) {
-        this->_impl = new SurfaceImpl(parent->_impl);
+        this->_impl = new SurfaceImpl(this, parent->_impl);
     } else {
-        this->_impl = new SurfaceImpl();
+        this->_impl = new SurfaceImpl(this);
         this->_type = Surface::Type::Toplevel;
     }
-
-    this->_impl->setBlSurface(this);
 
     this->_parent = parent;
     this->_state = State::Normal;
@@ -140,6 +142,16 @@ View* Surface::root_view()
 void Surface::update()
 {
     this->_impl->update();
+}
+
+const WlSurface& Surface::wl_surface() const
+{
+    return this->_wl_surface;
+}
+
+std::shared_ptr<WlSubsurface> Surface::wl_subsurface()
+{
+    return this->_wl_subsurface;
 }
 
 //=================

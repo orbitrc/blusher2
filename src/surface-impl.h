@@ -23,6 +23,7 @@
 
 // Blusher
 #include <blusher/wayland/wl-surface.h>
+#include <blusher/wayland/wl-subsurface.h>
 #include <blusher/wayland/xdg-surface.h>
 #include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/color.h>
@@ -60,7 +61,7 @@ public:
 
 public:
 
-    SurfaceImpl(QObject *parent = nullptr);
+    SurfaceImpl(Surface *surface, QObject *parent = nullptr);
     ~SurfaceImpl();
 
     uint32_t x() const;
@@ -100,7 +101,6 @@ public:
     void restoreIfToplevel();
 
     Surface* surface();
-    void setBlSurface(Surface *blSurface);
     void setPointerEnterHandler(void (Surface::*)());
     void setPointerLeaveHandler(void (Surface::*)());
     void setPointerPressHandler(void (Surface::*)(uint32_t button, double x, double y));
@@ -171,15 +171,8 @@ private:
     //=================
     // Wayland client
     //=================
-    WlSurface _surface;
-    struct wl_subsurface *_subsurface;
+    std::shared_ptr<WlSubsurface> _wl_subsurface;
     struct wl_callback *_frame_callback;
-
-    //============================
-    // Wayland XDG shell objects
-    //============================
-    std::shared_ptr<XdgSurface> _xdg_surface;
-    std::shared_ptr<XdgToplevel> _xdg_toplevel;
 
     //==================
     // EGL/OpenGL

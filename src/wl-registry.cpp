@@ -63,7 +63,7 @@ WlRegistry::~WlRegistry()
 {
 }
 
-struct wl_registry* WlRegistry::wl_registry()
+struct wl_registry* WlRegistry::c_ptr()
 {
     return this->_wl_registry;
 }
@@ -88,7 +88,7 @@ std::shared_ptr<WlOutputInterface::BindType> WlRegistry::bind(uint32_t id,
             wl_registry_bind(
                 this->_wl_registry,
                 id,
-                interface.wl_interface(),
+                interface.c_ptr(),
                 version
             ));
     std::shared_ptr<WlOutput> output(new WlOutput(wl_output));
@@ -105,7 +105,7 @@ std::shared_ptr<WlCompositorInterface::BindType> WlRegistry::bind(uint32_t id,
             wl_registry_bind(
                 this->_wl_registry,
                 id,
-                interface.wl_interface(),
+                interface.c_ptr(),
                 version
             ));
     std::shared_ptr<WlCompositor> compositor(new WlCompositor(wl_compositor));
@@ -122,7 +122,7 @@ std::shared_ptr<WlSubcompositorInterface::BindType> WlRegistry::bind(uint32_t id
             wl_registry_bind(
                 this->_wl_registry,
                 id,
-                interface.wl_interface(),
+                interface.c_ptr(),
                 version
             ));
     std::shared_ptr<WlSubcompositor> subcompositor(new WlSubcompositor(wl_subcompositor));
@@ -139,7 +139,7 @@ std::shared_ptr<WlSeatInterface::BindType> WlRegistry::bind(uint32_t id,
             wl_registry_bind(
                 this->_wl_registry,
                 id,
-                interface.wl_interface(),
+                interface.c_ptr(),
                 version
             ));
     std::shared_ptr<WlSeat> seat(new WlSeat(wl_seat));
@@ -156,7 +156,7 @@ std::shared_ptr<XdgWmBaseInterface::BindType> WlRegistry::bind(uint32_t id,
             wl_registry_bind(
                 this->_wl_registry,
                 id,
-                interface.wl_interface(),
+                interface.c_ptr(),
                 version
             ));
     std::shared_ptr<XdgWmBase> base(new XdgWmBase(xdg_wm_base));
