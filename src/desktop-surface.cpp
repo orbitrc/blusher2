@@ -87,23 +87,26 @@ DesktopSurface::DesktopSurface(DesktopSurface::Role role,
     //===========
     // Surface
     //===========
-    this->_surface = std::shared_ptr<Surface>(new Surface());
 
     //=============
     // XDG shell
     //=============
     this->_xdg_surface = app->xdg_wm_base()->get_xdg_surface(
-        const_cast<WlSurface&>(this->_surface->wl_surface()));
+        const_cast<WlSurface&>(Surface::wl_surface()));
     this->_xdg_surface->add_listener(xdg_surface_listener);
 
-    this->_xdg_toplevel = this->_xdg_surface->get_toplevel();
-    this->_xdg_toplevel->add_listener(
-        xdg_toplevel_listener,
-        static_cast<void*>(this)
-    );
+    if (this->_role == DesktopSurface::Role::Toplevel) {
+        this->_xdg_toplevel = this->_xdg_surface->get_toplevel();
+        this->_xdg_toplevel->add_listener(
+            xdg_toplevel_listener,
+            static_cast<void*>(this)
+        );
+    } else {
+        // TODO: If role is Popup.
+    }
 
     // Signal that the surface is ready to be configured.
-    const_cast<WlSurface&>(this->_surface->wl_surface()).commit();
+    const_cast<WlSurface&>(Surface::wl_surface()).commit();
     // Wait for the surface to be configured.
     app_impl->display()->roundtrip();
 

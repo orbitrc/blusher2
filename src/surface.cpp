@@ -22,6 +22,7 @@ namespace bl {
 Surface::Surface(Surface *parent)
     : _wl_surface(app->wl_compositor()->create_surface())
 {
+    fprintf(stderr, "Surface::Surface() - parent: %p\n", parent);
     this->_type = Surface::Type::Normal;
     this->_wl_subsurface = nullptr;
 
