@@ -9,7 +9,7 @@
 
 // Blusher
 #include <blusher/wayland/xdg-toplevel.h>
-#include <blusher/surface.h>
+#include <blusher/desktop-surface.h>
 #include <blusher/point.h>
 
 namespace bl {
@@ -18,7 +18,7 @@ class TitleBar;
 
 class Resize;
 
-class Window : public Surface
+class Window : public DesktopSurface
 {
 public:
     Window();

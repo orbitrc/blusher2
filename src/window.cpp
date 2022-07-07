@@ -30,7 +30,7 @@ namespace bl {
 //=============
 
 Window::Window()
-    : Surface(nullptr)
+    : DesktopSurface(DesktopSurface::Role::Toplevel, nullptr)
 {
     // Initialize.
     this->_body = nullptr;
