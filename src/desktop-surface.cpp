@@ -20,9 +20,10 @@ static void xdg_surface_configure_handler(void *data,
     bl::XdgSurface::ack_configure(xdg_surface, serial);
 }
 
-static const bl::XdgSurface::Listener xdg_surface_listener = (
-    xdg_surface_configure_handler
-);
+static const bl::XdgSurface::Listener xdg_surface_listener =
+    bl::XdgSurface::Listener(
+        xdg_surface_configure_handler
+    );
 
 // XDG toplevel
 static void xdg_toplevel_configure_handler(void *data,
