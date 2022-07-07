@@ -80,13 +80,8 @@ DesktopSurface::DesktopSurface(DesktopSurface::Role role,
     this->_xdg_surface = nullptr;
     this->_xdg_toplevel = nullptr;
 
-    this->_surface = nullptr;
     this->_role = role;
     this->_parent = parent;
-
-    //===========
-    // Surface
-    //===========
 
     //=============
     // XDG shell

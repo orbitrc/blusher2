@@ -33,7 +33,6 @@ private:
     std::shared_ptr<XdgToplevel> _xdg_toplevel;
     // std::shared_ptr<XdgPopup> _xdg_popup;
 
-    std::shared_ptr<Surface> _surface;
     DesktopSurface::Role _role;
     DesktopSurface *_parent;
 };
