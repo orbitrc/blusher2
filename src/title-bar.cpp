@@ -56,12 +56,9 @@ void TitleBar::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
     if (event->button() == Button::Left) {
         fprintf(stderr, "bl::TitleBar::pointer_press_event() - Button::Left\n");
-        for (Surface *it = this; it->parent() != nullptr; it = it->parent()) {
-            Surface *win = it->parent();
-            if (win->parent() == nullptr) {
-                fprintf(stderr, "bl::TitleBar::pointer_press_event() - parent is NULL\n");
-                win->move_if_window();
-            }
+        if (this->_body != nullptr) {
+            DesktopSurface *body = static_cast<DesktopSurface*>(this->_body);
+            body->toplevel_move();
         }
     }
 

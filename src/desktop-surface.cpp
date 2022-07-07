@@ -114,4 +114,25 @@ DesktopSurface::DesktopSurface(DesktopSurface::Role role,
     }
 }
 
+DesktopSurface* DesktopSurface::parent() const
+{
+    return this->_parent;
+}
+
+DesktopSurface::Role DesktopSurface::role() const
+{
+    return this->_role;
+}
+
+void DesktopSurface::toplevel_move()
+{
+    if (this->_role == DesktopSurface::Role::Toplevel) {
+        this->_xdg_toplevel->move(*app_impl->seat(),
+            app_impl->pointer_state.serial);
+        // Manually release button pressed state because after
+        // xdg_toplevel_move() call, xdg_toplevel.button event not called.
+        app_impl->pointer_state.button = 0;
+    }
+}
+
 } // namespace bl

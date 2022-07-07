@@ -24,8 +24,10 @@ public:
 
     DesktopSurface::Role role() const;
 
+    /// Move if role is toplevel. If the role is popup, do nothing.
     void toplevel_move();
 
+    /// Resize if role is toplevel. If the role is popup, do nothing.
     void toplevel_resize(XdgToplevel::ResizeEdge edge);
 
 private:
