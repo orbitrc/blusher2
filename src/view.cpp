@@ -69,6 +69,11 @@ void View::set_y(double y)
     this->_impl->setY(y);
 }
 
+void View::set_position(const Point &pos)
+{
+    this->_impl->setPosition(pos.x(), pos.y());
+}
+
 void View::set_width(double width)
 {
     this->_impl->setWidth(width);
@@ -77,6 +82,11 @@ void View::set_width(double width)
 void View::set_height(double height)
 {
     this->_impl->setHeight(height);
+}
+
+void View::set_size(const Size &size)
+{
+    this->_impl->setSize(size.width(), size.height());
 }
 
 Rect View::geometry() const

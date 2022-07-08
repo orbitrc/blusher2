@@ -72,6 +72,23 @@ void ViewImpl::setY(double y)
     }
 }
 
+void ViewImpl::setPosition(double x, double y)
+{
+    double old_x = this->m_x;
+    double old_y = this->m_y;
+
+    if (this->m_x != x) {
+        this->m_x = x;
+    }
+    if (this->m_y != y) {
+        this->m_y = y;
+    }
+
+    if (old_x != x || old_y != y) {
+        this->m_view->update();
+    }
+}
+
 void ViewImpl::setWidth(double width)
 {
     if (this->m_width != width) {
@@ -89,6 +106,25 @@ void ViewImpl::setHeight(double height)
         this->m_height = height;
 
         this->m_image->resize(this->m_width, height);
+
+        this->update();
+    }
+}
+
+void ViewImpl::setSize(double width, double height)
+{
+    double old_width = this->m_width;
+    double old_height = this->m_height;
+
+    if (this->m_height != height) {
+        this->m_height = height;
+    }
+    if (this->m_width != width) {
+        this->m_width = width;
+    }
+
+    if (old_width != width || old_height != height) {
+        this->m_image->resize(this->m_width, this->m_height);
 
         this->update();
     }

@@ -30,8 +30,10 @@ public:
 
     void setX(double x);
     void setY(double y);
+    void setPosition(double x, double y);
     void setWidth(double width);
     void setHeight(double height);
+    void setSize(double width, double height);
 
     Color color() const;
     void setColor(const Color& color);

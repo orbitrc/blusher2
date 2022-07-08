@@ -10,6 +10,7 @@
 // Blusher
 #include <blusher/color.h>
 #include <blusher/point.h>
+#include <blusher/size.h>
 #include <blusher/rect.h>
 #include <blusher/image.h>
 #include <blusher/pointer-event.h>
@@ -51,8 +52,10 @@ public:
 
     void set_x(double x);
     void set_y(double y);
+    void set_position(const Point& pos);
     void set_width(double width);
     void set_height(double height);
+    void set_size(const Size& size);
 
     Rect geometry() const;
 

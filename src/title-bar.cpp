@@ -32,8 +32,7 @@ TitleBar::TitleBar(Surface *parent)
     // Add buttons.
     TitleBarButton *close_button = new TitleBarButton(this->root_view());
     close_button->set_type(TitleBarButton::Type::Close);
-    close_button->set_x(5);
-    close_button->set_y(2);
+    close_button->set_position(Point(5, 2));
 }
 
 Surface* TitleBar::body()
