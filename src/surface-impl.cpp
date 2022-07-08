@@ -323,18 +323,6 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     this->m_width = 100.0;
     this->m_height = 100.0;
 
-    if (parent != nullptr) {
-        this->m_clipX = 0;
-        this->m_clipY = 0;
-        this->m_clipWidth = this->m_width;
-        this->m_clipHeight = this->m_height;
-    } else {
-        this->m_clipX = 0;
-        this->m_clipY = 0;
-        this->m_clipWidth = this->m_width;
-        this->m_clipHeight = this->m_height;
-    }
-
     // Initialize.
     this->_toplevel_maximized = false;
 
@@ -518,36 +506,6 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
     } else {
         fprintf(stderr, "[WARN] SurfaceImpl::setSize() - surface is null!\n");
     }
-}
-
-bool SurfaceImpl::clip() const
-{
-    return this->m_clip;
-}
-
-void SurfaceImpl::setClip(bool clip)
-{
-    this->m_clip = clip;
-}
-
-double SurfaceImpl::clipX() const
-{
-    return this->m_clipX;
-}
-
-double SurfaceImpl::clipY() const
-{
-    return this->m_clipY;
-}
-
-double SurfaceImpl::clipWidth() const
-{
-    return this->m_clipWidth;
-}
-
-double SurfaceImpl::clipHeight() const
-{
-    return this->m_clipHeight;
 }
 
 View* SurfaceImpl::rootView()

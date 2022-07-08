@@ -75,14 +75,6 @@ public:
     void setHeight(uint32_t height);
     void setSize(uint32_t width, uint32_t height);
 
-    bool clip() const;
-    void setClip(bool clip);
-
-    double clipX() const;
-    double clipY() const;
-    double clipWidth() const;
-    double clipHeight() const;
-
     View* rootView();
 
     void paint();
@@ -145,15 +137,6 @@ private:
     bool m_visible;
 
     View *m_rootView;
-
-    //===========
-    // Clipping
-    //===========
-    bool m_clip;
-    double m_clipX;
-    double m_clipY;
-    double m_clipWidth;
-    double m_clipHeight;
 
     Surface *m_blSurface;
     void (Surface::*m_pointerEnterHandler)();
