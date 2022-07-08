@@ -126,7 +126,6 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    void resizeEvent(QResizeEvent *event);
 
 private:
     uint32_t m_x;

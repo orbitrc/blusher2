@@ -496,8 +496,7 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
     */
 
     // Fire resize event.
-    QResizeEvent event(QSize(width, height), QSize(old_width, old_height));
-    this->resizeEvent(&event);
+    this->callResizeHandler(width, height, old_width, old_height);
 
     if (this->m_blSurface != nullptr) {
         // fprintf(stderr, "[LOG] SurfaceImpl::setSize() - update.\n");
@@ -796,19 +795,6 @@ void SurfaceImpl::mouseReleaseEvent(QMouseEvent *event)
         (this->m_blSurface->*handler)(button,
             event->localPos().x(),
             event->localPos().y());
-    }
-}
-
-void SurfaceImpl::resizeEvent(QResizeEvent *event)
-{
-    if (this->m_resizeHandler != nullptr) {
-        auto handler = this->m_resizeHandler;
-        (this->m_blSurface->*handler)(
-            event->size().width(),
-            event->size().height(),
-            event->oldSize().width(),
-            event->oldSize().height()
-        );
     }
 }
 
