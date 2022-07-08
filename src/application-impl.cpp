@@ -108,15 +108,9 @@ static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
         bl::SurfaceImpl *surface_impl =
             bl::app_impl->surfaceImplForWlSurface(active_wl_surface);
 
-        // Set button.
-        Qt::MouseButton q_btn = libinput_button_to_qt_mouse_button(
-            bl::app_impl->pointer_state.button);
-
         if (surface_impl != nullptr) {
-            QPoint pos(x, y);
-            Qt::KeyboardModifiers mod;
-            QMouseEvent event(QEvent::MouseMove, pos, q_btn, 0, mod);
-            QCoreApplication::sendEvent(surface_impl, &event);
+            surface_impl->callPointerMoveHandler(
+                bl::app_impl->pointer_state.button, x, y);
         }
     }
 }
