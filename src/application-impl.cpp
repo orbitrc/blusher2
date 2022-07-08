@@ -105,8 +105,8 @@ static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
     (void)time;
     double x = wl_fixed_to_double(sx);
     double y = wl_fixed_to_double(sy);
-    bl::app_impl->setPointerEventX(x);
-    bl::app_impl->setPointerEventY(y);
+    bl::app_impl->pointer_state.x = x;
+    bl::app_impl->pointer_state.y = y;
 
     struct wl_surface *active_wl_surface = bl::app_impl->pointer_state.wl_surface;
     if (active_wl_surface != nullptr) {
@@ -144,8 +144,8 @@ static void pointer_button_handler(void *data, struct wl_pointer *pointer,
                 application_impl->pointer_state.serial = serial;
                 application_impl->pointer_state.button = button;
                 surface_impl->callPointerPressHandler(button,
-                    application_impl->pointerEventX(),
-                    application_impl->pointerEventY()
+                    application_impl->pointer_state.x,
+                    application_impl->pointer_state.y
                 );
             }
             // Pointer release event.
@@ -508,30 +508,6 @@ SurfaceImpl* ApplicationImpl::surfaceImplForWlSurface(
     }
 
     return ret;
-}
-
-double ApplicationImpl::pointerEventX() const
-{
-    return this->pointer_state.x;
-}
-
-double ApplicationImpl::pointerEventY() const
-{
-    return this->pointer_state.y;
-}
-
-void ApplicationImpl::setPointerEventX(double x)
-{
-    if (this->pointer_state.x != x) {
-        this->pointer_state.x = x;
-    }
-}
-
-void ApplicationImpl::setPointerEventY(double y)
-{
-    if (this->pointer_state.y != y) {
-        this->pointer_state.y = y;
-    }
 }
 
 Cursor* ApplicationImpl::cursor()

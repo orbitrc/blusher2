@@ -33,6 +33,8 @@ public:
 class ApplicationImpl
 {
 public:
+    /// Pointer button event not contains x, y position. So, store position
+    /// in pointer motion event.
     class PointerState
     {
     public:
@@ -87,17 +89,6 @@ public:
     SurfaceImpl* surfaceImplForWlSurface(struct wl_surface*);
 
     Cursor* cursor();
-
-    /// Pointer x position stored in pointer motion event.
-    double pointerEventX() const;
-    /// Pointer y position stored in pointer motion event.
-    double pointerEventY() const;
-    /// Pointer button event not contains x, y position. So, store position
-    /// in pointer motion event.
-    void setPointerEventX(double x);
-    /// Pointer button event not contains x, y position. So, store position
-    /// in pointer motion event.
-    void setPointerEventY(double y);
 
 private:
     int _argc;
