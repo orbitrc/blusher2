@@ -28,9 +28,10 @@ Surface::Surface(Surface *parent)
 
     if (parent != nullptr) {
         this->_impl = new SurfaceImpl(this, parent->_impl);
+        this->_type = Surface::Type::Subsurface;
     } else {
         this->_impl = new SurfaceImpl(this);
-        this->_type = Surface::Type::Toplevel;
+        this->_type = Surface::Type::Normal;
     }
 
     this->_parent = parent;
@@ -97,6 +98,11 @@ Surface::Type Surface::type() const
 bool Surface::is_toplevel() const
 {
     return this->_impl->isToplevel();
+}
+
+bool Surface::is_subsurface() const
+{
+    return this->_type == Surface::Type::Subsurface;
 }
 
 uint32_t Surface::width() const
