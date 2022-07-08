@@ -178,3 +178,31 @@ uint32_t qt_mouse_button_to_libinput_button(Qt::MouseButton qt_mouse_button)
     }
 }
 
+bl::Button libinput_btn_to_button(uint32_t libinput_button)
+{
+    switch (libinput_button) {
+    case BTN_LEFT:
+        return bl::Button::Left;
+    case BTN_RIGHT:
+        return bl::Button::Right;
+    case BTN_MIDDLE:
+        return bl::Button::Middle;
+    default:
+        return bl::Button::None;
+    }
+}
+
+uint32_t button_to_libinput_btn(bl::Button button)
+{
+    switch (button) {
+    case bl::Button::Left:
+        return BTN_LEFT;
+    case bl::Button::Right:
+        return BTN_RIGHT;
+    case bl::Button::Middle:
+        return BTN_MIDDLE;
+    default:
+        return 0;
+    }
+}
+

@@ -6,6 +6,8 @@
 
 #include <Qt>
 
+#include <blusher/input.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -34,6 +36,10 @@ void get_clip_geometry(double parent_clip_x, double parent_clip_y,
 Qt::MouseButton libinput_button_to_qt_mouse_button(uint32_t libinput_button);
 
 uint32_t qt_mouse_button_to_libinput_button(Qt::MouseButton qt_mouse_button);
+
+bl::Button libinput_btn_to_button(uint32_t libinput_btn);
+
+uint32_t button_to_libinput_btn(bl::Button button);
 
 #ifdef __cplusplus
 }
