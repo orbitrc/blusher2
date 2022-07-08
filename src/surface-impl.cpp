@@ -776,26 +776,12 @@ void SurfaceImpl::mouseMoveEvent(QMouseEvent *event)
 
 void SurfaceImpl::mousePressEvent(QMouseEvent *event)
 {
-    if (this->m_pointerPressHandler != nullptr) {
-        int button = qt_mouse_button_to_libinput_button(event->button());
-
-        auto handler = this->m_pointerPressHandler;
-        (this->m_blSurface->*handler)(button,
-            event->localPos().x(),
-            event->localPos().y());
-    }
+    (void)event;
 }
 
 void SurfaceImpl::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (this->m_pointerPressHandler != nullptr) {
-        int button = qt_mouse_button_to_libinput_button(event->button());
-
-        auto handler = this->m_pointerReleaseHandler;
-        (this->m_blSurface->*handler)(button,
-            event->localPos().x(),
-            event->localPos().y());
-    }
+    (void)event;
 }
 
 } // namespace bl

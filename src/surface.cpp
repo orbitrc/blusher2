@@ -194,22 +194,7 @@ void Surface::pointer_leave_handler()
 
 void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
 {
-    Button button;
-    switch (impl_button) {
-    case BTN_LEFT:
-        button = Button::Left;
-        // Set surface state to active.
-        this->_state = State::Active;
-        break;
-    case BTN_RIGHT:
-        button = Button::Right;
-        break;
-    case BTN_MIDDLE:
-        button = Button::Middle;
-        break;
-    default:
-        break;
-    }
+    Button button = libinput_btn_to_button(impl_button);
 
     // Surface.
     auto event = std::make_shared<PointerEvent>(button, x, y);
@@ -235,20 +220,7 @@ void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
 
 void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
 {
-    Button button;
-    switch (impl_button) {
-    case BTN_LEFT:
-        button = Button::Left;
-        break;
-    case BTN_RIGHT:
-        button = Button::Right;
-        break;
-    case BTN_MIDDLE:
-        button = Button::Middle;
-        break;
-    default:
-        break;
-    }
+    Button button = libinput_btn_to_button(impl_button);
 
     auto event = std::make_shared<PointerEvent>(button, x, y);
 
@@ -257,20 +229,7 @@ void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
 
 void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
 {
-    Button button;
-    switch (impl_button) {
-    case BTN_LEFT:
-        button = Button::Left;
-        break;
-    case BTN_RIGHT:
-        button = Button::Right;
-        break;
-    case BTN_MIDDLE:
-        button = Button::Middle;
-        break;
-    default:
-        break;
-    }
+    Button button = libinput_btn_to_button(impl_button);
 
     // Surface.
     auto event = std::make_shared<PointerEvent>(button, x, y);
