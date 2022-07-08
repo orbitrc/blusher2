@@ -58,6 +58,10 @@ static void xdg_toplevel_configure_handler(void *data,
             // surface->update();
         }
     }
+    // State has maximized.
+    if (states_v.index(bl::XdgToplevel::State::Maximized) != std::nullopt) {
+        fprintf(stderr, "xdg_toplevel_configure_handler() - maximized\n");
+    }
 }
 
 static void xdg_toplevel_close_handler(void *data,
@@ -83,6 +87,8 @@ DesktopSurface::DesktopSurface(DesktopSurface::Role role,
 
     this->_role = role;
     this->_parent = parent;
+
+    this->_toplevel_maximized = false;
 
     //=============
     // XDG shell
@@ -145,6 +151,20 @@ void DesktopSurface::toplevel_resize(XdgToplevel::ResizeEdge edge)
         // Manually release button pressed state because after
         // xdg_toplevel_move() call, xdg_toplevel.button event not called.
         app_impl->pointer_state.button = 0;
+    }
+}
+
+void DesktopSurface::toplevel_maximize()
+{
+    if (this->_role == DesktopSurface::Role::Toplevel) {
+        this->_xdg_toplevel->set_maximized();
+    }
+}
+
+void DesktopSurface::toplevel_restore()
+{
+    if (this->_role == DesktopSurface::Role::Toplevel) {
+        this->_xdg_toplevel->unset_maximized();
     }
 }
 

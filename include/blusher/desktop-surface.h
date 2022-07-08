@@ -30,6 +30,12 @@ public:
     /// Resize if role is toplevel. If the role is popup, do nothing.
     void toplevel_resize(XdgToplevel::ResizeEdge edge);
 
+    /// Maximize if role is toplevel. If the role is popup, do nothing.
+    void toplevel_maximize();
+
+    /// Restore from maximized toplevel. If the role is popup, do nothing.
+    void toplevel_restore();
+
 private:
     std::shared_ptr<XdgSurface> _xdg_surface;
     std::shared_ptr<XdgToplevel> _xdg_toplevel;
@@ -37,6 +43,8 @@ private:
 
     DesktopSurface::Role _role;
     DesktopSurface *_parent;
+
+    bool _toplevel_maximized;
 };
 
 } // namespace bl
