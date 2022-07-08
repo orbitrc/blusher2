@@ -104,36 +104,6 @@ uint32_t Surface::width() const
     return this->_impl->width();
 }
 
-void Surface::move_if_window()
-{
-    fprintf(stderr, "Surface::move_if_window() - parent: %p\n", this->_parent);
-    if (this->_parent == nullptr) {
-//        this->_impl->startSystemMove();
-        this->_impl->moveIfToplevel();
-    }
-}
-
-void Surface::resize_if_window(XdgToplevel::ResizeEdge edge)
-{
-    if (this->_parent == nullptr) {
-        this->_impl->resizeIfToplevel(edge);
-    }
-}
-
-void Surface::maximize_if_window()
-{
-    if (this->_parent == nullptr) {
-        this->_impl->maximizeIfToplevel();
-    }
-}
-
-void Surface::restore_if_window()
-{
-    if (this->_parent == nullptr) {
-        this->_impl->restoreIfToplevel();
-    }
-}
-
 View* Surface::root_view()
 {
     return this->_impl->rootView();

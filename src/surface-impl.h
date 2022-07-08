@@ -95,11 +95,6 @@ public:
     bool toplevel() const;
     bool isToplevel() const;
 
-    void moveIfToplevel();
-    void resizeIfToplevel(XdgToplevel::ResizeEdge edge);
-    void maximizeIfToplevel();
-    void restoreIfToplevel();
-
     Surface* surface();
     void setPointerEnterHandler(void (Surface::*)());
     void setPointerLeaveHandler(void (Surface::*)());

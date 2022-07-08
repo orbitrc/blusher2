@@ -8,7 +8,6 @@
 #include <blusher/resize-event.h>
 #include <blusher/wayland/wl-surface.h>
 #include <blusher/wayland/wl-subsurface.h>
-#include <blusher/wayland/xdg-surface.h> // REMOVE THIS LATER!!
 
 #include "color.h"
 #include "signal.h"
@@ -68,15 +67,6 @@ public:
 
     /// Width of the surface.
     uint32_t width() const;
-
-    /// This is implementation specific method. DO NOT USE THIS in an application.
-    void move_if_window();
-    /// This is implementation specific method. DO NOT USE THIS in an application.
-    void resize_if_window(XdgToplevel::ResizeEdge edge);
-    /// This is implementation specific method. DO NOT USE THIS in an application.
-    void maximize_if_window();
-    /// This is implementation specific method. DO NOT USE THIS in an application.
-    void restore_if_window();
 
     View* root_view();
 
