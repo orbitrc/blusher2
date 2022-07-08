@@ -34,8 +34,6 @@ TitleBar::TitleBar(Surface *parent)
     close_button->set_type(TitleBarButton::Type::Close);
     close_button->set_x(5);
     close_button->set_y(2);
-    close_button->set_width(26);
-    close_button->set_height(26);
 }
 
 Surface* TitleBar::body()
@@ -74,13 +72,16 @@ TitleBarButton::TitleBarButton(View *parent)
 {
     this->_close_image = nullptr;
 
+    this->set_width(26);
+    this->set_height(26);
+
     Svg close_svg("brc:/io.orbitrc.blusher/hydrogen-close.svg"_S);
     auto close_image = close_svg.to_image(26, 26);
     this->_close_image = new Image(26, 26);
     this->_close_image->add(close_image, 0, 0);
 
     // Set image.
-    this->set_color(Color::from_rgb(255, 0, 0));
+    this->fill(Color::from_rgb(255, 0, 0));
     this->draw_image(Point(0, 0), *(this->_close_image));
     this->update();
 }

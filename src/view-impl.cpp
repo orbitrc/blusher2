@@ -78,7 +78,6 @@ void ViewImpl::setWidth(double width)
         this->m_width = width;
 
         this->m_image->resize(width, this->m_height);
-        this->m_image->fill(this->m_color);
 
         this->update();
     }
@@ -90,7 +89,6 @@ void ViewImpl::setHeight(double height)
         this->m_height = height;
 
         this->m_image->resize(this->m_width, height);
-        this->m_image->fill(this->m_color);
 
         this->update();
     }
