@@ -71,11 +71,7 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
         application_impl->cursor()->hot_spot_y());
 
     if (surface_impl != nullptr) {
-        QPointF pos;
-        QPointF winPos;
-        QPointF scrPos;
-        QEnterEvent event(pos, winPos, scrPos);
-        QCoreApplication::sendEvent(surface_impl, &event);
+        surface_impl->callPointerEnterHandler();
     }
 }
 
@@ -92,8 +88,7 @@ static void pointer_leave_handler(void *data, struct wl_pointer *pointer,
         application_impl->surfaceImplForWlSurface(surface);
 
     if (surface_impl != nullptr) {
-        QEvent event(QEvent::Type::Leave);
-        QCoreApplication::sendEvent(surface_impl, &event);
+        surface_impl->callPointerLeaveHandler();
     }
 }
 
