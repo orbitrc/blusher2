@@ -471,8 +471,7 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
     }
 
     // Resize view's size.
-    this->m_rootView->set_width(width);
-    this->m_rootView->set_height(height);
+    this->m_rootView->set_size(Size(width, height));
 
     wl_egl_window_resize(this->_egl_window, width, height, 0, 0);
     // Re-create EGL window surface.
