@@ -182,7 +182,8 @@ void Surface::pointer_enter_handler()
 
     Button button = Button::None;
 
-    auto event = std::make_shared<PointerEvent>(button, 0, 0);
+    auto event = std::make_shared<PointerEvent>(Event::Type::PointerEnter,
+        button, 0, 0);
 
     this->pointer_enter_event(event);
 }
@@ -193,7 +194,8 @@ void Surface::pointer_leave_handler()
 
     Button button = Button::None;
 
-    auto event = std::make_shared<PointerEvent>(button, 0, 0);
+    auto event = std::make_shared<PointerEvent>(Event::Type::PointerLeave,
+        button, 0, 0);
 
     this->pointer_leave_event(event);
 }
@@ -203,7 +205,8 @@ void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
     Button button = libinput_btn_to_button(impl_button);
 
     // Surface.
-    auto event = std::make_shared<PointerEvent>(button, x, y);
+    auto event = std::make_shared<PointerEvent>(Event::Type::PointerPress,
+        button, x, y);
 
     this->pointer_press_event(event);
 
@@ -213,12 +216,14 @@ void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
     if (view != nullptr) {
         fprintf(stderr, "view found. send event to %p\n", view);
         // TODO: Fix x, y position!
-        auto event = std::make_shared<PointerEvent>(button, x, y);
+        auto event = std::make_shared<PointerEvent>(Event::Type::PointerPress,
+            button, x, y);
 
         view->pointer_press_event(event);
     } else {
         fprintf(stderr, "view is nullptr. send event to root_view.\n");
-        auto event = std::make_shared<PointerEvent>(button, x, y);
+        auto event = std::make_shared<PointerEvent>(Event::Type::PointerPress,
+            button, x, y);
 
         root_view->pointer_press_event(event);
     }
@@ -228,7 +233,8 @@ void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
 {
     Button button = libinput_btn_to_button(impl_button);
 
-    auto event = std::make_shared<PointerEvent>(button, x, y);
+    auto event = std::make_shared<PointerEvent>(Event::Type::PointerRelease,
+        button, x, y);
 
     this->pointer_release_event(event);
 }
@@ -238,7 +244,8 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
     Button button = libinput_btn_to_button(impl_button);
 
     // Surface.
-    auto event = std::make_shared<PointerEvent>(button, x, y);
+    auto event = std::make_shared<PointerEvent>(Event::Type::PointerMove,
+        button, x, y);
 
     this->pointer_move_event(event);
 
@@ -250,13 +257,16 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
         if (this->_current_view != view) {
             this->_current_view = view;
 
-            auto event = std::make_shared<PointerEvent>(Button::None, x, y);
+            auto event = std::make_shared<PointerEvent>(
+                Event::Type::PointerEnter,
+                Button::None, x, y);
 
             view->pointer_enter_event(event);
         }
 
         // TODO: Fix x, y position!
-        auto event = std::make_shared<PointerEvent>(button, x, y);
+        auto event = std::make_shared<PointerEvent>(Event::Type::PointerMove,
+            button, x, y);
 
         view->pointer_move_event(event);
     } else {
@@ -264,18 +274,24 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
         // to the root view.
         {
             if (this->_current_view != nullptr) {
-                auto event = std::make_shared<PointerEvent>(Button::None, x, y);
+                auto event = std::make_shared<PointerEvent>(
+                    Event::Type::PointerLeave,
+                    Button::None, x, y);
 
                 this->_current_view->pointer_leave_event(event);
             }
             this->_current_view = root_view;
 
-            auto event = std::make_shared<PointerEvent>(Button::None, x, y);
+            auto event = std::make_shared<PointerEvent>(
+                Event::Type::PointerEnter,
+                Button::None, x, y);
 
             root_view->pointer_enter_event(event);
         }
 
-        auto event = std::make_shared<PointerEvent>(button, x, y);
+        auto event = std::make_shared<PointerEvent>(
+            Event::Type::PointerMove,
+            button, x, y);
 
         root_view->pointer_move_event(event);
     }

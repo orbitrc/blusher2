@@ -4,7 +4,8 @@
 
 namespace bl {
 
-PointerEvent::PointerEvent(Button button, double x, double y)
+PointerEvent::PointerEvent(Event::Type type, Button button, double x, double y)
+    : Event(type)
 {
     this->_button = button;
     this->_x = x;
