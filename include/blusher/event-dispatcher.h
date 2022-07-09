@@ -4,9 +4,13 @@
 // C++
 #include <tuple>
 #include <memory>
+#include <thread>
 
 // Primer
 #include <primer/vector.h>
+
+// Blusher
+#include <blusher/event.h>
 
 namespace bl {
 
@@ -17,14 +21,13 @@ class View;
 class EventDispatcher
 {
 public:
-    template <typename E>
     class EventQueue
     {
     public:
-        using TupleType = std::tuple<View*, std::shared_ptr<E>>;
+        using TupleType = std::tuple<View*, std::shared_ptr<Event>>;
 
     public:
-        EventQueue<E>();
+        EventQueue();
 
         void enqueue(TupleType tuple);
 
@@ -40,8 +43,18 @@ public:
     EventDispatcher(Application *application);
     ~EventDispatcher();
 
+    void loop();
+
+    void start_loop();
+
+    void stop_loop();
+
 private:
     Application *_application;
+
+    EventQueue _event_queue;
+    std::thread _thread;
+    bool _running;
 };
 
 } // namespace bl
