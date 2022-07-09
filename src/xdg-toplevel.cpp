@@ -131,10 +131,11 @@ pr::Vector<XdgToplevel::State> XdgToplevel::states_to_vector(
         struct wl_array *states)
 {
     pr::Vector<XdgToplevel::State> v;
+    void *s;
 
-    for (size_t i = 0; i < states->size; ++i) {
+    wl_array_for_each(s, states) {
         enum xdg_toplevel_state state =
-            ((enum xdg_toplevel_state*)(states->data))[i];
+            static_cast<enum xdg_toplevel_state>(*(int*)s);
         switch (state) {
         case XDG_TOPLEVEL_STATE_MAXIMIZED:
             v.push(XdgToplevel::State::Maximized);
