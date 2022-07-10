@@ -11,9 +11,7 @@
 // libinput
 #include <linux/input.h>
 
-#include <QBackingStore>
-#include <QPainter>
-#include <QMouseEvent>
+// Qt
 #include <QResizeEvent>
 
 // Primer
@@ -737,32 +735,6 @@ bool SurfaceImpl::event(QEvent *event)
     if (event->type() == QEvent::Expose) {
         fprintf(stderr, "event is Expose!\n");
         this->paint();
-    }
-    if (event->type() == QEvent::Enter) {
-        if (this->m_pointerEnterHandler != nullptr) {
-            auto handler = this->m_pointerEnterHandler;
-            (this->m_blSurface->*handler)();
-
-            return true;
-        }
-    } else if (event->type() == QEvent::Leave) {
-        if (this->m_pointerLeaveHandler != nullptr) {
-            auto handler = this->m_pointerLeaveHandler;
-            (this->m_blSurface->*handler)();
-
-            return true;
-        }
-    } else if (event->type() == QEvent::MouseMove) {
-        auto mouse_event = static_cast<QMouseEvent*>(event);
-        if (this->m_pointerMoveHandler != nullptr) {
-            auto handler = this->m_pointerMoveHandler;
-            uint32_t button =
-                qt_mouse_button_to_libinput_button(mouse_event->button());
-            (this->m_blSurface->*handler)(button,
-                mouse_event->pos().x(),
-                mouse_event->pos().y());
-        }
-        return true;
     }
 
     return QObject::event(event);
