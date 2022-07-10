@@ -335,6 +335,8 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     this->m_rootView = new View();
     this->m_rootView->set_surface(surface);
 
+    this->_updating = false;
+
     this->m_pointerEnterHandler = nullptr;
     this->m_pointerLeaveHandler = nullptr;
     this->m_pointerPressHandler = nullptr;
@@ -671,6 +673,11 @@ struct wl_surface* SurfaceImpl::wlSurface() const
 
 void SurfaceImpl::update()
 {
+    if (this->_updating) {
+        return;
+    }
+    this->_updating = true;
+
     // Re-create EGL window surface.
     EGLBoolean destroyed = eglDestroySurface(this->_egl_object.egl_display,
         this->_egl_object.egl_surface);
@@ -712,6 +719,8 @@ void SurfaceImpl::update()
         *this->m_rootView->_impl->m_composedImage,
         this->width(), this->height()
     );
+
+    this->_updating = false;
 }
 
 //=================

@@ -137,6 +137,8 @@ private:
 
     View *m_rootView;
 
+    bool _updating;
+
     Surface *m_blSurface;
     void (Surface::*m_pointerEnterHandler)();
     void (Surface::*m_pointerLeaveHandler)();
