@@ -28,6 +28,13 @@ TitleBar::TitleBar(Surface *parent)
 
     // Initialize.
     this->_body = nullptr;
+    this->_main_view = nullptr;
+
+    // Add main view.
+    TitleBarView *v = new TitleBarView(this->root_view());
+    this->_main_view = v;
+    this->_main_view->set_size(Size(this->width(), this->height()));
+    this->_main_view->fill(Color::from_rgb(0xc0, 0xc0, 0xc0));
 
     // Add buttons.
     TitleBarButton *close_button = new TitleBarButton(this->root_view());
@@ -55,11 +62,38 @@ void TitleBar::pointer_press_event(std::shared_ptr<PointerEvent> event)
         fprintf(stderr, "bl::TitleBar::pointer_press_event() - Button::Left\n");
         if (this->_body != nullptr) {
             DesktopSurface *body = static_cast<DesktopSurface*>(this->_body);
-            body->toplevel_move();
+            // body->toplevel_move();
         }
     }
 
     return Surface::pointer_press_event(event);
+}
+
+//==================
+// Title Bar View
+//==================
+
+TitleBarView::TitleBarView(View *parent)
+    : View(parent)
+{
+    // TODO: Initialize.
+}
+
+//==========================
+// Title Bar View: Events
+//==========================
+
+void TitleBarView::pointer_press_event(std::shared_ptr<PointerEvent> event)
+{
+    if (event->button() == Button::Left) {
+        fprintf(stderr, "TitleBarView::pointer_press_event() - Button::Left\n");
+        TitleBar *title_bar_surface = static_cast<TitleBar*>(this->surface());
+        DesktopSurface *body =
+            static_cast<DesktopSurface*>(title_bar_surface->body());
+        body->toplevel_move();
+    }
+
+    return View::pointer_press_event(event);
 }
 
 //=============
@@ -90,9 +124,9 @@ void TitleBarButton::set_type(TitleBarButton::Type type)
     this->_type = type;
 }
 
-//==============
-// Events
-//==============
+//=================
+// Button: Events
+//=================
 
 void TitleBarButton::pointer_enter_event(std::shared_ptr<PointerEvent> event)
 {

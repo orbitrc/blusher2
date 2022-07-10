@@ -38,6 +38,19 @@ private:
     Image *_close_image;
 };
 
+//===================
+// Title Bar View
+//===================
+
+class TitleBarView : public View
+{
+public:
+    TitleBarView(View *parent);
+
+protected:
+    void pointer_press_event(std::shared_ptr<PointerEvent> event) override;
+};
+
 //================
 // Title Bar
 //================
@@ -55,6 +68,8 @@ protected:
 
 private:
     Surface *_body;
+
+    TitleBarView *_main_view;
 
     Image *_close_image;
 };
