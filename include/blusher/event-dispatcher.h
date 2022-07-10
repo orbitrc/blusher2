@@ -49,6 +49,8 @@ public:
 
     void stop_loop();
 
+    void post_event(View *view, std::shared_ptr<Event> event);
+
 private:
     Application *_application;
 

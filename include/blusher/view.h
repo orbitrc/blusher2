@@ -23,11 +23,14 @@ class SurfaceImpl;
 
 class ViewImpl;
 
+class EventDispatcher;
+
 class View
 {
     friend Surface;
     friend SurfaceImpl;
     friend ViewImpl;
+    friend EventDispatcher;
 public:
     enum class State {
         /// State is normal.

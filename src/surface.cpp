@@ -261,7 +261,7 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
                 Event::Type::PointerEnter,
                 Button::None, x, y);
 
-            view->pointer_enter_event(event);
+            app->event_dispatcher()->post_event(view, event);
         }
 
         // TODO: Fix x, y position!
@@ -280,13 +280,15 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
 
                 this->_current_view->pointer_leave_event(event);
             }
-            this->_current_view = root_view;
+            if (this->_current_view != root_view) {
+                this->_current_view = root_view;
 
-            auto event = std::make_shared<PointerEvent>(
-                Event::Type::PointerEnter,
-                Button::None, x, y);
+                auto event = std::make_shared<PointerEvent>(
+                    Event::Type::PointerEnter,
+                    Button::None, x, y);
 
-            root_view->pointer_enter_event(event);
+                app->event_dispatcher()->post_event(root_view, event);
+            }
         }
 
         auto event = std::make_shared<PointerEvent>(
