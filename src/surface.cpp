@@ -39,14 +39,6 @@ Surface::Surface(Surface *parent)
     this->_current_view = nullptr;
 
     this->color_changed.connect([]() { fprintf(stderr, "Hello, color_changed!\n"); });
-
-    // Set event handlers.
-    this->_impl->setPointerEnterHandler(&Surface::pointer_enter_handler);
-    this->_impl->setPointerLeaveHandler(&Surface::pointer_leave_handler);
-    this->_impl->setPointerPressHandler(&Surface::pointer_press_handler);
-    this->_impl->setPointerReleaseHandler(&Surface::pointer_release_handler);
-    this->_impl->setPointerMoveHandler(&Surface::pointer_move_handler);
-    this->_impl->setResizeHandler(&Surface::resize_handler);
 }
 
 //=================

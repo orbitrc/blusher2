@@ -21,6 +21,7 @@ class SurfaceImpl;
 
 class Surface
 {
+    friend class SurfaceImpl;
 public:
     enum class Type {
         Normal,

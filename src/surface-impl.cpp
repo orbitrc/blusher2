@@ -335,11 +335,6 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
 
     this->_updating = false;
 
-    this->m_pointerEnterHandler = nullptr;
-    this->m_pointerLeaveHandler = nullptr;
-    this->m_pointerPressHandler = nullptr;
-    this->m_resizeHandler = nullptr;
-
     //===============
     // Wayland
     //===============
@@ -496,7 +491,7 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
     */
 
     // Fire resize event.
-    this->callResizeHandler(width, height, old_width, old_height);
+    this->surface()->resize_handler(width, height, old_width, old_height);
 
     if (this->m_blSurface != nullptr) {
         // fprintf(stderr, "[LOG] SurfaceImpl::setSize() - update.\n");
@@ -575,84 +570,36 @@ Surface* SurfaceImpl::surface()
 //===================
 // Event handlers
 //===================
-void SurfaceImpl::setPointerEnterHandler(void (Surface::*handler)())
-{
-    this->m_pointerEnterHandler = handler;
-}
-
-void SurfaceImpl::setPointerLeaveHandler(void (Surface::*handler)())
-{
-    this->m_pointerLeaveHandler = handler;
-}
-
-void SurfaceImpl::setPointerPressHandler(void (Surface::*handler)(uint32_t, double, double))
-{
-    this->m_pointerPressHandler = handler;
-}
-
-void SurfaceImpl::setPointerReleaseHandler(void (Surface::*handler)(uint32_t, double, double))
-{
-    this->m_pointerReleaseHandler = handler;
-}
-
-void SurfaceImpl::setPointerMoveHandler(void (Surface::*handler)(uint32_t, double, double))
-{
-    this->m_pointerMoveHandler = handler;
-}
-
-void SurfaceImpl::setResizeHandler(void (Surface::*handler)(int32_t, int32_t, int32_t, int32_t))
-{
-    this->m_resizeHandler = handler;
-}
-
 
 void SurfaceImpl::callPointerEnterHandler()
 {
-    if (this->m_pointerEnterHandler != nullptr) {
-        auto handler = this->m_pointerEnterHandler;
-        (this->m_blSurface->*handler)();
-    }
+    this->m_blSurface->pointer_enter_handler();
 }
 
 void SurfaceImpl::callPointerLeaveHandler()
 {
-    if (this->m_pointerLeaveHandler != nullptr) {
-        auto handler = this->m_pointerLeaveHandler;
-        (this->m_blSurface->*handler)();
-    }
+    this->m_blSurface->pointer_leave_handler();
 }
 
 void SurfaceImpl::callPointerPressHandler(uint32_t button, double x, double y)
 {
-    if (this->m_pointerPressHandler != nullptr) {
-        auto handler = this->m_pointerPressHandler;
-        (this->m_blSurface->*handler)(button, x, y);
-    }
+    this->m_blSurface->pointer_press_handler(button, x, y);
 }
 
 void SurfaceImpl::callPointerReleaseHandler(uint32_t button, double x, double y)
 {
-    if (this->m_pointerReleaseHandler != nullptr) {
-        auto handler = this->m_pointerReleaseHandler;
-        (this->m_blSurface->*handler)(button, x, y);
-    }
+    this->m_blSurface->pointer_release_handler(button, x, y);
 }
 
 void SurfaceImpl::callPointerMoveHandler(uint32_t button, double x, double y)
 {
-    if (this->m_pointerMoveHandler != nullptr) {
-        auto handler = this->m_pointerMoveHandler;
-        (this->m_blSurface->*handler)(button, x, y);
-    }
+    this->m_blSurface->pointer_move_handler(button, x, y);
 }
 
 void SurfaceImpl::callResizeHandler(int32_t width, int32_t height,
         int32_t old_width, int32_t old_height)
 {
-    if (this->m_resizeHandler != nullptr) {
-        auto handler = this->m_resizeHandler;
-        (this->m_blSurface->*handler)(width, height, old_width, old_height);
-    }
+    this->m_blSurface->resize_handler(width, height, old_width, old_height);
 }
 
 //==================

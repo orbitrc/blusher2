@@ -88,12 +88,6 @@ public:
     bool isToplevel() const;
 
     Surface* surface();
-    void setPointerEnterHandler(void (Surface::*)());
-    void setPointerLeaveHandler(void (Surface::*)());
-    void setPointerPressHandler(void (Surface::*)(uint32_t button, double x, double y));
-    void setPointerReleaseHandler(void (Surface::*)(uint32_t button, double x, double y));
-    void setPointerMoveHandler(void (Surface::*)(uint32_t button, double x, double y));
-    void setResizeHandler(void (Surface::*)(int32_t, int32_t, int32_t, int32_t));
 
     void callPointerEnterHandler();
     void callPointerLeaveHandler();
@@ -140,12 +134,6 @@ private:
     bool _updating;
 
     Surface *m_blSurface;
-    void (Surface::*m_pointerEnterHandler)();
-    void (Surface::*m_pointerLeaveHandler)();
-    void (Surface::*m_pointerPressHandler)(uint32_t button, double x, double y);
-    void (Surface::*m_pointerReleaseHandler)(uint32_t button, double x, double y);
-    void (Surface::*m_pointerMoveHandler)(uint32_t button, double x, double y);
-    void (Surface::*m_resizeHandler)(int32_t, int32_t, int32_t, int32_t);
 
     //=================
     // Wayland client
