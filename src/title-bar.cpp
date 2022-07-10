@@ -140,6 +140,7 @@ void TitleBarButton::pointer_enter_event(std::shared_ptr<PointerEvent> event)
 
 void TitleBarButton::pointer_leave_event(std::shared_ptr<PointerEvent> event)
 {
+    fprintf(stderr, "[LOG] TitleBarButton::pointer_leave_event()\n");
     this->fill(Color::from_rgba(0, 0, 0, 0));
     this->draw_image(Point(0, 0), *this->_close_image);
     this->update();

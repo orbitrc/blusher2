@@ -247,6 +247,14 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
     if (view != nullptr) {
         // Send pointer enter event to view.
         if (this->_current_view != view) {
+            // Send pointer leave event to previous view.
+            if (this->_current_view != nullptr) {
+                auto event = std::make_shared<PointerEvent>(
+                    Event::Type::PointerLeave,
+                    Button::None, x, y);
+
+                app->event_dispatcher()->post_event(this->_current_view, event);
+            }
             this->_current_view = view;
 
             auto event = std::make_shared<PointerEvent>(
