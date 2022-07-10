@@ -3,6 +3,9 @@
 // C
 #include <stdio.h>
 
+// C++
+#include <chrono>
+
 // Unix
 #include <unistd.h>
 
@@ -111,6 +114,12 @@ void EventDispatcher::stop_loop()
 
 void EventDispatcher::post_event(View *view, std::shared_ptr<Event> event)
 {
+    if (event->type() == Event::Type::PointerMove) {
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch());
+        std::static_pointer_cast<PointerEvent>(event)->set_time(ms.count());
+    }
+
     EventQueue::TupleType tuple(view, event);
     this->_event_queue.enqueue(tuple);
 }
