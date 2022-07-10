@@ -59,9 +59,9 @@ void EventDispatcher::loop()
     while (this->_running) {
         if (this->_event_queue.length() != 0) {
             while (this->_event_queue.length() > 0) {
-                fprintf(stderr, " == Event loop before  - length: %ld\n", this->_event_queue.length());
+                // fprintf(stderr, " == Event loop before  - length: %ld\n", this->_event_queue.length());
                 auto tuple = this->_event_queue.dequeue();
-                fprintf(stderr, " == Event loop dequeue - length: %ld\n", this->_event_queue.length());
+                // fprintf(stderr, " == Event loop dequeue - length: %ld\n", this->_event_queue.length());
                 switch (std::get<1>(tuple)->type()) {
                 case Event::Type::PointerEnter:
                 {
@@ -70,8 +70,21 @@ void EventDispatcher::loop()
                         std::static_pointer_cast<PointerEvent>(
                             std::get<1>(tuple)
                         );
-                    fprintf(stderr, " == View: %p\n", view);
+                    // fprintf(stderr, " == View: %p\n", view);
                     view->pointer_enter_event(event);
+                    break;
+                }
+                case Event::Type::PointerLeave:
+                {
+                    // TODO.
+                    break;
+                }
+                case Event::Type::PointerMove:
+                {
+                    View *view = std::get<0>(tuple);
+                    auto event = std::static_pointer_cast<PointerEvent>(
+                        std::get<1>(tuple));
+                    view->pointer_move_event(event);
                     break;
                 }
                 }

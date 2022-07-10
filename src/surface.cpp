@@ -268,7 +268,7 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
         auto event = std::make_shared<PointerEvent>(Event::Type::PointerMove,
             button, x, y);
 
-        view->pointer_move_event(event);
+        app->event_dispatcher()->post_event(view, event);
     } else {
         // Send pointer leave event if leaved, and send pointer enter event
         // to the root view.
@@ -295,7 +295,7 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
             Event::Type::PointerMove,
             button, x, y);
 
-        root_view->pointer_move_event(event);
+        app->event_dispatcher()->post_event(root_view, event);
     }
 }
 
