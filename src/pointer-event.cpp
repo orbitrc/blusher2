@@ -10,6 +10,7 @@ PointerEvent::PointerEvent(Event::Type type, Button button, double x, double y)
     this->_button = button;
     this->_x = x;
     this->_y = y;
+    this->_time = 0;
 }
 
 PointerEvent::~PointerEvent()
@@ -34,6 +35,16 @@ double PointerEvent::x() const
 double PointerEvent::y() const
 {
     return this->_y;
+}
+
+uint64_t PointerEvent::time() const
+{
+    return this->_time;
+}
+
+void PointerEvent::set_time(uint64_t time)
+{
+    this->_time = time;
 }
 
 } // namespace bl
