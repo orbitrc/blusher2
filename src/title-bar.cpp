@@ -58,14 +58,6 @@ void TitleBar::set_body(Surface *surface)
 
 void TitleBar::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    if (event->button() == Button::Left) {
-        fprintf(stderr, "bl::TitleBar::pointer_press_event() - Button::Left\n");
-        if (this->_body != nullptr) {
-            DesktopSurface *body = static_cast<DesktopSurface*>(this->_body);
-            // body->toplevel_move();
-        }
-    }
-
     return Surface::pointer_press_event(event);
 }
 

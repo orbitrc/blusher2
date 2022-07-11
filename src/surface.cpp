@@ -212,12 +212,6 @@ void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
             button, x, y);
 
         view->pointer_press_event(event);
-    } else {
-        fprintf(stderr, "view is nullptr. send event to root_view.\n");
-        auto event = std::make_shared<PointerEvent>(Event::Type::PointerPress,
-            button, x, y);
-
-        root_view->pointer_press_event(event);
     }
 }
 
@@ -229,6 +223,17 @@ void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
         button, x, y);
 
     this->pointer_release_event(event);
+
+    // View.
+    auto root_view = this->_impl->rootView();
+    auto view = root_view->child_at(Point(x, y));
+    if (view != nullptr) {
+        auto event = std::make_shared<PointerEvent>(
+            Event::Type::PointerRelease,
+            button, x, y);
+
+        app->event_dispatcher()->post_event(view, event);
+    }
 }
 
 void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)

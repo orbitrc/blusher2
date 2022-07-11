@@ -85,6 +85,19 @@ void EventDispatcher::loop()
                     view->pointer_leave_event(event);
                     break;
                 }
+                case Event::Type::PointerPress:
+                {
+                    // TODO.
+                    break;
+                }
+                case Event::Type::PointerRelease:
+                {
+                    View *view = std::get<0>(tuple);
+                    auto event = std::static_pointer_cast<PointerEvent>(
+                        std::get<1>(tuple));
+                    view->pointer_release_event(event);
+                    break;
+                }
                 case Event::Type::PointerMove:
                 {
                     View *view = std::get<0>(tuple);

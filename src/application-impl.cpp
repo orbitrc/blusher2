@@ -140,7 +140,9 @@ static void pointer_button_handler(void *data, struct wl_pointer *pointer,
             // Pointer release event.
             if (state == WL_POINTER_BUTTON_STATE_RELEASED) {
                 application_impl->pointer_state.button = 0;
-                surface_impl->callPointerReleaseHandler(0, 0, 0);
+                surface_impl->callPointerReleaseHandler(0,
+                    application_impl->pointer_state.x,
+                    application_impl->pointer_state.y);
             }
         }
 //        QMouseEvent event(QEvent::Type::MouseButtonPress, pos, )

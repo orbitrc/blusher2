@@ -178,13 +178,19 @@ void View::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
     (void)event;
     this->_state = View::State::Active;
+    fprintf(stderr, "View::pointer_press_event() - state now %d. %p\n",
+        (int)this->_state, this);
 }
 
 void View::pointer_release_event(std::shared_ptr<PointerEvent> event)
 {
+    fprintf(stderr,
+        "View::pointer_release_event() - State: %d. %p\n",
+        (int)this->_state, this);
     if (this->_state == View::State::Active) {
         this->_state = View::State::Normal;
 
+        fprintf(stderr, "View::pointer_release_event() - post click event.\n");
         this->pointer_click_event(event);
     }
 }
