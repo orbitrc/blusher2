@@ -194,11 +194,22 @@ Resize::Resize(Surface *parent)
 
 XdgToplevel::ResizeEdge Resize::resize_edge(const Point& pos) const
 {
-    if (pos.x() < 5 && pos.y() < 5) {
+    if (this->_top_left_rect().contains(pos)) {
         return XdgToplevel::ResizeEdge::TopLeft;
-    } else if (pos.x() > this->width() - 5 &&
-            pos.y() < 5) {
+    } else if (this->_top_rect().contains(pos)) {
+        return XdgToplevel::ResizeEdge::Top;
+    } else if (this->_top_right_rect().contains(pos)) {
         return XdgToplevel::ResizeEdge::TopRight;
+    } else if (this->_left_rect().contains(pos)) {
+        return XdgToplevel::ResizeEdge::Left;
+    } else if (this->_right_rect().contains(pos)) {
+        return XdgToplevel::ResizeEdge::Right;
+    } else if (this->_bottom_left_rect().contains(pos)) {
+        return XdgToplevel::ResizeEdge::BottomLeft;
+    } else if (this->_bottom_rect().contains(pos)) {
+        return XdgToplevel::ResizeEdge::Bottom;
+    } else if (this->_bottom_right_rect().contains(pos)) {
+        return XdgToplevel::ResizeEdge::BottomRight;
     } else {
         return XdgToplevel::ResizeEdge::Bottom;
     }
@@ -214,6 +225,92 @@ Surface* Resize::body()
 void Resize::set_body(Surface *surface)
 {
     this->_body = surface;
+}
+
+uint32_t Resize::resize_corner_size() const
+{
+    return 6;
+}
+
+//==========================
+// Resize: Private Methods
+//==========================
+
+Rect Resize::_top_left_rect() const
+{
+    return Rect(
+        0,
+        0,
+        this->resize_corner_size(),
+        this->resize_corner_size()
+    );
+}
+
+Rect Resize::_top_rect() const
+{
+    return Rect(
+        this->resize_corner_size(),
+        0,
+        this->width() - (this->resize_corner_size() * 2),
+        this->resize_corner_size()
+    );
+}
+
+Rect Resize::_top_right_rect() const
+{
+    return Rect(
+        this->width() - this->resize_corner_size(),
+        0,
+        this->resize_corner_size(),
+        this->resize_corner_size()
+    );
+}
+
+Rect Resize::_left_rect() const
+{
+    return Rect(
+        0,
+        this->resize_corner_size(),
+        this->resize_corner_size(),
+        this->height() - (this->resize_corner_size() * 2)
+    );
+}
+
+Rect Resize::_right_rect() const
+{
+    return Rect(
+        this->width() - this->resize_corner_size(),
+        this->resize_corner_size(),
+        this->resize_corner_size(),
+        this->height() - (this->resize_corner_size() * 2)
+    );
+}
+
+Rect Resize::_bottom_left_rect() const
+{
+    return Rect(
+        0,
+        this->height() - this->resize_corner_size(),
+        this->resize_corner_size(),
+        this->resize_corner_size()
+    );
+}
+
+Rect Resize::_bottom_rect() const
+{
+    return Rect(
+        0, 0, 0, 0
+    );
+}
+
+Rect Resize::_bottom_right_rect() const
+{
+    return Rect(
+        this->width() - this->resize_corner_size(),
+        this->height() - this->resize_corner_size(),
+        this->resize_corner_size(),
+        this->resize_corner_size()
+    );
 }
 
 //=================

@@ -11,6 +11,7 @@
 #include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/desktop-surface.h>
 #include <blusher/point.h>
+#include <blusher/rect.h>
 
 namespace bl {
 
@@ -64,6 +65,18 @@ public:
 
     Surface* body();
     void set_body(Surface *surface);
+
+    uint32_t resize_corner_size() const;
+
+private:
+    Rect _top_left_rect() const;
+    Rect _top_rect() const;
+    Rect _top_right_rect() const;
+    Rect _left_rect() const;
+    Rect _right_rect() const;
+    Rect _bottom_left_rect() const;
+    Rect _bottom_rect() const;
+    Rect _bottom_right_rect() const;
 
 protected:
     void pointer_press_event(std::shared_ptr<PointerEvent> event) override;
