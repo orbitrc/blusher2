@@ -150,7 +150,9 @@ static void pointer_button_handler(void *data, struct wl_pointer *pointer,
 static void pointer_axis_handler(void *data, struct wl_pointer *wl_pointer,
         uint32_t time, uint32_t axis, wl_fixed_t value)
 {
-    fprintf(stderr, "Pointer handle axis\n");
+    double val = wl_fixed_to_double(value);
+    fprintf(stderr,
+        "pointer_axis_handler() - axis: %d, value: %f\n", axis, val);
 }
 
 static void pointer_frame_handler(void *data, struct wl_pointer *wl_pointer)
