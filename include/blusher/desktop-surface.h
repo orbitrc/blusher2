@@ -6,6 +6,7 @@
 #include <blusher/wayland/xdg-surface.h>
 #include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/surface.h>
+#include <blusher/rect.h>
 
 namespace bl {
 
@@ -23,6 +24,9 @@ public:
     DesktopSurface* parent() const;
 
     DesktopSurface::Role role() const;
+
+    /// Sets window geomtry hint for a compositor.
+    void set_geometry_hint(const Rect& geomtry);
 
     /// Move if role is toplevel. If the role is popup, do nothing.
     void toplevel_move();

@@ -131,6 +131,18 @@ DesktopSurface::Role DesktopSurface::role() const
     return this->_role;
 }
 
+void DesktopSurface::set_geometry_hint(const Rect& geometry)
+{
+    if (this->_xdg_surface != nullptr) {
+        this->_xdg_surface->set_window_geometry(
+            geometry.x(),
+            geometry.y(),
+            geometry.width(),
+            geometry.height()
+        );
+    }
+}
+
 void DesktopSurface::toplevel_move()
 {
     if (this->_role == DesktopSurface::Role::Toplevel) {
