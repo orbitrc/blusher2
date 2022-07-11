@@ -43,6 +43,11 @@ public:
         double y;
         int button;
         uint32_t serial;
+        double pressed_x;
+        double pressed_y;
+        /// Static click consists of pointer press and pointer release events
+        /// without moving the position.
+        uint32_t static_click_count;
     };
 
 public:

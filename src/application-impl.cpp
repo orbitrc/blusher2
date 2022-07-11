@@ -132,6 +132,12 @@ static void pointer_button_handler(void *data, struct wl_pointer *pointer,
             if (state == WL_POINTER_BUTTON_STATE_PRESSED) {
                 application_impl->pointer_state.serial = serial;
                 application_impl->pointer_state.button = button;
+                // Pressed x, y.
+                application_impl->pointer_state.pressed_x =
+                    application_impl->pointer_state.x;
+                application_impl->pointer_state.pressed_y =
+                    application_impl->pointer_state.y;
+
                 surface_impl->callPointerPressHandler(button,
                     application_impl->pointer_state.x,
                     application_impl->pointer_state.y
@@ -140,9 +146,25 @@ static void pointer_button_handler(void *data, struct wl_pointer *pointer,
             // Pointer release event.
             if (state == WL_POINTER_BUTTON_STATE_RELEASED) {
                 application_impl->pointer_state.button = 0;
+                // Static click count.
+                double x = application_impl->pointer_state.x;
+                double y = application_impl->pointer_state.y;
+                if (application_impl->pointer_state.pressed_x == x &&
+                        application_impl->pointer_state.pressed_y == y) {
+                    application_impl->pointer_state.static_click_count += 1;
+                } else {
+                    application_impl->pointer_state.static_click_count = 0;
+                }
+
                 surface_impl->callPointerReleaseHandler(0,
                     application_impl->pointer_state.x,
                     application_impl->pointer_state.y);
+
+                // Double click.
+                if (application_impl->pointer_state.static_click_count == 2) {
+                    fprintf(stderr, "DOUBLE CLICK!\n");
+                    application_impl->pointer_state.static_click_count = 0;
+                }
             }
         }
 //        QMouseEvent event(QEvent::Type::MouseButtonPress, pos, )
@@ -325,6 +347,9 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
 
     this->pointer_state.x = 0;
     this->pointer_state.y = 0;
+    this->pointer_state.pressed_x = 0;
+    this->pointer_state.pressed_y = 0;
+    this->pointer_state.static_click_count = 0;
 
     // Toy cursor. Change this later.
     this->_cursor = nullptr;
