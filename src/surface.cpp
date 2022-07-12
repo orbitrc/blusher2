@@ -146,11 +146,6 @@ void Surface::pointer_release_event(std::shared_ptr<PointerEvent> event)
     (void)event;
 }
 
-void Surface::pointer_move_event(std::shared_ptr<PointerEvent> event)
-{
-    (void)event;
-}
-
 void Surface::resize_event(std::shared_ptr<ResizeEvent> event)
 {
     (void)event;
@@ -243,8 +238,6 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
     // Surface.
     auto event = std::make_shared<PointerEvent>(Event::Type::PointerMove,
         button, x, y);
-
-    this->pointer_move_event(event);
 
     // View.
     auto root_view = this->_impl->rootView();
