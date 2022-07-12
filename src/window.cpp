@@ -47,6 +47,7 @@ Window::Window()
     this->_body = static_cast<Surface*>(this);
 
     this->_body->set_geometry(0, 0, 200, 200);
+    this->_body->root_view()->fill(Color::from_rgb(255, 255, 255));
 
     this->_title_bar = new TitleBar(this->_body);
     this->_title_bar->set_body(this);
@@ -129,7 +130,7 @@ void Window::update_decoration()
         this->width() + (BLUSHER_SHADOW_WIDTH * 2),
         this->height() + (BLUSHER_SHADOW_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
-    this->_decoration->root_view()->set_color(Color::from_rgba(0, 0, 0, 100));
+    this->_decoration->root_view()->fill(Color::from_rgba(0, 0, 0, 100));
 }
 
 void Window::update_resize()
@@ -140,7 +141,7 @@ void Window::update_resize()
         this->width() + (BLUSHER_RESIZE_WIDTH * 2),
         this->height() + (BLUSHER_RESIZE_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
-    this->_resize->root_view()->set_color(Color::from_rgba(255, 0, 0, 100));
+    this->_resize->root_view()->fill(Color::from_rgba(255, 0, 0, 100));
 }
 
 void Window::update_border()
@@ -151,7 +152,7 @@ void Window::update_border()
         this->width() + (BLUSHER_BORDER_WIDTH * 2),
         this->height() + (BLUSHER_BORDER_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
-    this->_border->root_view()->set_color(Color::from_rgb(0, 0, 0));
+    this->_border->root_view()->fill(Color::from_rgb(0, 0, 0));
 }
 
 void Window::update_title_bar()
@@ -162,7 +163,7 @@ void Window::update_title_bar()
         this->width(),
         BLUSHER_TITLE_BAR_HEIGHT
     );
-    this->_title_bar->root_view()->set_color(Color::from_rgb(100, 100, 100));
+    this->_title_bar->root_view()->fill(Color::from_rgb(100, 100, 100));
 }
 
 //===============

@@ -15,13 +15,11 @@ ViewImpl::ViewImpl(QObject *parent)
     this->m_width = 10.0;
     this->m_height = 10.0;
 
-    this->m_color = Color::from_rgba(255, 255, 255, 255);
-
     this->m_image = new Image(this->m_width, this->m_height);
-    this->m_image->fill(this->m_color);
+    this->m_image->fill(Color::from_rgb(255, 255, 255));
 
     this->m_composedImage = new Image(this->m_width, this->m_height);
-    this->m_composedImage->fill(this->m_color);
+    this->m_composedImage->fill(Color::from_rgb(255, 255, 255));
 
     QObject::connect(this, &ViewImpl::colorChanged,
                      this, [this]() {
@@ -130,20 +128,6 @@ void ViewImpl::setSize(double width, double height)
     }
 }
 
-Color ViewImpl::color() const
-{
-    return this->m_color;
-}
-
-void ViewImpl::setColor(const Color& color)
-{
-    this->m_color = color;
-
-    this->m_image->fill(color);
-
-    emit this->colorChanged();
-}
-
 void ViewImpl::fill(const Color& color)
 {
     this->m_image->fill(color);
@@ -175,7 +159,7 @@ void ViewImpl::update()
             this->m_image->height()
         );
     }
-    this->m_composedImage->fill(this->m_color);
+    // this->m_composedImage->fill(this->m_color);
     this->m_composedImage->add(*this->m_image, 0, 0);
     for (auto& child: this->m_view->_children) {
         this->m_composedImage->add(*(child->_impl->m_image),

@@ -35,9 +35,6 @@ public:
     void setHeight(double height);
     void setSize(double width, double height);
 
-    Color color() const;
-    void setColor(const Color& color);
-
     void fill(const Color& color);
 
     void drawImage(uint64_t x, uint64_t y, const Image& image);
@@ -58,8 +55,6 @@ private:
     double m_height;
 
     View *m_view;
-
-    Color m_color;
 
     Image *m_image;
     Image *m_composedImage;

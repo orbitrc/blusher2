@@ -94,16 +94,6 @@ Rect View::geometry() const
     return Rect(this->x(), this->y(), this->width(), this->height());
 }
 
-Color View::color() const
-{
-    return this->_impl->color();
-}
-
-void View::set_color(const Color &color)
-{
-    this->_impl->setColor(color);
-}
-
 void View::fill(const Color& color)
 {
     this->_impl->fill(color);
