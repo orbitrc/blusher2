@@ -4,6 +4,20 @@
 
 #include <blusher/resource.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+static void register_resources()
+{
+    #include "../resources/resources.h"
+    BL_REGISTER_RESOURCE()
+}
+
+#ifdef __cplusplus
+}
+#endif
+
 namespace bl {
 
 Application *app = nullptr;
@@ -18,6 +32,9 @@ Application::Application(int argc, char *argv[])
         std::make_shared<EventDispatcher>(this);
 
     bl::app = this;
+
+    // Load resources.
+    register_resources();
 }
 
 Application::~Application()

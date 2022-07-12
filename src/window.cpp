@@ -9,20 +9,6 @@
 #define BLUSHER_BORDER_WIDTH 1
 #define BLUSHER_TITLE_BAR_HEIGHT 30
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-static void register_resources()
-{
-    #include "../resources/resources.h"
-    BL_REGISTER_RESOURCE()
-}
-
-#ifdef __cplusplus
-}
-#endif
-
 namespace bl {
 
 //=============
@@ -39,9 +25,6 @@ Window::Window()
     this->_resize = nullptr;
     this->_decoration = nullptr;
     this->_title = "Application"_S;
-
-    // Load resources.
-    register_resources();
 
     // Init body.
     this->_body = static_cast<Surface*>(this);
