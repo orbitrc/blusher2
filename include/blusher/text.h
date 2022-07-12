@@ -7,6 +7,8 @@ enum class TextAlignment {
     Left,
     Right,
     Center,
+    Top,
+    Bottom,
 };
 
 } // namespace bl

@@ -59,7 +59,7 @@ Label::Label(View *parent)
     this->_color = Color::from_rgb(0, 0, 0);
     this->_background_color = Color::from_rgba(0, 0, 0, 0);
     this->_horizontal_alignment = TextAlignment::Left;
-    this->_vertical_alignment = TextAlignment::Left;
+    this->_vertical_alignment = TextAlignment::Top;
 }
 
 const pr::String& Label::text() const
