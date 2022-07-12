@@ -1,11 +1,12 @@
 #ifndef _BL_RESIZE_EVENT_H
 #define _BL_RESIZE_EVENT_H
 
+#include <blusher/event.h>
 #include <blusher/size.h>
 
 namespace bl {
 
-class ResizeEvent
+class ResizeEvent : public Event
 {
 public:
     ResizeEvent(const Size& size, const Size& old_size);

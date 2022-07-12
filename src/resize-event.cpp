@@ -3,7 +3,8 @@
 namespace bl {
 
 ResizeEvent::ResizeEvent(const Size& size, const Size& old_size)
-    : _size(size)
+    : Event(Event::Type::Resize),
+      _size(size)
 {
     (void)old_size;
 }
