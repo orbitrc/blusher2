@@ -173,6 +173,10 @@ void Window::update_title_bar()
 void Window::resize_event(std::shared_ptr<ResizeEvent> event)
 {
     (void)event;
+    // Update body.
+    this->_body->root_view()->fill(Color::from_rgb(255, 255, 255));
+    this->_body->root_view()->update();
+
     if (this->_border != nullptr) {
         this->update_border();
     }
