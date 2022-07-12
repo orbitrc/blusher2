@@ -159,7 +159,7 @@ void ViewImpl::update()
     }
     this->m_composedImage->add(*this->m_image, 0, 0);
     for (auto& child: this->m_view->_children) {
-        this->m_composedImage->add(*(child->_impl->m_image),
+        this->m_composedImage->add(*(child->_impl->m_composedImage),
             child->x(), child->y());
     }
 }
