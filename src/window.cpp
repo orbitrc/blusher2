@@ -78,6 +78,9 @@ void Window::show()
 
     this->_border->show();
     this->_border->update();
+
+    // Set geometry hint.
+    this->set_geometry_hint(Rect(0, 0, this->width(), this->height()));
 }
 
 void Window::move()
@@ -170,6 +173,9 @@ void Window::resize_event(std::shared_ptr<ResizeEvent> event)
     if (this->_resize != nullptr) {
         this->update_resize();
     }
+
+    // Update geometry hint.
+    this->set_geometry_hint(Rect(0, 0, this->width(), this->height()));
 
     return Surface::resize_event(event);
 }
