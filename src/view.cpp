@@ -141,7 +141,6 @@ void View::set_surface(Surface *surface)
 void View::update()
 {
     // Paint first if not painted.
-    fprintf(stderr, "[DEBUG] View::update() - painted: %d\n", this->_painted);
     if (this->_painted == false) {
         this->paint();
     }
