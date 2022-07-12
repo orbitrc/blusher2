@@ -182,6 +182,19 @@ void Window::resize_event(std::shared_ptr<ResizeEvent> event)
     return Surface::resize_event(event);
 }
 
+//===============
+// Resize View
+//===============
+
+ResizeView::ResizeView(View *parent)
+    : View(parent)
+{
+}
+
+Resize* ResizeView::resize_surface() const
+{
+    return static_cast<Resize*>(const_cast<ResizeView*>(this)->surface());
+}
 
 //===============
 // Resize
@@ -190,6 +203,7 @@ void Window::resize_event(std::shared_ptr<ResizeEvent> event)
 Resize::Resize(Surface *parent)
     : Surface(parent)
 {
+    this->_main_view = new ResizeView(this->root_view());
 }
 
 XdgToplevel::ResizeEdge Resize::resize_edge(const Point& pos) const

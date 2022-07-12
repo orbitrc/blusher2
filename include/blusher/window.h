@@ -12,6 +12,7 @@
 #include <blusher/desktop-surface.h>
 #include <blusher/point.h>
 #include <blusher/rect.h>
+#include <blusher/view.h>
 
 namespace bl {
 
@@ -52,6 +53,16 @@ private:
     pr::String _title;
 };
 
+//=======================
+// Window Resize View
+//=======================
+class ResizeView : public View
+{
+public:
+    ResizeView(View *parent);
+
+    Resize* resize_surface() const;
+};
 
 //=================
 // Window Resize
@@ -83,6 +94,8 @@ protected:
 
 private:
     Surface *_body;
+
+    ResizeView *_main_view;
 };
 
 } // namespace bl
