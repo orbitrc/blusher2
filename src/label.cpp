@@ -58,6 +58,8 @@ Label::Label(View *parent)
     this->_text = ""_S;
     this->_color = Color::from_rgb(0, 0, 0);
     this->_background_color = Color::from_rgba(0, 0, 0, 0);
+    this->_horizontal_alignment = TextAlignment::Left;
+    this->_vertical_alignment = TextAlignment::Left;
 }
 
 const pr::String& Label::text() const
@@ -95,6 +97,30 @@ void Label::set_text(const pr::String& text)
 
     // Update.
     this->update();
+}
+
+TextAlignment Label::horizontal_alignment() const
+{
+    return this->_horizontal_alignment;
+}
+
+void Label::set_horizontal_alignment(TextAlignment alignment)
+{
+    if (this->_horizontal_alignment != alignment) {
+        this->_horizontal_alignment = alignment;
+    }
+}
+
+TextAlignment Label::vertical_alignment() const
+{
+    return this->_vertical_alignment;
+}
+
+void Label::set_vertical_alignment(TextAlignment alignment)
+{
+    if (this->_vertical_alignment != alignment) {
+        this->_vertical_alignment = alignment;
+    }
 }
 
 } // namespace bl
