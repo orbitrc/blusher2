@@ -80,6 +80,9 @@ public:
     void paint();
 
     void show();
+    void hide();
+
+    bool visible() const;
 
     void placeAbove(SurfaceImpl*);
     void placeBelow(SurfaceImpl*);
@@ -120,6 +123,9 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+
+private:
+    void _egl_update(bool hide = false);
 
 private:
     uint32_t m_x;

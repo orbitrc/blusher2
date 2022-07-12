@@ -82,6 +82,16 @@ void Surface::show()
     this->_impl->show();
 }
 
+void Surface::hide()
+{
+    this->_impl->hide();
+}
+
+bool Surface::visible() const
+{
+    return this->_impl->visible();
+}
+
 Surface::Type Surface::type() const
 {
     return this->_type;

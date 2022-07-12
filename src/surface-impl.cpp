@@ -536,6 +536,20 @@ void SurfaceImpl::show()
     }
 }
 
+void SurfaceImpl::hide()
+{
+    if (this->m_visible == true) {
+        this->m_visible = false;
+
+        this->_egl_update(true);
+    }
+}
+
+bool SurfaceImpl::visible() const
+{
+    return this->m_visible;
+}
+
 void SurfaceImpl::placeAbove(SurfaceImpl *surface_impl)
 {
     if (this->_wl_subsurface != nullptr) {
@@ -623,6 +637,21 @@ void SurfaceImpl::update()
     }
     this->_updating = true;
 
+    this->_egl_update();
+
+    this->_updating = false;
+}
+
+//=================
+// Private Slots
+//=================
+
+//==================
+// Private Methods
+//==================
+
+void SurfaceImpl::_egl_update(bool hide)
+{
     // Re-create EGL window surface.
     EGLBoolean destroyed = eglDestroySurface(this->_egl_object.egl_display,
         this->_egl_object.egl_surface);
@@ -656,22 +685,17 @@ void SurfaceImpl::update()
         // exit(1);
         return;
     }
+    uint64_t width = !hide ? this->width() : 0;
+    uint64_t height = !hide ? this->height() : 0;
     texture_function(
         this->_egl_object.egl_display,
         this->_egl_object.egl_surface,
         this->_egl_object.egl_context,
         &this->_egl_object.program_object,
         *this->m_rootView->_impl->m_composedImage,
-        this->width(), this->height()
+        width, height
     );
-
-    this->_updating = false;
 }
-
-//=================
-// Private Slots
-//=================
-
 
 //===========
 // Events

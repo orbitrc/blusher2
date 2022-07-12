@@ -59,6 +59,10 @@ public:
 
     void show();
 
+    void hide();
+
+    bool visible() const;
+
     /// Returns type of this surface.
     Surface::Type type() const;
 
