@@ -9,6 +9,7 @@
 #include <blusher/view.h>
 #include <blusher/point.h>
 #include <blusher/label.h>
+#include <blusher/controls/button.h>
 
 int main(int argc, char *argv[])
 {
@@ -25,6 +26,10 @@ int main(int argc, char *argv[])
     // window.root_view()->update();
     label.set_text("Hello!"_S);
     label.paint();
+
+    bl::controls::Button button(window.root_view());
+    button.set_position(bl::Point(10, 10));
+    button.update();
 
     window.root_view()->paint();
     window.root_view()->update();
