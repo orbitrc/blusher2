@@ -82,19 +82,19 @@ Window::Window()
 void Window::show()
 {
     this->_body->show();
-    this->_body->paint();
+    this->_body->update();
 
     this->_title_bar->show();
-    this->_title_bar->paint();
+    this->_title_bar->update();
 
     this->_decoration->show();
-    this->_decoration->paint();
+    this->_decoration->update();
 
     this->_resize->show();
-    this->_resize->paint();
+    this->_resize->update();
 
     this->_border->show();
-    this->_border->paint();
+    this->_border->update();
 }
 
 void Window::move()
@@ -131,6 +131,7 @@ void Window::update_decoration()
         this->height() + (BLUSHER_SHADOW_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
     this->_decoration->root_view()->fill(Color::from_rgba(0, 0, 0, 100));
+    this->_decoration->root_view()->paint();
 }
 
 void Window::update_resize()
@@ -142,6 +143,7 @@ void Window::update_resize()
         this->height() + (BLUSHER_RESIZE_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
     this->_resize->root_view()->fill(Color::from_rgba(255, 0, 0, 100));
+    this->_resize->root_view()->paint();
 }
 
 void Window::update_border()
@@ -153,6 +155,7 @@ void Window::update_border()
         this->height() + (BLUSHER_BORDER_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
     this->_border->root_view()->fill(Color::from_rgb(0, 0, 0));
+    this->_border->root_view()->paint();
 }
 
 void Window::update_title_bar()
@@ -164,6 +167,7 @@ void Window::update_title_bar()
         BLUSHER_TITLE_BAR_HEIGHT
     );
     this->_title_bar->root_view()->fill(Color::from_rgb(100, 100, 100));
+    this->_title_bar->root_view()->paint();
 }
 
 //===============
@@ -175,7 +179,7 @@ void Window::resize_event(std::shared_ptr<ResizeEvent> event)
     (void)event;
     // Update body.
     this->_body->root_view()->fill(Color::from_rgb(255, 255, 255));
-    this->_body->root_view()->update();
+    this->_body->root_view()->paint();
 
     if (this->_border != nullptr) {
         this->update_border();

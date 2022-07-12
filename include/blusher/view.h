@@ -76,6 +76,8 @@ public:
 
     void update();
 
+    virtual void paint();
+
 protected:
     //===============
     // Events

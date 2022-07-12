@@ -135,8 +135,6 @@ void View::set_surface(Surface *surface)
 
 void View::update()
 {
-    this->_impl->update();
-
     // Update parent.
     if (this->_parent != nullptr) {
         this->_parent->update();
@@ -148,6 +146,11 @@ void View::update()
         return;
     }
     this->_surface->update();
+}
+
+void View::paint()
+{
+    this->_impl->update();
 }
 
 //=================
