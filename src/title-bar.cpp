@@ -106,7 +106,7 @@ TitleBarButton::TitleBarButton(View *parent)
     this->_close_image->add(close_image, 0, 0);
 
     // Set image.
-    this->fill(Color::from_rgb(255, 0, 0));
+    this->fill(Color::from_rgb(0, 0, 0));
     this->draw_image(Point(0, 0), *(this->_close_image));
     this->update();
 }
@@ -124,6 +124,7 @@ void TitleBarButton::pointer_enter_event(std::shared_ptr<PointerEvent> event)
 {
     fprintf(stderr, "[LOG] TitleBarButton::pointer_enter_event()\n");
     this->fill(Color::from_rgb(150, 0, 0));
+    this->update();
 
     static_cast<TitleBar*>(this->surface())->body()->update();
 

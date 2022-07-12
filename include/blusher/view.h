@@ -97,6 +97,9 @@ private:
     Surface *_surface;
     pr::Vector<View*> _children;
     View::State _state;
+    /// If manually called paint method, then set this true. Otherwise set this
+    /// false so it will be painted in next update.
+    bool _painted;
 };
 
 } // namespace bl

@@ -37,6 +37,7 @@ View::View(View *parent)
     }
 
     this->_state = View::State::Normal;
+    this->_painted = false;
 }
 
 double View::x() const
@@ -97,11 +98,15 @@ Rect View::geometry() const
 void View::fill(const Color& color)
 {
     this->_impl->fill(color);
+
+    this->_painted = false;
 }
 
 void View::draw_image(const Point& pos, const Image& image)
 {
     this->_impl->drawImage(pos.x(), pos.y(), image);
+
+    this->_painted = false;
 }
 
 View* View::child_at(const Point &pos)
@@ -135,8 +140,16 @@ void View::set_surface(Surface *surface)
 
 void View::update()
 {
+    // Paint first if not painted.
+    fprintf(stderr, "[DEBUG] View::update() - painted: %d\n", this->_painted);
+    if (this->_painted == false) {
+        this->paint();
+    }
+
     // Update parent.
     if (this->_parent != nullptr) {
+        // Root view may not painted manually. So force paint if root view.
+        this->_parent->paint();
         this->_parent->update();
     }
 
@@ -151,6 +164,8 @@ void View::update()
 void View::paint()
 {
     this->_impl->update();
+
+    this->_painted = true;
 }
 
 //=================

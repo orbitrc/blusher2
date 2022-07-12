@@ -131,8 +131,6 @@ void ViewImpl::setSize(double width, double height)
 void ViewImpl::fill(const Color& color)
 {
     this->m_image->fill(color);
-
-    this->m_view->update();
 }
 
 void ViewImpl::drawImage(uint64_t x, uint64_t y, const Image& image)
@@ -159,7 +157,6 @@ void ViewImpl::update()
             this->m_image->height()
         );
     }
-    // this->m_composedImage->fill(this->m_color);
     this->m_composedImage->add(*this->m_image, 0, 0);
     for (auto& child: this->m_view->_children) {
         this->m_composedImage->add(*(child->_impl->m_image),
