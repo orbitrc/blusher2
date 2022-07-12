@@ -10,7 +10,18 @@
 #include <blusher/color.h>
 #include <blusher/point.h>
 #include <blusher/image.h>
+#include <blusher/size.h>
 #include <blusher/utils.h>
+
+static bl::Size pango_get_size(PangoLayout *layout)
+{
+    int width;
+    int height;
+
+    pango_layout_get_pixel_size(layout, &width, &height);
+
+    return bl::Size(width, height);
+}
 
 static void draw_text(cairo_t *cr, const char *text, const bl::Color& color,
         double font_size)
@@ -36,6 +47,9 @@ static void draw_text(cairo_t *cr, const char *text, const bl::Color& color,
         color.red_f(), color.green_f(), color.blue_f(), color.alpha_f());
 
     pango_cairo_update_layout(cr, layout);
+
+    bl::Size size = pango_get_size(layout);
+    fprintf(stderr, "[DEBUG] draw_text() - size: %fx%f\n", size.width(), size.height());
 
     cairo_move_to(cr, 0, 0);
     pango_cairo_show_layout(cr, layout);
