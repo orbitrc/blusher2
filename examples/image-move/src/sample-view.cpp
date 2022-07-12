@@ -14,9 +14,10 @@ SampleView::SampleView(bl::View *parent)
 
     this->set_width(150);
     this->set_height(150);
-    this->set_color(bl::Color::from_rgb(0, 255, 0));
+    this->fill(bl::Color::from_rgb(0, 255, 0));
     this->_sample_image = new bl::Image("brc:/io.orbitrc.blusher/sample.png"_S);
     this->draw_image(bl::Point(0, 0), *this->_sample_image);
+    this->paint();
 }
 
 //=============

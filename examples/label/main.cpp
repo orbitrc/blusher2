@@ -24,7 +24,9 @@ int main(int argc, char *argv[])
     bl::Label label(window.root_view());
     // window.root_view()->update();
     label.set_text("Hello!"_S);
+    label.paint();
 
+    window.root_view()->paint();
     window.root_view()->update();
 
     return app.exec();
