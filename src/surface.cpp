@@ -211,7 +211,7 @@ void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
         auto event = std::make_shared<PointerEvent>(Event::Type::PointerPress,
             button, x, y);
 
-        view->pointer_press_event(event);
+        app->event_dispatcher()->post_event(view, event);
     }
 }
 
