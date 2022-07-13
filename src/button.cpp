@@ -32,7 +32,7 @@ Button::Button(View *parent)
     // Set text label.
     this->_label = new Label(this);
     this->_label->set_text("Button"_S);
-    this->_label->update();
+    this->_label->paint();
 
     this->paint();
 }

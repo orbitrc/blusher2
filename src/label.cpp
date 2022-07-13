@@ -85,32 +85,8 @@ void Label::set_text(const pr::String& text)
 {
     this->_text = text;
 
-    // Set background.
-    this->fill(this->_background_color);
-
-    // Draw text.
-    cairo_surface_t *surface;
-
-    surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-        this->width(), this->height());
-
-    cairo_t *cr = cairo_create(surface);
-
-    draw_text(cr, text.c_str(), this->_color, 12);
-
-    // Add image.
-    Image image(cairo_image_surface_get_data(surface),
-        this->width(),
-        this->height()
-    );
-    this->draw_image(Point(0, 0), image);
-
-    // Free resources.
-    cairo_surface_destroy(surface);
-    cairo_destroy(cr);
-
-    // Update.
-    this->update();
+    // Paint.
+    this->paint();
 }
 
 TextAlignment Label::horizontal_alignment() const
@@ -135,6 +111,35 @@ void Label::set_vertical_alignment(TextAlignment alignment)
     if (this->_vertical_alignment != alignment) {
         this->_vertical_alignment = alignment;
     }
+}
+
+void Label::paint()
+{
+    // Set background.
+    this->fill(this->_background_color);
+
+    // Draw text.
+    cairo_surface_t *surface;
+
+    surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+        this->width(), this->height());
+
+    cairo_t *cr = cairo_create(surface);
+
+    draw_text(cr, this->_text.c_str(), this->_color, 12);
+
+    // Add image.
+    Image image(cairo_image_surface_get_data(surface),
+        this->width(),
+        this->height()
+    );
+    this->draw_image(Point(0, 0), image);
+
+    // Free resources.
+    cairo_surface_destroy(surface);
+    cairo_destroy(cr);
+
+    View::paint();
 }
 
 } // namespace bl

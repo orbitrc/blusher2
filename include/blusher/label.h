@@ -28,6 +28,11 @@ public:
 
     void set_vertical_alignment(TextAlignment alignment);
 
+    //===================
+    // Override Methods
+    //===================
+    void paint() override;
+
 private:
     pr::String _text;
     Color _color;
