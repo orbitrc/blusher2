@@ -153,6 +153,11 @@ void TitleBarButton::pointer_press_event(std::shared_ptr<PointerEvent> event)
 void TitleBarButton::pointer_click_event(std::shared_ptr<PointerEvent> event)
 {
     fprintf(stderr, "Title bar button clicked.\n");
+    if (this->_type == TitleBarButton::Type::Close) {
+        auto title_bar_surface = static_cast<TitleBar*>(this->surface());
+        auto body = title_bar_surface->body();
+        static_cast<DesktopSurface*>(body)->close();
+    }
 
     return View::pointer_click_event(event);
 }

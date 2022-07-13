@@ -75,4 +75,23 @@ std::shared_ptr<XdgWmBase> Application::xdg_wm_base()
     return this->_impl->xdgWmBase();
 }
 
+const pr::Vector<DesktopSurface*> Application::desktop_surfaces() const
+{
+    return this->_desktop_surfaces;
+}
+
+void Application::add_desktop_surface(DesktopSurface *desktop_surface)
+{
+    this->_desktop_surfaces.push(desktop_surface);
+}
+
+void Application::remove_desktop_surface(DesktopSurface *desktop_surface)
+{
+    auto index = this->_desktop_surfaces.index(desktop_surface);
+
+    if (index != std::nullopt) {
+        this->_desktop_surfaces.remove(index.value());
+    }
+}
+
 } // namespace bl

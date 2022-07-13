@@ -56,6 +56,8 @@ public:
 
     int exec();
 
+    void quit();
+
 public:
     //========================
     // Wayland client objects

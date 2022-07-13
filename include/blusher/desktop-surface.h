@@ -25,6 +25,8 @@ public:
 
     DesktopSurface::Role role() const;
 
+    void close();
+
     /// Sets window geomtry hint for a compositor.
     void set_geometry_hint(const Rect& geomtry);
 

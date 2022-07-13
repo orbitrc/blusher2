@@ -7,6 +7,7 @@
 
 #include <QEnterEvent>
 
+#include <blusher/application.h>
 #include <blusher/utils.h>
 
 #include "surface-impl.h"
@@ -322,8 +323,13 @@ void DisplayDispatchThread::run()
     fprintf(stderr, "result: %d\n", result);
     while (result != -1) {
         result = wl_display_dispatch(app_impl->display()->c_ptr());
-        // fprintf(stderr, "result: %d\n", result);
+        if (app->desktop_surfaces().length() == 0) {
+            fprintf(stderr, "All desktop surfaces gone. Quit.\n");
+            break;
+        }
     }
+
+    app_impl->quit();
 }
 
 ApplicationImpl *app_impl = nullptr;
@@ -387,6 +393,11 @@ int ApplicationImpl::exec()
 
     return this->_q_core_application->exec();
 //    return this->_q_gui_application->exec();
+}
+
+void ApplicationImpl::quit()
+{
+    this->_q_core_application->quit();
 }
 
 //=========================

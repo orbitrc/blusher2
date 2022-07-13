@@ -119,6 +119,9 @@ DesktopSurface::DesktopSurface(DesktopSurface::Role role,
     } else {
         //
     }
+
+    // Append to the application.
+    app->add_desktop_surface(this);
 }
 
 DesktopSurface* DesktopSurface::parent() const
@@ -129,6 +132,11 @@ DesktopSurface* DesktopSurface::parent() const
 DesktopSurface::Role DesktopSurface::role() const
 {
     return this->_role;
+}
+
+void DesktopSurface::close()
+{
+    app->remove_desktop_surface(this);
 }
 
 void DesktopSurface::set_geometry_hint(const Rect& geometry)
