@@ -11,6 +11,7 @@
 #include <blusher/wayland/wl-compositor.h>
 #include <blusher/wayland/xdg-wm-base.h>
 #include <blusher/event-dispatcher.h>
+#include <blusher/output.h>
 
 namespace bl {
 
@@ -22,6 +23,7 @@ class DesktopSurface;
 
 class Application
 {
+    friend class ApplicationImpl;
 public:
     Application(int argc, char *argv[]);
     ~Application();
@@ -54,6 +56,8 @@ private:
     std::shared_ptr<EventDispatcher> _event_dispatcher;
 
     pr::Vector<DesktopSurface*> _desktop_surfaces;
+
+    pr::Vector<std::shared_ptr<Output>> _outputs;
 };
 
 // Singleton object.

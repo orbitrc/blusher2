@@ -27,6 +27,58 @@ struct wl_shm_listener shm_listener = {
 };
 
 //==============
+// Output
+//==============
+static void output_geometry_handler(void *data,
+        struct wl_output *wl_output,
+        int32_t x,
+        int32_t y,
+        int32_t physical_width,
+        int32_t physical_height,
+        int32_t subpixel,
+        const char *make,
+        const char *model,
+        int32_t transform)
+{
+    (void)data;
+    fprintf(stderr, "output_geometry_handler() - output: %p\n", wl_output);
+}
+
+static void output_mode_handler(void *data,
+        struct wl_output *wl_output,
+        uint32_t flags,
+        int32_t width,
+        int32_t height,
+        int32_t refresh)
+{
+    (void)data;
+    fprintf(stderr, "output_mode_handler() - output: %p\n", wl_output);
+}
+
+static void output_done_handler(void *data,
+        struct wl_output *wl_output)
+{
+    (void)data;
+    fprintf(stderr, "output_done_handler() - output: %p\n", wl_output);
+}
+
+static void output_scale_handler(void *data,
+        struct wl_output *wl_output,
+        int32_t scale)
+{
+    (void)data;
+    fprintf(stderr, "output_scale_handler() - output: %p\n", wl_output);
+}
+
+static const bl::WlOutput::Listener output_listener =
+    bl::WlOutput::Listener(
+        output_geometry_handler,
+        output_mode_handler,
+        output_done_handler,
+        output_scale_handler
+    );
+
+//==============
 // XDG
 //==============
 static void xdg_wm_base_ping_handler(void *data,
@@ -292,6 +344,12 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
             application_impl->setShm(static_cast<struct wl_shm*>(
                 wl_registry_bind(registry, id, &wl_shm_interface, 1)));
         }
+    } else if (strcmp(interface, "wl_output") == 0) {
+        if (application_impl->output() == nullptr) {
+            auto interface = bl::WlInterface<bl::WlInterfaceType::Output>();
+            application_impl->setOutput(reg->bind(id, interface, 2));
+            application_impl->output()->add_listener(output_listener);
+        }
     } else if (strcmp(interface, "xdg_wm_base") == 0) {
         if (application_impl->xdgWmBase() == nullptr) {
             auto interface = bl::WlInterface<bl::WlInterfaceType::XdgWmBase>();
@@ -350,6 +408,7 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     this->_seat = nullptr;
     this->_keyboard = NULL;
     this->_pointer = NULL;
+    this->_output = nullptr;
 
     this->pointer_state.x = 0;
     this->pointer_state.y = 0;
@@ -479,6 +538,16 @@ struct wl_pointer* ApplicationImpl::pointer() const
 void ApplicationImpl::setPointer(struct wl_pointer *pointer)
 {
     this->_pointer = pointer;
+}
+
+std::shared_ptr<WlOutput> ApplicationImpl::output()
+{
+    return this->_output;
+}
+
+void ApplicationImpl::setOutput(std::shared_ptr<WlOutput> output)
+{
+    this->_output = output;
 }
 
 //===========================
