@@ -18,6 +18,8 @@ public:
     Button(View *parent);
     ~Button();
 
+    void paint() override;
+
 protected:
     void pointer_press_event(std::shared_ptr<PointerEvent> event) override;
     void pointer_release_event(std::shared_ptr<PointerEvent> event) override;

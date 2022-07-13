@@ -62,6 +62,8 @@ public:
 
     Rect geometry() const;
 
+    View::State state() const;
+
     void fill(const Color& color);
 
     void draw_image(const Point& pos, const Image& image);

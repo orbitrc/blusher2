@@ -33,12 +33,23 @@ Button::Button(View *parent)
     this->_label = new Label(this);
     this->_label->set_text("Button"_S);
     this->_label->paint();
-
-    this->paint();
 }
 
 Button::~Button()
 {
+}
+
+void Button::paint()
+{
+    if (this->state() == View::State::Active) {
+        this->_image_view->fill(Color::from_rgb(100, 100, 100));
+        this->_image_view->paint();
+    } else if (this->state() == View::State::Normal) {
+        this->_image_view->fill(Color::from_rgb(0, 255, 0));
+        this->_image_view->paint();
+    }
+
+    View::paint();
 }
 
 //===========
@@ -47,12 +58,18 @@ Button::~Button()
 
 void Button::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    return View::pointer_press_event(event);
+    View::pointer_press_event(event);
+
+    this->paint();
+    this->update();
 }
 
 void Button::pointer_release_event(std::shared_ptr<PointerEvent> event)
 {
-    return View::pointer_release_event(event);
+    View::pointer_release_event(event);
+
+    this->paint();
+    this->update();
 }
 
 void Button::pointer_click_event(std::shared_ptr<PointerEvent> event)
