@@ -4,7 +4,7 @@
 
 namespace bl {
 
-PointerEvent::PointerEvent(Event::Type type, Button button, double x, double y)
+PointerEvent::PointerEvent(Event::Type type, PointerButton button, double x, double y)
     : Event(type)
 {
     this->_button = button;
@@ -22,7 +22,7 @@ PointerEvent::~PointerEvent()
 // Public Methods
 //=================
 
-Button PointerEvent::button() const
+PointerButton PointerEvent::button() const
 {
     return this->_button;
 }

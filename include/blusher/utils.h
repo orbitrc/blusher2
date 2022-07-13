@@ -37,9 +37,9 @@ Qt::MouseButton libinput_button_to_qt_mouse_button(uint32_t libinput_button);
 
 uint32_t qt_mouse_button_to_libinput_button(Qt::MouseButton qt_mouse_button);
 
-bl::Button libinput_btn_to_button(uint32_t libinput_btn);
+bl::PointerButton libinput_btn_to_button(uint32_t libinput_btn);
 
-uint32_t button_to_libinput_btn(bl::Button button);
+uint32_t button_to_libinput_btn(bl::PointerButton button);
 
 #ifdef __cplusplus
 }

@@ -10,7 +10,6 @@
 #include <blusher/label.h>
 
 namespace bl {
-namespace controls {
 
 class Button : public View
 {
@@ -30,7 +29,6 @@ private:
     Label *_label;
 };
 
-} // namespace controls
 } // namespace bl
 
 #endif // _BL_BUTTON_H

@@ -331,7 +331,7 @@ Rect Resize::_bottom_right_rect() const
 
 void Resize::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    if (event->button() == Button::Left) {
+    if (event->button() == PointerButton::Left) {
         if (this->_body != nullptr) {
             DesktopSurface *body = static_cast<DesktopSurface*>(this->_body);
             auto edge = this->resize_edge(Point(event->x(), event->y()));

@@ -178,28 +178,28 @@ uint32_t qt_mouse_button_to_libinput_button(Qt::MouseButton qt_mouse_button)
     }
 }
 
-bl::Button libinput_btn_to_button(uint32_t libinput_button)
+bl::PointerButton libinput_btn_to_button(uint32_t libinput_button)
 {
     switch (libinput_button) {
     case BTN_LEFT:
-        return bl::Button::Left;
+        return bl::PointerButton::Left;
     case BTN_RIGHT:
-        return bl::Button::Right;
+        return bl::PointerButton::Right;
     case BTN_MIDDLE:
-        return bl::Button::Middle;
+        return bl::PointerButton::Middle;
     default:
-        return bl::Button::None;
+        return bl::PointerButton::None;
     }
 }
 
-uint32_t button_to_libinput_btn(bl::Button button)
+uint32_t button_to_libinput_btn(bl::PointerButton button)
 {
     switch (button) {
-    case bl::Button::Left:
+    case bl::PointerButton::Left:
         return BTN_LEFT;
-    case bl::Button::Right:
+    case bl::PointerButton::Right:
         return BTN_RIGHT;
-    case bl::Button::Middle:
+    case bl::PointerButton::Middle:
         return BTN_MIDDLE;
     default:
         return 0;

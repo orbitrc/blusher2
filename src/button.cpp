@@ -11,7 +11,6 @@
 #include <blusher/color.h>
 
 namespace bl {
-namespace controls {
 
 Button::Button(View *parent)
     : View(parent)
@@ -79,5 +78,4 @@ void Button::pointer_click_event(std::shared_ptr<PointerEvent> event)
     return View::pointer_click_event(event);
 }
 
-} // namespace controls
 } // namespace bl

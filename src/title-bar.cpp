@@ -77,7 +77,7 @@ TitleBarView::TitleBarView(View *parent)
 
 void TitleBarView::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    if (event->button() == Button::Left) {
+    if (event->button() == PointerButton::Left) {
         fprintf(stderr, "TitleBarView::pointer_press_event() - Button::Left\n");
         TitleBar *title_bar_surface = static_cast<TitleBar*>(this->surface());
         DesktopSurface *body =

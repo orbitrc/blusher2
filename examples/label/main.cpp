@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     label.set_text("Hello!"_S);
     label.paint();
 
-    bl::controls::Button button(window.root_view());
+    bl::Button button(window.root_view());
     button.set_position(bl::Point(10, 10));
     button.update();
 

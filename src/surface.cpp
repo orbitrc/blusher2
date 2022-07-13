@@ -177,7 +177,7 @@ void Surface::pointer_enter_handler()
 {
     this->_state = State::Hover;
 
-    Button button = Button::None;
+    PointerButton button = PointerButton::None;
 
     auto event = std::make_shared<PointerEvent>(Event::Type::PointerEnter,
         button, 0, 0);
@@ -189,7 +189,7 @@ void Surface::pointer_leave_handler()
 {
     this->_state = State::Normal;
 
-    Button button = Button::None;
+    PointerButton button = PointerButton::None;
 
     auto event = std::make_shared<PointerEvent>(Event::Type::PointerLeave,
         button, 0, 0);
@@ -199,7 +199,7 @@ void Surface::pointer_leave_handler()
 
 void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
 {
-    Button button = libinput_btn_to_button(impl_button);
+    PointerButton button = libinput_btn_to_button(impl_button);
 
     // Surface.
     auto event = std::make_shared<PointerEvent>(Event::Type::PointerPress,
@@ -222,7 +222,7 @@ void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
 
 void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
 {
-    Button button = libinput_btn_to_button(impl_button);
+    PointerButton button = libinput_btn_to_button(impl_button);
 
     auto event = std::make_shared<PointerEvent>(Event::Type::PointerRelease,
         button, x, y);
@@ -243,7 +243,7 @@ void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
 
 void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
 {
-    Button button = libinput_btn_to_button(impl_button);
+    PointerButton button = libinput_btn_to_button(impl_button);
 
     // Surface.
     auto event = std::make_shared<PointerEvent>(Event::Type::PointerMove,
@@ -259,7 +259,7 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
             if (this->_current_view != nullptr) {
                 auto event = std::make_shared<PointerEvent>(
                     Event::Type::PointerLeave,
-                    Button::None, x, y);
+                    PointerButton::None, x, y);
 
                 app->event_dispatcher()->post_event(this->_current_view, event);
             }
@@ -267,7 +267,7 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
 
             auto event = std::make_shared<PointerEvent>(
                 Event::Type::PointerEnter,
-                Button::None, x, y);
+                PointerButton::None, x, y);
 
             app->event_dispatcher()->post_event(view, event);
         }
@@ -284,7 +284,7 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
             if (this->_current_view != nullptr) {
                 auto event = std::make_shared<PointerEvent>(
                     Event::Type::PointerLeave,
-                    Button::None, x, y);
+                    PointerButton::None, x, y);
 
                 this->_current_view->pointer_leave_event(event);
             }
@@ -293,7 +293,7 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
 
                 auto event = std::make_shared<PointerEvent>(
                     Event::Type::PointerEnter,
-                    Button::None, x, y);
+                    PointerButton::None, x, y);
 
                 app->event_dispatcher()->post_event(root_view, event);
             }

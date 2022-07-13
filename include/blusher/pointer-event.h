@@ -13,10 +13,10 @@ namespace bl {
 class PointerEvent : public Event
 {
 public:
-    PointerEvent(Event::Type type, Button button, double x, double y);
+    PointerEvent(Event::Type type, PointerButton button, double x, double y);
     ~PointerEvent();
 
-    Button button() const;
+    PointerButton button() const;
 
     double x() const;
 
@@ -26,7 +26,7 @@ public:
     void set_time(uint64_t time);
 
 private:
-    Button _button;
+    PointerButton _button;
     double _x;
     double _y;
     uint64_t _time;

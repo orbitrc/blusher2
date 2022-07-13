@@ -3,7 +3,7 @@
 
 namespace bl {
 
-enum class Button {
+enum class PointerButton {
     None,
     Left,
     Right,
