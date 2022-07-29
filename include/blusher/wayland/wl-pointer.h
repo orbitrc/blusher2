@@ -84,6 +84,8 @@ public:
 
     void add_listener(const WlPointer::Listener& listener);
 
+    void add_listener(const WlPointer::Listener& listener, void *data);
+
 private:
     struct wl_pointer *_wl_pointer;
     WlPointer::Listener _listener;

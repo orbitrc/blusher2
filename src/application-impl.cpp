@@ -252,17 +252,18 @@ static void pointer_axis_discrete_handler(void *data,
 {
 }
 
-static const struct wl_pointer_listener pointer_listener = {
-    .enter = pointer_enter_handler,
-    .leave = pointer_leave_handler,
-    .motion = pointer_motion_handler,
-    .button = pointer_button_handler,
-    .axis = pointer_axis_handler,
-    .frame = pointer_frame_handler,
-    .axis_source = pointer_axis_source_handler,
-    .axis_stop = pointer_axis_stop_handler,
-    .axis_discrete = pointer_axis_discrete_handler,
-};
+static const bl::WlPointer::Listener pointer_listener =
+    bl::WlPointer::Listener(
+        pointer_enter_handler,
+        pointer_leave_handler,
+        pointer_motion_handler,
+        pointer_button_handler,
+        pointer_axis_handler,
+        pointer_frame_handler,
+        pointer_axis_source_handler,
+        pointer_axis_stop_handler,
+        pointer_axis_discrete_handler
+    );
 
 //=============
 // Seat
@@ -281,10 +282,10 @@ static void seat_capabilities_handler(void *data, struct wl_seat *seat,
 
     if (caps & WL_SEAT_CAPABILITY_POINTER &&
             application_impl->pointer() == nullptr) {
-        application_impl->setPointer(
-            wl_seat_get_pointer(application_impl->seat()->c_ptr()));
-        wl_pointer_add_listener(application_impl->pointer(),
-            &pointer_listener, (void*)application_impl);
+        auto wl_pointer = application_impl->seat()->get_pointer();
+        application_impl->setPointer(wl_pointer);
+        application_impl->pointer()->add_listener(
+            pointer_listener, (void*)application_impl);
     } else if (caps & WL_SEAT_CAPABILITY_KEYBOARD &&
             application_impl->keyboard() == nullptr) {
         application_impl->setKeyboard(
@@ -407,7 +408,7 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     this->_shm = NULL;
     this->_seat = nullptr;
     this->_keyboard = NULL;
-    this->_pointer = NULL;
+    this->_pointer = nullptr;
     this->_output = nullptr;
 
     this->pointer_state.x = 0;
@@ -530,12 +531,12 @@ void ApplicationImpl::setKeyboard(struct wl_keyboard *keyboard)
     this->_keyboard = keyboard;
 }
 
-struct wl_pointer* ApplicationImpl::pointer() const
+std::shared_ptr<WlPointer> ApplicationImpl::pointer() const
 {
     return this->_pointer;
 }
 
-void ApplicationImpl::setPointer(struct wl_pointer *pointer)
+void ApplicationImpl::setPointer(std::shared_ptr<WlPointer> pointer)
 {
     this->_pointer = pointer;
 }

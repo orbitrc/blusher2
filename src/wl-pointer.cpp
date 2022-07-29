@@ -82,4 +82,11 @@ void WlPointer::add_listener(const WlPointer::Listener &listener)
         listener.wl_pointer_listener(), NULL);
 }
 
+void WlPointer::add_listener(const WlPointer::Listener& listener, void *data)
+{
+    this->_listener = listener;
+    wl_pointer_add_listener(this->_wl_pointer,
+        listener.wl_pointer_listener(), data);
+}
+
 } // namespace bl
