@@ -19,13 +19,14 @@
 
 // EGL/OpenGL
 #include <EGL/egl.h>
-#include <GLES3/gl3.h>
+#include <GL/glew.h>
 
 // Blusher
 #include <blusher/wayland/wl-surface.h>
 #include <blusher/wayland/wl-subsurface.h>
 #include <blusher/wayland/xdg-surface.h>
 #include <blusher/wayland/xdg-toplevel.h>
+#include <blusher/gl/context.h>
 #include <blusher/color.h>
 #include <blusher/view.h>
 
@@ -45,17 +46,9 @@ public:
     public:
         EglObject()
         {
-            this->egl_display = nullptr;
-            this->egl_config = nullptr;
-            this->egl_surface = nullptr;
-            this->egl_context = nullptr;
             this->program_object = 0;
         }
 
-        EGLDisplay egl_display;
-        EGLConfig egl_config;
-        EGLSurface egl_surface;
-        EGLContext egl_context;
         GLuint program_object;
     };
 
@@ -100,17 +93,13 @@ public:
     void callResizeHandler(int32_t width, int32_t height,
             int32_t old_width, int32_t old_height);
 
+    std::shared_ptr<gl::Context> context();
+
 public:
     //==================
     // Wayland objects
     //==================
     struct wl_surface* wlSurface() const;
-
-signals:
-    void implXChanged(double x);
-    void implYChanged(double y);
-    void implWidthChanged(double width);
-    void implHeightChanged(double height);
 
 public slots:
     void update();
@@ -152,6 +141,8 @@ private:
     //==================
     struct wl_egl_window *_egl_window;
     EglObject _egl_object;
+    std::shared_ptr<gl::Context> _context;
+    EGLSurface _egl_surface;
 
     int _shm_fd;
     void *_shm_data;

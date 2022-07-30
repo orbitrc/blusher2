@@ -436,7 +436,14 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
 //    wl_seat_add_listener(this->_seat,
 //        &seat_listener, (void*)this);
 
+    // Singleton.
     app_impl = this;
+
+    // OpenGL.
+    if (!GL_VERSION_4_6) {
+        fprintf(stderr, "No GL_VERSION_4_6!\n");
+    }
+    fprintf(stderr, "Has GL_VERSION_4_6\n");
 
     this->_q_core_application = new QCoreApplication(this->_argc, argv);
 }

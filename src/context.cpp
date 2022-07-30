@@ -49,7 +49,7 @@ Context::Context(EGLDisplay display)
 
     eglBindAPI(EGL_OPENGL_API);
 
-    result = eglInitialize(this->_egl_display, &major, &minor)
+    result = eglInitialize(this->_egl_display, &major, &minor);
     if (result != EGL_TRUE) {
         fprintf(stderr, "Can't initialize EGL display!\n");
         return;
@@ -57,7 +57,7 @@ Context::Context(EGLDisplay display)
 
     eglGetConfigs(this->_egl_display, NULL, 0, &count);
 
-    this->_egl_configs = new EGLCOnfig[count];
+    this->_egl_configs = new EGLConfig[count];
 
     eglChooseConfig(this->_egl_display,
         config_attribs, this->_egl_configs, count, &n);

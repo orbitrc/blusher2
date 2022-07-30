@@ -248,69 +248,6 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
     eglMakeCurrent(egl_display, NULL, NULL, NULL);
 }
 
-static void init_egl(bl::SurfaceImpl::EglObject *egl_object)
-{
-    EGLint major, minor, count, n, size;
-    EGLConfig *configs;
-    EGLint config_attribs[] = {
-        EGL_SURFACE_TYPE,
-        EGL_WINDOW_BIT,
-        EGL_RED_SIZE,
-        8,
-        EGL_GREEN_SIZE,
-        8,
-        EGL_BLUE_SIZE,
-        8,
-        EGL_ALPHA_SIZE,
-        8,
-        EGL_RENDERABLE_TYPE,
-        EGL_OPENGL_ES2_BIT,
-        EGL_NONE,
-    };
-
-    static const EGLint context_attribs[] = {
-        EGL_CONTEXT_CLIENT_VERSION,
-        2,
-        EGL_NONE,
-    };
-
-    egl_object->egl_display = eglGetDisplay(
-        (EGLNativeDisplayType)bl::WlDisplay::instance()->c_ptr()
-    );
-    if (egl_object->egl_display == EGL_NO_DISPLAY) {
-        fprintf(stderr, "Can't create egl display.\n");
-        exit(1);
-    }
-
-    if (eglInitialize(egl_object->egl_display, &major, &minor) != EGL_TRUE) {
-        fprintf(stderr, "Can't initialise egl display.\n");
-        exit(1);
-    }
-    printf("EGL major: %d, minor %d\n", major, minor);
-
-    eglGetConfigs(egl_object->egl_display, NULL, 0, &count);
-
-    configs = (EGLConfig*)calloc(count, sizeof *configs);
-
-    eglChooseConfig(egl_object->egl_display,
-        config_attribs, configs, count, &n);
-
-    for (int i = 0; i < n; ++i) {
-        eglGetConfigAttrib(egl_object->egl_display,
-            configs[i], EGL_BUFFER_SIZE, &size);
-        eglGetConfigAttrib(egl_object->egl_display,
-            configs[i], EGL_RED_SIZE, &size);
-
-        // Just choose the first one.
-        egl_object->egl_config = configs[i];
-        break;
-    }
-
-    egl_object->egl_context = eglCreateContext(egl_object->egl_display,
-        egl_object->egl_config, EGL_NO_CONTEXT,
-        context_attribs);
-}
-
 namespace bl {
 
 SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
@@ -333,6 +270,8 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     this->m_rootView = new View();
     this->m_rootView->set_surface(surface);
 
+    this->_context = nullptr;
+
     this->_updating = false;
 
     //===============
@@ -354,15 +293,20 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     // EGL
     //============
     this->_egl_object = EglObject();
+    EGLDisplay display = eglGetDisplay(
+        (EGLNativeDisplayType)WlDisplay::instance()->c_ptr());
+    this->_context = std::make_shared<gl::Context>(display);
 
-    init_egl(&this->_egl_object);
     this->_egl_window = wl_egl_window_create(
         const_cast<WlSurface&>(this->surface()->wl_surface()).c_ptr(),
         this->width(), this->height());
-    this->_egl_object.egl_surface = eglCreateWindowSurface(
-        this->_egl_object.egl_display, this->_egl_object.egl_config,
-        this->_egl_window,
-        NULL);
+
+    this->_egl_surface = eglCreateWindowSurface(
+        this->_context->egl_display(),
+        this->_context->egl_config(),
+        (EGLNativeWindowType)this->_egl_window,
+        NULL
+    );
 
 //    this->setGeometry(this->m_x, this->m_y, this->m_width, this->m_height);
 
@@ -411,8 +355,6 @@ void SurfaceImpl::setX(uint32_t x)
             wl_subsurface_set_position(this->_wl_subsurface->c_ptr(),
                 x, this->y());
         }
-
-        emit this->implXChanged(x);
     }
 }
 
@@ -425,8 +367,6 @@ void SurfaceImpl::setY(uint32_t y)
             wl_subsurface_set_position(this->_wl_subsurface->c_ptr(),
                 this->x(), y);
         }
-
-        emit this->implYChanged(y);
     }
 }
 
@@ -434,8 +374,6 @@ void SurfaceImpl::setWidth(uint32_t width)
 {
     if (this->m_width != width) {
         this->m_width = width;
-
-        emit this->implWidthChanged(width);
     }
 }
 
@@ -443,8 +381,6 @@ void SurfaceImpl::setHeight(uint32_t height)
 {
     if (this->m_height != height) {
         this->m_height = height;
-
-        emit this->implHeightChanged(height);
     }
 }
 
@@ -470,15 +406,15 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
 
     wl_egl_window_resize(this->_egl_window, width, height, 0, 0);
     // Re-create EGL window surface.
-    EGLBoolean destroyed = eglDestroySurface(this->_egl_object.egl_display,
-        this->_egl_object.egl_surface);
+    EGLBoolean destroyed = eglDestroySurface(this->_context->egl_display(),
+        this->_egl_surface);
     if (!destroyed) {
         fprintf(stderr, "[WARN] EGL surface not destroyed!\n");
         return;
     }
-    this->_egl_object.egl_surface = eglCreateWindowSurface(
-        this->_egl_object.egl_display,
-        this->_egl_object.egl_config,
+    this->_egl_surface = eglCreateWindowSurface(
+        this->_context->egl_display(),
+        this->_context->egl_config(),
         this->_egl_window,
         NULL
     );
@@ -581,6 +517,11 @@ Surface* SurfaceImpl::surface()
     return this->m_blSurface;
 }
 
+std::shared_ptr<gl::Context> SurfaceImpl::context()
+{
+    return this->_context;
+}
+
 //===================
 // Event handlers
 //===================
@@ -653,23 +594,23 @@ void SurfaceImpl::update()
 void SurfaceImpl::_egl_update(bool hide)
 {
     // Re-create EGL window surface.
-    EGLBoolean destroyed = eglDestroySurface(this->_egl_object.egl_display,
-        this->_egl_object.egl_surface);
+    EGLBoolean destroyed = eglDestroySurface(this->_context->egl_display(),
+        this->_egl_surface);
     if (!destroyed) {
         fprintf(stderr, "[WARN] EGL surface not destroyed!\n");
         return;
     }
-    this->_egl_object.egl_surface = eglCreateWindowSurface(
-        this->_egl_object.egl_display,
-        this->_egl_object.egl_config,
+    this->_egl_surface = eglCreateWindowSurface(
+        this->_context->egl_display(),
+        this->_context->egl_config(),
         this->_egl_window,
         NULL
     );
 
-    eglMakeCurrent(this->_egl_object.egl_display,
-        this->_egl_object.egl_surface,
-        this->_egl_object.egl_surface,
-        this->_egl_object.egl_context);
+    eglMakeCurrent(this->_context->egl_display(),
+        this->_egl_surface,
+        this->_egl_surface,
+        this->_context->egl_context());
     EGLint err = eglGetError();
     if (err != EGL_SUCCESS) {
         fprintf(stderr, "[WARN] eglMakeCurrent Error: %s\n",
@@ -688,9 +629,9 @@ void SurfaceImpl::_egl_update(bool hide)
     uint64_t width = !hide ? this->width() : 0;
     uint64_t height = !hide ? this->height() : 0;
     texture_function(
-        this->_egl_object.egl_display,
-        this->_egl_object.egl_surface,
-        this->_egl_object.egl_context,
+        this->_context->egl_display(),
+        this->_egl_surface,
+        this->_context->egl_context(),
         &this->_egl_object.program_object,
         *this->m_rootView->_impl->m_composedImage,
         width, height
