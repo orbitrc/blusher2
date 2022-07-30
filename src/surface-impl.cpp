@@ -406,19 +406,6 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
     this->m_rootView->set_size(Size(width, height));
 
     wl_egl_window_resize(this->_egl_window, width, height, 0, 0);
-    // Re-create EGL window surface.
-    EGLBoolean destroyed = eglDestroySurface(this->_context->egl_display(),
-        this->_egl_surface);
-    if (!destroyed) {
-        fprintf(stderr, "[WARN] EGL surface not destroyed!\n");
-        return;
-    }
-    this->_egl_surface = eglCreateWindowSurface(
-        this->_context->egl_display(),
-        this->_context->egl_config(),
-        this->_egl_window,
-        NULL
-    );
 
     // Set xdg-surface window geometry.
     /*
