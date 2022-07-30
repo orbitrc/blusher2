@@ -84,7 +84,8 @@ GLuint load_shader(const char *shader_src, GLenum type)
 int init_program(GLuint *program_object)
 {
     GLbyte vertex_shader_str[] =
-        "#version 300 es \n"
+        "#version 330 core      \n"
+        ""
         "layout (location = 0) in vec3 aPos; \n"
         "layout (location = 1) in vec3 aColor; \n"
         "layout (location = 2) in vec2 aTexCoord; \n"
@@ -98,12 +99,17 @@ int init_program(GLuint *program_object)
         "}                                   \n";
 
     GLbyte fragment_shader_str[] =
-        "#version 300 es  \n"
-        "precision mediump float; \n"
-        "out vec4 fragColor;      \n"
+        "#version 330 core          \n"
+        ""
+        "precision mediump float;   \n"
+        ""
+        "out vec4 fragColor;        \n"
+        ""
         "in vec3 ourColor;        \n"
         "in vec2 TexCoord;        \n"
+        ""
         "uniform sampler2D ourTexture; \n"
+        ""
         "void main()              \n"
         "{                        \n"
         "    fragColor = texture(ourTexture, TexCoord); \n"
