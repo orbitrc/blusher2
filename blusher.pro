@@ -62,6 +62,7 @@ SOURCES += \
     src/xdg-wm-base.cpp \
     src/xdg-surface.cpp \
     src/xdg-toplevel.cpp \
+    src/context.cpp \
     src/button.cpp \
     wayland-protocols/stable/xdg-shell.c
 
@@ -107,6 +108,7 @@ HEADERS += \
     include/blusher/wayland/xdg-surface.h \
     include/blusher/wayland/xdg-toplevel.h \
     include/blusher/utils.h \
+    include/blusher/gl/context.h \
     include/blusher/controls/button.h \
     src/egl-utils.h
 
