@@ -52,6 +52,7 @@ GLuint load_shader(const char *shader_src, GLenum type)
     // Create the shader object.
     shader = glCreateShader(type);
     if (shader == 0) {
+        fprintf(stderr, "[WARN] Shader is 0!\n");
         return 0;
     }
 
