@@ -173,6 +173,9 @@ void Window::resize_event(std::shared_ptr<ResizeEvent> event)
     if (this->_resize != nullptr) {
         this->update_resize();
     }
+    if (this->_decoration != nullptr) {
+        this->update_decoration();
+    }
 
     // Update geometry hint.
     this->set_geometry_hint(Rect(0, 0, this->width(), this->height()));

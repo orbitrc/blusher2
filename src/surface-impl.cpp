@@ -52,6 +52,7 @@ GLuint load_shader(const char *shader_src, GLenum type)
     // Create the shader object.
     shader = glCreateShader(type);
     if (shader == 0) {
+        fprintf(stderr, "[WARN] Shader is 0!\n");
         return 0;
     }
 
@@ -411,19 +412,6 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
     this->m_rootView->set_size(Size(width, height));
 
     wl_egl_window_resize(this->_egl_window, width, height, 0, 0);
-    // Re-create EGL window surface.
-    EGLBoolean destroyed = eglDestroySurface(this->_context->egl_display(),
-        this->_egl_surface);
-    if (!destroyed) {
-        fprintf(stderr, "[WARN] EGL surface not destroyed!\n");
-        return;
-    }
-    this->_egl_surface = eglCreateWindowSurface(
-        this->_context->egl_display(),
-        this->_context->egl_config(),
-        this->_egl_window,
-        NULL
-    );
 
     // Set xdg-surface window geometry.
     /*
@@ -624,6 +612,8 @@ void SurfaceImpl::_egl_update(bool hide)
         return;
     }
     glFlush();
+
+    glewInit();
     // Below makes hang call eglSwapBuffers() in fill_function().
     // eglSwapBuffers(this->_egl_object.egl_display, this->_egl_object.egl_surface);
     //===================//
