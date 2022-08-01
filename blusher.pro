@@ -61,6 +61,7 @@ SOURCES += \
     src/wl-output.cpp \
     src/wl-seat.cpp \
     src/wl-pointer.cpp \
+    src/wl-keyboard.cpp \
     src/xdg-wm-base.cpp \
     src/xdg-surface.cpp \
     src/xdg-toplevel.cpp \
@@ -106,6 +107,7 @@ HEADERS += \
     include/blusher/wayland/wl-output.h \
     include/blusher/wayland/wl-seat.h \
     include/blusher/wayland/wl-pointer.h \
+    include/blusher/wayland/wl-keyboard.h \
     include/blusher/wayland/xdg-wm-base.h \
     include/blusher/wayland/xdg-surface.h \
     include/blusher/wayland/xdg-toplevel.h \
