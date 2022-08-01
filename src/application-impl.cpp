@@ -288,8 +288,8 @@ static void seat_capabilities_handler(void *data, struct wl_seat *seat,
             pointer_listener, (void*)application_impl);
     } else if (caps & WL_SEAT_CAPABILITY_KEYBOARD &&
             application_impl->keyboard() == nullptr) {
-        application_impl->setKeyboard(
-            wl_seat_get_keyboard(application_impl->seat()->c_ptr()));
+        auto wl_keyboard = application_impl->seat()->get_keyboard();
+        application_impl->setKeyboard(wl_keyboard);
     }
 }
 
@@ -528,12 +528,12 @@ void ApplicationImpl::setSeat(std::shared_ptr<WlSeat> seat)
     this->_seat = seat;
 }
 
-struct wl_keyboard* ApplicationImpl::keyboard() const
+std::shared_ptr<WlKeyboard> ApplicationImpl::keyboard() const
 {
     return this->_keyboard;
 }
 
-void ApplicationImpl::setKeyboard(struct wl_keyboard *keyboard)
+void ApplicationImpl::setKeyboard(std::shared_ptr<WlKeyboard> keyboard)
 {
     this->_keyboard = keyboard;
 }

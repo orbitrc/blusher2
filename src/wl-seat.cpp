@@ -68,6 +68,13 @@ void WlSeat::add_listener(const WlSeat::Listener &listener, void *data)
         listener.wl_seat_listener(), data);
 }
 
+std::shared_ptr<WlKeyboard> WlSeat::get_keyboard()
+{
+    struct wl_keyboard *wl_keyboard = wl_seat_get_keyboard(this->_wl_seat);
+
+    return std::make_shared<WlKeyboard>(wl_keyboard);
+}
+
 std::shared_ptr<WlPointer> WlSeat::get_pointer()
 {
     struct wl_pointer *wl_pointer = wl_seat_get_pointer(this->_wl_seat);

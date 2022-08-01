@@ -14,6 +14,7 @@
 #include <blusher/wayland/wl-compositor.h>
 #include <blusher/wayland/wl-seat.h>
 #include <blusher/wayland/wl-pointer.h>
+#include <blusher/wayland/wl-keyboard.h>
 #include <blusher/wayland/wl-output.h>
 #include <blusher/wayland/xdg-wm-base.h>
 #include <blusher/cursor.h>
@@ -80,8 +81,8 @@ public:
     std::shared_ptr<WlSeat> seat();
     void setSeat(std::shared_ptr<WlSeat> seat);
 
-    struct wl_keyboard* keyboard() const;
-    void setKeyboard(struct wl_keyboard*);
+    std::shared_ptr<WlKeyboard> keyboard() const;
+    void setKeyboard(std::shared_ptr<WlKeyboard> keyboard);
 
     std::shared_ptr<WlPointer> pointer() const;
     void setPointer(std::shared_ptr<WlPointer> pointer);
@@ -114,7 +115,7 @@ private:
     WlRegistry _registry;
     struct wl_shm *_shm;
     std::shared_ptr<WlSeat> _seat;
-    struct wl_keyboard *_keyboard;
+    std::shared_ptr<WlKeyboard> _keyboard;
     std::shared_ptr<WlPointer> _pointer;
     std::shared_ptr<WlOutput> _output;
 

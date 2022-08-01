@@ -8,6 +8,7 @@
 #include <wayland-client.h>
 
 // Blusher
+#include <blusher/wayland/wl-keyboard.h>
 #include <blusher/wayland/wl-pointer.h>
 
 namespace bl {
@@ -58,6 +59,8 @@ public:
     void add_listener(const WlSeat::Listener& listener);
 
     void add_listener(const WlSeat::Listener& listener, void *data);
+
+    std::shared_ptr<WlKeyboard> get_keyboard();
 
     std::shared_ptr<WlPointer> get_pointer();
 
