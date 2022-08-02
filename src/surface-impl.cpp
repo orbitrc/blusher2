@@ -45,44 +45,6 @@
 // EGL/OpenGL
 //=================
 
-GLuint load_shader(const char *shader_src, GLenum type)
-{
-    GLuint shader;
-    GLint compiled;
-
-    // Create the shader object.
-    shader = glCreateShader(type);
-    if (shader == 0) {
-        fprintf(stderr, "[WARN] Shader is 0!\n");
-        return 0;
-    }
-
-    // Load the shader source.
-    glShaderSource(shader, 1, &shader_src, NULL);
-
-    // Compile the shader.
-    glCompileShader(shader);
-
-    // Check the compile status.
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-    if (!compiled) {
-        GLint info_len = 0;
-
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &info_len);
-        if (info_len > 1) {
-            char *info_log = (char*)malloc(sizeof(char));
-            glGetShaderInfoLog(shader, info_len, NULL, info_log);
-            fprintf(stderr, "Error compiling shader: %s\n", info_log);
-            free(info_log);
-        }
-
-        glDeleteShader(shader);
-        return 0;
-    }
-
-    return shader;
-}
-
 int init_program(std::shared_ptr<bl::gl::Program> program)
 {
     GLbyte vertex_shader_str[] =
@@ -116,9 +78,6 @@ int init_program(std::shared_ptr<bl::gl::Program> program)
         "{                        \n"
         "    fragColor = texture(ourTexture, TexCoord); \n"
         "}                        \n";
-
-    // vertex_shader = load_shader((const char*)vertex_shader_str, GL_VERTEX_SHADER);
-    // fragment_shader = load_shader((const char*)fragment_shader_str, GL_FRAGMENT_SHADER);
 
     using namespace bl::gl;
 
