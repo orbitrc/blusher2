@@ -31,6 +31,7 @@
 #include <blusher/view.h>
 #include <blusher/utils.h>
 #include <blusher/size.h>
+#include <blusher/gl/shader.h>
 
 #include "application-impl.h"
 #include "view-impl.h"
@@ -82,7 +83,7 @@ GLuint load_shader(const char *shader_src, GLenum type)
     return shader;
 }
 
-int init_program(GLuint *program_object)
+int init_program(std::shared_ptr<bl::gl::Program> program)
 {
     GLbyte vertex_shader_str[] =
         "#version 330 core      \n"
@@ -116,48 +117,29 @@ int init_program(GLuint *program_object)
         "    fragColor = texture(ourTexture, TexCoord); \n"
         "}                        \n";
 
-    GLuint vertex_shader;
-    GLuint fragment_shader;
-    GLint linked;
+    // vertex_shader = load_shader((const char*)vertex_shader_str, GL_VERTEX_SHADER);
+    // fragment_shader = load_shader((const char*)fragment_shader_str, GL_FRAGMENT_SHADER);
 
-    vertex_shader = load_shader((const char*)vertex_shader_str, GL_VERTEX_SHADER);
-    fragment_shader = load_shader((const char*)fragment_shader_str, GL_FRAGMENT_SHADER);
+    using namespace bl::gl;
 
-    *program_object = glCreateProgram();
-    if (*program_object == 0) {
-        fprintf(stderr, "glCreateProgram() - program_object is 0.\n");
-        return 0;
-    }
+    auto vertex_shader = std::make_shared<Shader>(Shader::Type::Vertex);
+    auto fragment_shader = std::make_shared<Shader>(Shader::Type::Fragment);
 
-    glAttachShader(*program_object, vertex_shader);
-    glAttachShader(*program_object, fragment_shader);
+    vertex_shader->compile((const char*)vertex_shader_str);
+    fragment_shader->compile((const char*)fragment_shader_str);
+
+    program->attach_shader(vertex_shader);
+    program->attach_shader(fragment_shader);
 
     // Link the program.
-    glLinkProgram(*program_object);
-
-    // Check the link status.
-    glGetProgramiv(*program_object, GL_LINK_STATUS, &linked);
-    if (!linked) {
-        GLint info_len = 0;
-        glGetProgramiv(*program_object, GL_INFO_LOG_LENGTH, &info_len);
-        if (info_len > 1) {
-            char *info_log = (char*)malloc(sizeof(char) * info_len);
-
-            glGetProgramInfoLog(*program_object, info_len, NULL, info_log);
-            fprintf(stderr, "Error linking program: %s\n", info_log);
-            free(info_log);
-        }
-
-        glDeleteProgram(*program_object);
-        return 0;
-    }
+    program->link();
 
     return 1;
 }
 
 static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
         EGLContext egl_context,
-        GLuint *program_object,
+        GLuint program_object,
         const bl::Image& image,
         uint64_t width, uint64_t height)
 {
@@ -198,7 +180,7 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Use the program object.
-    glUseProgram(*program_object);
+    glUseProgram(program_object);
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -278,6 +260,7 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     this->m_rootView->set_surface(surface);
 
     this->_context = nullptr;
+    this->_program = nullptr;
 
     this->_updating = false;
 
@@ -299,7 +282,6 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     //============
     // EGL
     //============
-    this->_egl_object = EglObject();
     EGLDisplay display = eglGetDisplay(
         (EGLNativeDisplayType)WlDisplay::instance()->c_ptr());
     this->_context = std::make_shared<gl::Context>(display);
@@ -314,6 +296,10 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
         (EGLNativeWindowType)this->_egl_window,
         NULL
     );
+
+    glewInit();
+
+    this->_program = std::make_shared<gl::Program>();
 
 //    this->setGeometry(this->m_x, this->m_y, this->m_width, this->m_height);
 
@@ -617,10 +603,13 @@ void SurfaceImpl::_egl_update(bool hide)
     // Below makes hang call eglSwapBuffers() in fill_function().
     // eglSwapBuffers(this->_egl_object.egl_display, this->_egl_object.egl_surface);
     //===================//
-    if (init_program(&this->_egl_object.program_object) == 0) {
-        fprintf(stderr, "Error init program!\n");
-        // exit(1);
-        return;
+    if (this->_program->vertex_shader() == nullptr &&
+            this->_program->fragment_shader() == nullptr) {
+        if (init_program(this->_program) == 0) {
+            fprintf(stderr, "Error init program!\n");
+            // exit(1);
+            return;
+        }
     }
     uint64_t width = !hide ? this->width() : 0;
     uint64_t height = !hide ? this->height() : 0;
@@ -628,7 +617,7 @@ void SurfaceImpl::_egl_update(bool hide)
         this->_context->egl_display(),
         this->_egl_surface,
         this->_context->egl_context(),
-        &this->_egl_object.program_object,
+        this->_program->id(),
         *this->m_rootView->_impl->m_composedImage,
         width, height
     );

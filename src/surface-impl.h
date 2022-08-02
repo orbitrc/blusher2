@@ -27,6 +27,7 @@
 #include <blusher/wayland/xdg-surface.h>
 #include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/gl/context.h>
+#include <blusher/gl/program.h>
 #include <blusher/color.h>
 #include <blusher/view.h>
 
@@ -42,15 +43,6 @@ class SurfaceImpl : public QObject
     Q_OBJECT
 
 public:
-    class EglObject {
-    public:
-        EglObject()
-        {
-            this->program_object = 0;
-        }
-
-        GLuint program_object;
-    };
 
 public:
 
@@ -140,9 +132,9 @@ private:
     // EGL/OpenGL
     //==================
     struct wl_egl_window *_egl_window;
-    EglObject _egl_object;
     std::shared_ptr<gl::Context> _context;
     EGLSurface _egl_surface;
+    std::shared_ptr<gl::Program> _program;
 
     int _shm_fd;
     void *_shm_data;

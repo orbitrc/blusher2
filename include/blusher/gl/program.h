@@ -10,6 +10,9 @@
 // OpenGL
 #include <GL/glew.h>
 
+// Blusher
+#include <blusher/gl/shader.h>
+
 namespace bl {
 namespace gl {
 
@@ -18,8 +21,21 @@ class Program
 public:
     Program();
 
+    GLuint id() const;
+
+    void attach_shader(std::shared_ptr<gl::Shader> shader);
+
+    std::shared_ptr<gl::Shader> vertex_shader();
+
+    std::shared_ptr<gl::Shader> fragment_shader();
+
+    void link();
+
 private:
-    GLuint _program;
+    GLuint _id;
+
+    std::shared_ptr<gl::Shader> _vertex_shader;
+    std::shared_ptr<gl::Shader> _fragment_shader;
 };
 
 } // namespace gl
