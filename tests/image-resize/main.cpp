@@ -1,19 +1,19 @@
 #include <stdint.h>
 #include <stdio.h>
 
+// Unix
+#include <sys/time.h>
+
+// Blusher
 #include <blusher/image.h>
 #include <blusher/color.h>
 
-void print_image(const uint8_t *data, uint64_t width, uint64_t height)
+uint64_t get_now_ms()
 {
-    uint32_t *pixel = (uint32_t*)data;
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
 
-    for (uint64_t y = 0; y < height; ++y) {
-        for (uint64_t x = 0; x < width; ++x) {
-            printf("0x%08x ", *(pixel++));
-        }
-        printf("\n");
-    }
+    return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 }
 
 int main(int argc, char *argv[])
@@ -21,13 +21,17 @@ int main(int argc, char *argv[])
     bl::Image image(5, 5);
     image.fill(bl::Color::from_rgba(255, 0, 0, 255));
 
-    print_image(image.data(), image.width(), image.height());
+    auto begin = get_now_ms();
 
     image.resize(7, 7);
 
-    printf("\n\n");
+    for (uint32_t i = 1024; i < 1920; ++i) {
+        image.resize(i, i);
+    }
 
-    print_image(image.data(), image.width(), image.height());
+    auto end = get_now_ms();
+
+    fprintf(stderr, "Total: %ldms\n", end - begin);
 
     return 0;
 }
