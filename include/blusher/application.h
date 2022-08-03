@@ -40,10 +40,16 @@ public:
     std::shared_ptr<XdgWmBase> xdg_wm_base();
 
 
+    /// List of desktop surface. An application may quit if there are no
+    /// desktop surfaces.
     const pr::Vector<DesktopSurface*> desktop_surfaces() const;
 
+    /// Post to an application's desktop surface list.
+    /// This should be called from DesktopSurface constructor.
     void add_desktop_surface(DesktopSurface *desktop_surface);
 
+    /// Remove from an application's desktop surface list.
+    /// This should be called from DesktopSurface destructor.
     void remove_desktop_surface(DesktopSurface *desktop_surface);
 
     int exec();
