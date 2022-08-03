@@ -37,6 +37,7 @@ Surface::Surface(Surface *parent)
     this->_parent = parent;
     this->_state = State::Normal;
     this->_current_view = nullptr;
+    this->_pointer_state = std::make_shared<PointerState>();
 
     this->color_changed.connect([]() { fprintf(stderr, "Hello, color_changed!\n"); });
 }

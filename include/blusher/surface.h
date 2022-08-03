@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <blusher/resize-event.h>
+#include <blusher/pointer-state.h>
 #include <blusher/wayland/wl-surface.h>
 #include <blusher/wayland/wl-subsurface.h>
 
@@ -80,6 +81,11 @@ public:
     void update();
 
     //=================
+    // Input States
+    //=================
+    std::shared_ptr<PointerState> pointer_state();
+
+    //=================
     // Wayland Access
     //=================
     const WlSurface& wl_surface() const;
@@ -124,6 +130,8 @@ private:
     Type _type;
 
     View *_current_view;
+
+    std::shared_ptr<PointerState> _pointer_state;
 };
 
 } // namespace bl

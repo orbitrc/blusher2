@@ -126,6 +126,8 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
     if (surface_impl != nullptr) {
         surface_impl->callPointerEnterHandler();
     }
+
+    // New pointer state (per surface).
 }
 
 static void pointer_leave_handler(void *data, struct wl_pointer *pointer,
