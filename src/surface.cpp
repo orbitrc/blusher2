@@ -126,6 +126,11 @@ void Surface::update()
     this->_impl->update();
 }
 
+std::shared_ptr<PointerState> Surface::pointer_state()
+{
+    return this->_pointer_state;
+}
+
 const WlSurface& Surface::wl_surface() const
 {
     return this->_wl_surface;
