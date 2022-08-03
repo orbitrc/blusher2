@@ -75,6 +75,25 @@ std::shared_ptr<XdgWmBase> Application::xdg_wm_base()
     return this->_impl->xdgWmBase();
 }
 
+const pr::Vector<Surface*> Application::surfaces() const
+{
+    return this->_surfaces;
+}
+
+void Application::add_surface(Surface *surface)
+{
+    this->_surfaces.push(surface);
+}
+
+void Application::remove_surface(Surface *surface)
+{
+    auto index = this->_surfaces.index(surface);
+
+    if (index != std::nullopt) {
+        this->_surfaces.remove(index.value());
+    }
+}
+
 const pr::Vector<DesktopSurface*> Application::desktop_surfaces() const
 {
     return this->_desktop_surfaces;

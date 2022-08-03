@@ -39,6 +39,8 @@ Surface::Surface(Surface *parent)
     this->_current_view = nullptr;
     this->_pointer_state = std::make_shared<PointerState>();
 
+    app->add_surface(this);
+
     this->color_changed.connect([]() { fprintf(stderr, "Hello, color_changed!\n"); });
 }
 
@@ -100,6 +102,7 @@ Surface::Type Surface::type() const
 
 bool Surface::is_toplevel() const
 {
+    fprintf(stderr, "[WARN] Surface::is_toplevel() is deprecated!\n");
     return this->_impl->isToplevel();
 }
 

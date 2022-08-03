@@ -8,6 +8,13 @@
 #include <QEnterEvent>
 
 #include <blusher/application.h>
+#ifdef emit
+    #undef emit
+#endif
+#include <blusher/surface.h>
+#ifndef emit
+    #define emit Q_EMIT
+#endif
 #include <blusher/utils.h>
 
 #include "surface-impl.h"
@@ -102,17 +109,17 @@ static const bl::XdgWmBase::Listener xdg_wm_base_listener =
 // Pointer
 //=============
 static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
-        uint32_t serial, struct wl_surface *surface,
+        uint32_t serial, struct wl_surface *wl_surface,
         wl_fixed_t sx, wl_fixed_t sy)
 {
     bl::ApplicationImpl *application_impl = static_cast<bl::ApplicationImpl*>(
         data);
 
     // Set pointer surface.
-    application_impl->pointer_state.wl_surface = surface;
+    application_impl->pointer_state.wl_surface = wl_surface;
 
     bl::SurfaceImpl *surface_impl =
-        application_impl->surfaceImplForWlSurface(surface);
+        application_impl->surfaceImplForWlSurface(wl_surface);
 
     // Set toy cursor.
     if (application_impl->cursor() == nullptr) {
@@ -128,6 +135,17 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
     }
 
     // New pointer state (per surface).
+    // Find surface by wl_surface.
+    for (auto surface: bl::app->surfaces()) {
+        struct wl_surface *c_ptr =
+            const_cast<bl::WlSurface&>(surface->wl_surface()).c_ptr();
+        if (c_ptr == wl_surface) {
+            surface->pointer_state()->x = wl_fixed_to_double(sx);
+            surface->pointer_state()->y = wl_fixed_to_double(sy);
+
+            break;
+        }
+    }
 }
 
 static void pointer_leave_handler(void *data, struct wl_pointer *pointer,

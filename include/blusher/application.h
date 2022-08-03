@@ -19,6 +19,8 @@ class ApplicationImpl;
 
 class Resource;
 
+class Surface;
+
 class DesktopSurface;
 
 class Application
@@ -39,6 +41,17 @@ public:
 
     std::shared_ptr<XdgWmBase> xdg_wm_base();
 
+
+    /// List of all surface.
+    const pr::Vector<Surface*> surfaces() const;
+
+    /// Post to and application's surface list.
+    /// This should be called from Surface constructor.
+    void add_surface(Surface *surface);
+
+    /// Remove from an application's surface list.
+    /// This should be called from Surface destructor.
+    void remove_surface(Surface *surface);
 
     /// List of desktop surface. An application may quit if there are no
     /// desktop surfaces.
@@ -61,6 +74,7 @@ private:
 
     std::shared_ptr<EventDispatcher> _event_dispatcher;
 
+    pr::Vector<Surface*> _surfaces;
     pr::Vector<DesktopSurface*> _desktop_surfaces;
 
     pr::Vector<std::shared_ptr<Output>> _outputs;
