@@ -26,7 +26,7 @@ SampleView::SampleView(bl::View *parent)
 
 void SampleView::pointer_press_event(std::shared_ptr<bl::PointerEvent> event)
 {
-    if (event->button() == bl::Button::Left) {
+    if (event->button() == bl::PointerButton::Left) {
         fprintf(stderr, "pointer press x, y: %f, %f\n", event->x(), event->y());
         this->_pressed_x = event->x();
         this->_pressed_y = event->y();
@@ -35,7 +35,7 @@ void SampleView::pointer_press_event(std::shared_ptr<bl::PointerEvent> event)
 
 void SampleView::pointer_move_event(std::shared_ptr<bl::PointerEvent> event)
 {
-    if (event->button() == bl::Button::Left) {
+    if (event->button() == bl::PointerButton::Left) {
         double offset_x = event->x() - this->_pressed_x;
         double offset_y = event->y() - this->_pressed_y;
 
