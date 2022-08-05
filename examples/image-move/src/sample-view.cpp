@@ -39,8 +39,7 @@ void SampleView::pointer_move_event(std::shared_ptr<bl::PointerEvent> event)
         double offset_x = event->x() - this->_pressed_x;
         double offset_y = event->y() - this->_pressed_y;
 
-        this->set_x(offset_x);
-        this->set_y(offset_y);
+        this->set_position(bl::Point(offset_x, offset_y));
     }
 
     return View::pointer_move_event(event);
