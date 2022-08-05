@@ -329,21 +329,12 @@ void Image::resize(uint64_t width, uint64_t height, Image::Scale scale)
         auto limit_height = (this->_height <= target_height)
             ? this->_height
             : target_height;
-        for (uint64_t y = 0; y < this->_height; ++y) {
-            if (y >= limit_height) {
-                continue;
-            }
-            for (uint64_t x = 0; x < this->_width; ++x) {
-                if (x >= limit_width) {
-                    continue;
-                }
-                uint64_t src_y = this->_width * y;
-                uint32_t *src = (uint32_t*)(this->_data) + (src_y + x);
-                uint64_t dst_y = target_width * y;
-                uint32_t *dst =
-                    (uint32_t*)(new_data) + (dst_y + x);
-                *dst = *src;
-            }
+        for (uint64_t y = 0; y < limit_height; ++y) {
+            uint64_t src_y = this->_width * y;
+            uint32_t *src = (uint32_t*)(this->_data) + (src_y);
+            uint64_t dst_y = target_width * y;
+            uint32_t *dst = (uint32_t*)(new_data) + (dst_y);
+            memcpy(dst, src, (sizeof(uint32_t)) * limit_width);
         }
         free(this->_data);
         this->_data = new_data;
