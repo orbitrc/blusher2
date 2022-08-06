@@ -102,11 +102,22 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
         const bl::Image& image,
         uint64_t width, uint64_t height)
 {
-    GLfloat vVertices[] = {
-        -1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    0.0f,  1.0f,     // Top right
-        -1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    0.0f,  0.0f,     // Bottom right
-         1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    1.0f,  0.0f,     // Bottom left
-         1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    1.0f,  1.0f,     // Top left
+    GLfloat vertices[] = {
+        -1.0f, -1.0f,  0.0f,    // Top right
+        -1.0f,  1.0f,  0.0f,    // Bottom right
+         1.0f,  1.0f,  0.0f,    // Bottom left
+         1.0f, -1.0f,  0.0f,    // Top left
+    };
+    GLfloat colors[] = {
+        0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f,
+    };
+    GLfloat tex_coord[] = {
+        0.0f, 1.0f,
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
     };
     GLuint indices[] = {
         0, 1, 3,    // First triangle
@@ -151,20 +162,26 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
         GL_STATIC_DRAW);
 
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vVertices), vVertices,
-        GL_STATIC_DRAW);
+    GLuint vbo[3];
+    glGenBuffers(3, vbo);
 
     // Position attribute.
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
+        GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glEnableVertexAttribArray(0);
     // Color attribute.
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors,
+        GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glEnableVertexAttribArray(1);
     // Texture coord attribute.
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(tex_coord), tex_coord,
+        GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glEnableVertexAttribArray(2);
 
     GLuint texture;
