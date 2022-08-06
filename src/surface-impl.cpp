@@ -208,10 +208,6 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-    eglSwapBuffers(egl_display, egl_surface);
-
-    eglMakeCurrent(egl_display, NULL, NULL, NULL);
-
     // Free resources.
     glDeleteBuffers(3, vbo);
     glDeleteBuffers(1, &ebo);
@@ -483,6 +479,11 @@ std::shared_ptr<gl::Context> SurfaceImpl::context()
     return this->_context;
 }
 
+void SurfaceImpl::swapBuffers()
+{
+    eglSwapBuffers(this->_context->egl_display(), this->_egl_surface);
+}
+
 //===================
 // Event handlers
 //===================
@@ -602,6 +603,10 @@ void SurfaceImpl::_egl_update(bool hide)
         *this->m_rootView->_impl->m_composedImage,
         width, height
     );
+
+    this->swapBuffers();
+
+    eglMakeCurrent(this->_context->egl_display(), NULL, NULL, NULL);
 }
 
 //===========

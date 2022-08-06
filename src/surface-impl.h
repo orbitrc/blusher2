@@ -87,6 +87,8 @@ public:
 
     std::shared_ptr<gl::Context> context();
 
+    void swapBuffers();
+
 public:
     //==================
     // Wayland objects
