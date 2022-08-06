@@ -211,6 +211,11 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
     eglSwapBuffers(egl_display, egl_surface);
 
     eglMakeCurrent(egl_display, NULL, NULL, NULL);
+
+    // Free resources.
+    glDeleteBuffers(3, vbo);
+    glDeleteBuffers(1, &ebo);
+    glDeleteBuffers(1, &vao);
 }
 
 namespace bl {
