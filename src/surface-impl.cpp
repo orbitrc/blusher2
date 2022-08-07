@@ -211,6 +211,7 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
     // Free resources.
+    glDeleteTextures(1, &texture);
     glDeleteBuffers(3, vbo);
     glDeleteBuffers(1, &ebo);
     glDeleteBuffers(1, &vao);
