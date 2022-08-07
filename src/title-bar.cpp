@@ -24,6 +24,7 @@ TitleBar::TitleBar(Surface *parent)
     : Surface(parent)
 {
     fprintf(stderr, "TitleBar::TitleBar() - parent width: %d\n", parent->width());
+    this->set_debug_id("WindowTitleBar"_S);
     this->set_geometry(0, 0, parent->width(), 30);
 
     // Initialize.

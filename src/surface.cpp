@@ -39,6 +39,11 @@ Surface::Surface(Surface *parent)
     this->_current_view = nullptr;
     this->_pointer_state = std::make_shared<PointerState>();
 
+    // Debug info.
+    char pointer_id[15];
+    sprintf(pointer_id, "%p", this);
+    this->_debug_id = pr::String(pointer_id);
+
     app->add_surface(this);
 
     this->color_changed.connect([]() { fprintf(stderr, "Hello, color_changed!\n"); });
@@ -124,6 +129,16 @@ View* Surface::root_view()
 void Surface::update()
 {
     this->_impl->update();
+}
+
+pr::String Surface::debug_id() const
+{
+    return this->_debug_id;
+}
+
+void Surface::set_debug_id(const pr::String& id)
+{
+    this->_debug_id = id;
 }
 
 std::shared_ptr<PointerState> Surface::pointer_state()

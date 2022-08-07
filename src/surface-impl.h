@@ -89,6 +89,8 @@ public:
 
     void swapBuffers();
 
+    void makeCurrent(bool nullSurface = false);
+
 public:
     //==================
     // Wayland objects

@@ -28,6 +28,7 @@ Window::Window()
 
     // Init body.
     this->_body = static_cast<Surface*>(this);
+    this->_body->set_debug_id("WindowBody"_S);
 
     this->_body->set_geometry(0, 0, 200, 200);
     this->_body->root_view()->fill(Color::from_rgb(255, 255, 255));

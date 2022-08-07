@@ -128,6 +128,7 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
     fprintf(stderr, "[LOG] texture_function() - width height: %ldx%ld\n",
         width, height);
     */
+    /*
     eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
     EGLint err = eglGetError();
     if (err != EGL_SUCCESS) {
@@ -135,6 +136,7 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
             "[WARN] texture_function() - eglMakeCurrent Error: %s %d\n",
             egl_error_to_string(err), err);
     }
+    */
 
     // Convert image format.
     bl::Image rgba32_image = image.converted(bl::Image::Format::Rgba32);
@@ -484,6 +486,19 @@ void SurfaceImpl::swapBuffers()
     eglSwapBuffers(this->_context->egl_display(), this->_egl_surface);
 }
 
+void SurfaceImpl::makeCurrent(bool nullSurface)
+{
+    EGLSurface egl_surface = !nullSurface
+        ? this->_egl_surface
+        : EGL_NO_SURFACE;
+    EGLContext egl_context = !nullSurface
+        ? this->_context->egl_context()
+        : NULL;
+    eglMakeCurrent(this->_context->egl_display(),
+        egl_surface, egl_surface,
+        egl_context);
+}
+
 //===================
 // Event handlers
 //===================
@@ -569,10 +584,7 @@ void SurfaceImpl::_egl_update(bool hide)
         NULL
     );
 
-    eglMakeCurrent(this->_context->egl_display(),
-        this->_egl_surface,
-        this->_egl_surface,
-        this->_context->egl_context());
+    this->makeCurrent();
     EGLint err = eglGetError();
     if (err != EGL_SUCCESS) {
         fprintf(stderr, "[WARN] eglMakeCurrent Error: %s\n",
@@ -604,9 +616,11 @@ void SurfaceImpl::_egl_update(bool hide)
         width, height
     );
 
+    fprintf(stderr, "[DEBUG] swapBuffers() - surface id: %s\n",
+        this->m_blSurface->debug_id().c_str());
     this->swapBuffers();
 
-    eglMakeCurrent(this->_context->egl_display(), NULL, NULL, NULL);
+    this->makeCurrent(true);
 }
 
 //===========

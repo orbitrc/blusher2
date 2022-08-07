@@ -5,6 +5,10 @@
 
 #include <memory>
 
+// Primer
+#include <primer/string.h>
+
+// Blusher
 #include <blusher/resize-event.h>
 #include <blusher/pointer-state.h>
 #include <blusher/wayland/wl-surface.h>
@@ -80,6 +84,10 @@ public:
 
     void update();
 
+    pr::String debug_id() const;
+
+    void set_debug_id(const pr::String& id);
+
     //=================
     // Input States
     //=================
@@ -132,6 +140,8 @@ private:
     View *_current_view;
 
     std::shared_ptr<PointerState> _pointer_state;
+
+    pr::String _debug_id;
 };
 
 } // namespace bl
