@@ -96,8 +96,7 @@ int init_program(std::shared_ptr<bl::gl::Program> program)
     return 1;
 }
 
-static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
-        EGLContext egl_context,
+static void texture_function(
         GLuint program_object,
         const bl::Image& image,
         uint64_t width, uint64_t height)
@@ -127,15 +126,6 @@ static void texture_function(EGLDisplay egl_display, EGLSurface egl_surface,
     /*
     fprintf(stderr, "[LOG] texture_function() - width height: %ldx%ld\n",
         width, height);
-    */
-    /*
-    eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
-    EGLint err = eglGetError();
-    if (err != EGL_SUCCESS) {
-        fprintf(stderr,
-            "[WARN] texture_function() - eglMakeCurrent Error: %s %d\n",
-            egl_error_to_string(err), err);
-    }
     */
 
     // Convert image format.
@@ -609,9 +599,6 @@ void SurfaceImpl::_egl_update(bool hide)
     uint64_t width = !hide ? this->width() : 0;
     uint64_t height = !hide ? this->height() : 0;
     texture_function(
-        this->_context->egl_display(),
-        this->_egl_surface,
-        this->_context->egl_context(),
         this->_program->id(),
         *this->m_rootView->_impl->m_composedImage,
         width, height
