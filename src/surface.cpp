@@ -38,6 +38,7 @@ Surface::Surface(Surface *parent)
     this->_state = State::Normal;
     this->_current_view = nullptr;
     this->_pointer_state = std::make_shared<PointerState>();
+    this->_update_requested = false;
 
     // Debug info.
     char pointer_id[15];
@@ -124,6 +125,11 @@ uint32_t Surface::width() const
 View* Surface::root_view()
 {
     return this->_impl->rootView();
+}
+
+void Surface::request_update()
+{
+    this->_update_requested = true;
 }
 
 void Surface::update()

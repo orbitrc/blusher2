@@ -73,6 +73,9 @@ Context::Context(EGLDisplay display)
 
     this->_egl_context = eglCreateContext(this->_egl_display,
         this->_egl_config, EGL_NO_CONTEXT, context_attribs);
+    if (this->_egl_context == EGL_NO_CONTEXT) {
+        fprintf(stderr, "[WARN] Context::Context() - EGL_NO_CONTEXT\n");
+    }
 
     eglMakeCurrent(this->_egl_display,
         EGL_NO_SURFACE, EGL_NO_SURFACE,

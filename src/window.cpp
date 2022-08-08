@@ -37,13 +37,16 @@ Window::Window()
     this->_title_bar->set_body(this);
 
     this->_border = new Surface(this->_body);
+    this->_border->set_debug_id("WindowBorder"_S);
     this->_border->place_below(this->_body);
 
     this->_resize = new Resize(this->_body);
+    this->_resize->set_debug_id("WindowResize"_S);
     this->_resize->set_body(this);
     this->_resize->place_below(this->_border);
 
     this->_decoration = new Surface(this->_body);
+    this->_decoration->set_debug_id("WindowShadow"_S);
     this->_decoration->place_below(this->_resize);
 
     // Init title bar.
@@ -66,19 +69,19 @@ Window::Window()
 void Window::show()
 {
     this->_body->show();
-    this->_body->update();
+    this->_body->request_update();
 
     this->_title_bar->show();
-    this->_title_bar->update();
-
-    this->_decoration->show();
-    this->_decoration->update();
-
-    this->_resize->show();
-    this->_resize->update();
+    this->_title_bar->request_update();
 
     this->_border->show();
-    this->_border->update();
+    this->_border->request_update();
+
+    this->_resize->show();
+    this->_resize->request_update();
+
+    this->_decoration->show();
+    this->_decoration->request_update();
 
     // Set geometry hint.
     this->set_geometry_hint(Rect(0, 0, this->width(), this->height()));

@@ -162,7 +162,7 @@ void View::update()
         fprintf(stderr, " - this: %p, this->_parent: %p\n", this, this->_parent);
         return;
     }
-    this->_surface->update();
+    this->_surface->request_update();
 }
 
 void View::paint()

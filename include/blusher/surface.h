@@ -82,6 +82,8 @@ public:
 
     View* root_view();
 
+    void request_update();
+
     void update();
 
     pr::String debug_id() const;
@@ -141,6 +143,7 @@ private:
 
     std::shared_ptr<PointerState> _pointer_state;
 
+    bool _update_requested;
     pr::String _debug_id;
 };
 
