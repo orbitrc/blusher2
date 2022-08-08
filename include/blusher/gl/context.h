@@ -20,6 +20,8 @@ public:
     EGLConfig egl_config();
     EGLContext egl_context();
 
+    void make_current(EGLSurface egl_surface, bool no_context);
+
 private:
     EGLDisplay _egl_display;
 

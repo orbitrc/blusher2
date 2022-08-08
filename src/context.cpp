@@ -77,9 +77,7 @@ Context::Context(EGLDisplay display)
         fprintf(stderr, "[WARN] Context::Context() - EGL_NO_CONTEXT\n");
     }
 
-    eglMakeCurrent(this->_egl_display,
-        EGL_NO_SURFACE, EGL_NO_SURFACE,
-        this->_egl_context);
+    this->make_current(EGL_NO_SURFACE, false);
 }
 
 EGLDisplay Context::egl_display()
@@ -95,6 +93,23 @@ EGLConfig Context::egl_config()
 EGLContext Context::egl_context()
 {
     return this->_egl_context;
+}
+
+void Context::make_current(EGLSurface egl_surface, bool no_context)
+{
+    EGLBoolean result;
+
+    EGLContext egl_context = !no_context
+        ? this->_egl_context
+        : EGL_NO_CONTEXT;
+
+    result = eglMakeCurrent(this->_egl_display,
+        egl_surface, egl_surface,
+        egl_context);
+    if (result != EGL_TRUE) {
+        fprintf(stderr,
+            "[WARN] Context::make_current() - eglMakeCurrent failed!\n");
+    }
 }
 
 } // namespace gl
