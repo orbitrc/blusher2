@@ -10,6 +10,11 @@ int main(int argc, char *argv[])
     bl::DesktopSurface desktop_surface(bl::DesktopSurface::Role::Toplevel);
     // bl::Window window;
 
+    bl::View view(desktop_surface.root_view());
+    view.fill(bl::Color::from_rgb(255, 0, 0));
+    view.paint();
+    view.update();
+
     // surface.set_color(bl::Color::from_rgba(100, 100, 100, 100));
     desktop_surface.show();
 
