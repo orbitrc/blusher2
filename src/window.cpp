@@ -52,14 +52,14 @@ Window::Window()
     // Init title bar.
     this->update_title_bar();
 
-    // Init decoration.
-    this->update_decoration();
+    // Init border.
+    this->update_border();
 
     // Init resize.
     this->update_resize();
 
-    // Init border.
-    this->update_border();
+    // Init decoration.
+    this->update_decoration();
 }
 
 //===================
@@ -69,19 +69,14 @@ Window::Window()
 void Window::show()
 {
     this->_body->show();
-    this->_body->request_update();
 
     this->_title_bar->show();
-    this->_title_bar->request_update();
 
     this->_border->show();
-    this->_border->request_update();
 
     this->_resize->show();
-    this->_resize->request_update();
 
     this->_decoration->show();
-    this->_decoration->request_update();
 
     // Set geometry hint.
     this->set_geometry_hint(Rect(0, 0, this->width(), this->height()));

@@ -479,8 +479,23 @@ ApplicationImpl::~ApplicationImpl()
 
 int ApplicationImpl::exec()
 {
-    DisplayDispatchThread thr;
-    thr.start();
+//    DisplayDispatchThread thr;
+//    thr.start();
+
+    fprintf(stderr, "before wl_display_dispatch_pending()\n");
+    int result = wl_display_dispatch_pending(app_impl->display()->c_ptr());
+    fprintf(stderr, "result: %d\n", result);
+    while (result != -1) {
+        for (auto surface: app->surfaces()) {
+            surface->update();
+        }
+        fprintf(stderr, "[DEBUG] wl_display_dispatch()\n");
+        result = wl_display_dispatch(app_impl->display()->c_ptr());
+        if (app->desktop_surfaces().length() == 0) {
+            fprintf(stderr, "All desktop surfaces gone. Quit.\n");
+            break;
+        }
+    }
 
     return this->_q_core_application->exec();
 //    return this->_q_gui_application->exec();

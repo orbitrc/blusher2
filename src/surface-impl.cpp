@@ -269,6 +269,7 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     if (this->_egl_surface == EGL_NO_SURFACE) {
         fprintf(stderr, "[WARN] SurfaceImpl::SurfaceImpl() - EGL_NO_SURFACE\n");
     }
+    // this->_context->make_current(this->_egl_surface, false);
 
     glewInit();
 
@@ -413,7 +414,7 @@ void SurfaceImpl::show()
         const_cast<WlSurface&>(this->m_blSurface->wl_surface()).commit();
 
         if (this->parent() != nullptr) {
-            wl_surface_commit(static_cast<SurfaceImpl*>(this->parent())->wlSurface());
+            const_cast<WlSurface&>(this->m_blSurface->parent()->wl_surface()).commit();
         }
 
         fprintf(stderr, "EGL and OpenGL\n");
@@ -586,8 +587,6 @@ void SurfaceImpl::_egl_update(bool hide)
         NULL
     );
     */
-    fprintf(stderr, "[DEBUG] _egl_update() - surface id: %s\n",
-        this->m_blSurface->debug_id().c_str());
 
     this->makeCurrent();
     EGLint err = eglGetError();
@@ -618,12 +617,12 @@ void SurfaceImpl::_egl_update(bool hide)
         width, height
     );
 
-    fprintf(stderr, "[DEBUG] swapBuffers() - surface id: %s\n",
-        this->m_blSurface->debug_id().c_str());
     if (this->m_blSurface->_update_requested) {
+        fprintf(stderr, "[DEBUG] swapBuffers() - surface id: %s\n",
+            this->m_blSurface->debug_id().c_str());
         this->swapBuffers();
+        fprintf(stderr, "[DEBUG] swapBuffers() done.\n");
     }
-    fprintf(stderr, "[DEBUG] swapBuffers() done.\n");
 
     this->makeCurrent(true);
 
