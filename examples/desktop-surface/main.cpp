@@ -18,13 +18,15 @@ int main(int argc, char *argv[])
     // surface.set_color(bl::Color::from_rgba(100, 100, 100, 100));
     desktop_surface.show();
 
-    /*
-    bl::Surface subsurface(&surface);
-    subsurface.set_color(bl::Color::from_rgba(255, 0, 0, 100));
-    subsurface.set_geometry(50, 50, 150, 150);
+    bl::Surface subsurface(&desktop_surface);
+    subsurface.set_geometry(25, 25, 150, 150);
+
+    bl::View view2(subsurface.root_view());
+    view2.fill(bl::Color::from_rgb(0, 0, 255));
+    view2.paint();
+    view2.update();
+
     subsurface.show();
-    surface.show();
-    */
 
     return app.exec();
 }
