@@ -13,12 +13,15 @@
 #include <blusher/image.h>
 #include <blusher/wayland/wl-display.h>
 #include <blusher/wayland/wl-compositor.h>
+#include <blusher/wayland/wl-subcompositor.h>
 #include <blusher/wayland/wl-surface.h>
+#include <blusher/wayland/wl-subsurface.h>
 #include <blusher/wayland/wl-output.h>
 #include <blusher/wayland/xdg-wm-base.h>
 #include <blusher/wayland/xdg-toplevel.h>
 
 std::shared_ptr<bl::WlCompositor> compositor = nullptr;
+std::shared_ptr<bl::WlSubcompositor> subcompositor = nullptr;
 std::shared_ptr<bl::XdgWmBase> xdg_wm_base = nullptr;
 
 struct wl_egl_window *egl_window = nullptr;
@@ -28,6 +31,14 @@ EGLConfig egl_config;
 EGLSurface egl_surface;
 EGLContext egl_context;
 GLuint program_object;
+
+struct wl_egl_window *egl_window2 = nullptr;
+
+EGLDisplay egl_display2;
+EGLConfig egl_config2;
+EGLSurface egl_surface2;
+EGLContext egl_context2;
+GLuint program_object2;
 
 bl::Image image("sample.png"_S);
 
@@ -144,6 +155,7 @@ int init_program(GLuint *program_object)
 
 static void draw_function()
 {
+    fprintf(stderr, "Begin draw_function()\n");
     GLfloat vVertices[] = {
         -1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    0.0f,  1.0f,     // Top right
         -1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    0.0f,  0.0f,     // Bottom right
@@ -223,6 +235,90 @@ static void draw_function()
     eglSwapBuffers(egl_display, egl_surface);
 }
 
+static void draw_function2()
+{
+    GLfloat vVertices[] = {
+        -1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    0.0f,  1.0f,     // Top right
+        -1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    0.0f,  0.0f,     // Bottom right
+         1.0f,  1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    1.0f,  0.0f,     // Bottom left
+         1.0f, -1.0f,  0.0f,    0.0f, 0.0f, 0.0f,    1.0f,  1.0f,     // Top left
+    };
+    GLuint indices[] = {
+        0, 1, 3,    // First triangle
+        1, 2, 3,    // Second triangle
+    };
+
+    eglMakeCurrent(egl_display2, egl_surface2, egl_surface2, egl_context2);
+    fprintf(stderr, "draw_function2() - eglMakeCurrent done!\n");
+
+    // Set the viewport.
+    glViewport(
+        0, 0,
+        100, 100
+    );
+
+    // Clear the color buffer.
+    glClearColor(0.5, 0.5, 0.5, 0.8);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Use the program object.
+    glUseProgram(program_object2);
+
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    GLuint ebo;
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+        GL_STATIC_DRAW);
+
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vVertices), vVertices,
+        GL_STATIC_DRAW);
+
+    // Position attribute.
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)0);
+    glEnableVertexAttribArray(0);
+    // Color attribute.
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+    // Texture coord attribute.
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGBA,
+        image.width(),
+        image.height(),
+        0,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        image.data()
+    );
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+
+    fprintf(stderr, "Now eglSwapBuffers\n");
+    eglSwapBuffers(egl_display2, egl_surface2);
+    fprintf(stderr, "done. %d\n");
+}
+
 static void init_egl()
 {
     EGLint major, minor, count, n, size;
@@ -280,6 +376,17 @@ static void init_egl()
 
     egl_context = eglCreateContext(egl_display, egl_config, EGL_NO_CONTEXT,
         context_attribs);
+
+    // Context 2.
+    egl_display2 = eglGetDisplay(
+        (EGLNativeDisplayType)bl::WlDisplay::instance()->c_ptr()
+    );
+    eglInitialize(egl_display2, NULL, NULL);
+
+    egl_config2 = configs[0];
+
+    egl_context2 = eglCreateContext(egl_display2, egl_config2, EGL_NO_CONTEXT,
+        context_attribs);
 }
 
 //======================
@@ -290,6 +397,7 @@ static void xdg_wm_base_ping_handler(void *data,
         struct xdg_wm_base *xdg_wm_base, uint32_t serial)
 {
     fprintf(stderr, "Ping!\n");
+
     ::xdg_wm_base->pong(serial);
 }
 
@@ -347,6 +455,13 @@ static void global_registry_handler(void *data, struct wl_registry *registry,
             interface,
             version
         );
+    } else if (strcmp(interface, "wl_subcompositor") == 0) {
+        auto registry = bl::WlRegistry::instance();
+        auto interface = bl::WlInterface<bl::WlInterfaceType::Subcompositor>();
+        subcompositor = registry->bind(id,
+            interface,
+            1
+        );
     } else if (strcmp(interface, "xdg_wm_base") == 0) {
         auto registry = bl::WlRegistry::instance();
         auto interface = bl::WlInterface<bl::WlInterfaceType::XdgWmBase>();
@@ -381,12 +496,12 @@ int main(int argc, char *argv[])
 
     display.dispatch();
     display.roundtrip();
-    //
 
-    // Create a surface.
+    // Check compositor.
     if (bl::WlCompositor::instance() == nullptr) {
         fprintf(stderr, "WlCompositor singleton not ready.\n");
     }
+    // Create a surface.
     fprintf(stderr, "Before create surface. wl_compositor: %p\n",
         bl::WlCompositor::instance()->c_ptr());
     bl::WlSurface surface = bl::WlCompositor::instance()->create_surface();
@@ -407,14 +522,17 @@ int main(int argc, char *argv[])
         xdg_surface->get_toplevel();
     xdg_toplevel->add_listener(xdg_toplevel_listener);
 
+
+    // Subsurface.
+    bl::WlSurface surface2 = bl::WlCompositor::instance()->create_surface();
+    std::shared_ptr<bl::WlSubsurface> subsurface =
+        subcompositor->get_subsurface(surface2, surface);
+    wl_subsurface_set_position(subsurface->c_ptr(), -20, -20);
+
+
     // Commit before roundtrip.
-    fprintf(stderr, "Before commit.\n");
     surface.commit();
-
     display.roundtrip();
-
-    // Commit the surface.
-    surface.commit();
 
     // GL/EGL
     init_egl();
@@ -424,7 +542,6 @@ int main(int argc, char *argv[])
     egl_surface = eglCreateWindowSurface(egl_display, egl_config, egl_window,
         NULL);
     eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
-    glFlush();
     eglSwapBuffers(egl_display, egl_surface);
     //===================//
     if (init_program(&program_object) == 0) {
@@ -433,8 +550,39 @@ int main(int argc, char *argv[])
     }
     draw_function();
 
+    // eglMakeCurrent(egl_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+
+    // Why??
+    bl::WlDisplay::instance()->roundtrip();
+
+    egl_window2 = wl_egl_window_create(surface2.c_ptr(),
+        100, 100);
+    egl_surface2 = eglCreateWindowSurface(egl_display2, egl_config2,
+        egl_window2, NULL);
+    EGLBoolean result = eglMakeCurrent(egl_display2, egl_surface2, egl_surface2, egl_context2);
+    if (result != EGL_TRUE) {
+        fprintf(stderr, "eglMakeCurrent failed for surface2!\n");
+        exit(1);
+    }
+
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    eglSwapBuffers(egl_display2, egl_surface2);
+    fprintf(stderr, "after eglSwapBuffers with surface2\n");
+    if (init_program(&program_object2) == 0) {
+        fprintf(stderr, "Error init program!\n");
+        exit(1);
+    }
+    // draw_function2();
+    draw_function();
+    // eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
+    // eglSwapBuffers(egl_display, egl_surface);
+
+
     while (true) {
         display.dispatch();
+        fprintf(stderr, "display.dispatch()\n");
     }
 
     return 0;
