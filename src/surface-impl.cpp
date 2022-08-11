@@ -471,6 +471,19 @@ Surface* SurfaceImpl::surface()
     return this->m_blSurface;
 }
 
+pr::Vector<Surface*> SurfaceImpl::children() const
+{
+    pr::Vector<Surface*> v;
+
+    for (auto surface: app->surfaces()) {
+        if (surface->parent() == this->m_blSurface) {
+            v.push(surface);
+        }
+    }
+
+    return v;
+}
+
 std::shared_ptr<gl::Context> SurfaceImpl::context()
 {
     return this->_context;
@@ -556,6 +569,11 @@ void SurfaceImpl::update()
         return;
     }
     this->_updating = true;
+
+    // Update children.
+    for (auto child: this->children()) {
+        child->update();
+    }
 
     this->_egl_update();
 

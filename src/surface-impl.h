@@ -21,6 +21,9 @@
 #include <EGL/egl.h>
 #include <GL/glew.h>
 
+// Primer
+#include <primer/vector.h>
+
 // Blusher
 #include <blusher/wayland/wl-surface.h>
 #include <blusher/wayland/wl-subsurface.h>
@@ -76,6 +79,8 @@ public:
     bool isToplevel() const;
 
     Surface* surface();
+
+    pr::Vector<Surface*> children() const;
 
     void callPointerEnterHandler();
     void callPointerLeaveHandler();

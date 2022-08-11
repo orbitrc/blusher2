@@ -574,8 +574,8 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Error init program!\n");
         exit(1);
     }
-    // draw_function2();
     draw_function();
+    draw_function2();
     // eglMakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
     // eglSwapBuffers(egl_display, egl_surface);
 
