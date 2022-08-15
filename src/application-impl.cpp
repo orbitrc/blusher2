@@ -186,6 +186,19 @@ static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
                 bl::app_impl->pointer_state.button, x, y);
         }
     }
+
+    // Pointer state.
+    struct wl_surface *wl_surface = bl::app_impl->pointer_state.wl_surface;
+    for (auto surface: bl::app->surfaces()) {
+        struct wl_surface *c_ptr =
+            const_cast<bl::WlSurface&>(surface->wl_surface()).c_ptr();
+        if (c_ptr == wl_surface) {
+            surface->pointer_state()->x = x;
+            surface->pointer_state()->y = y;
+
+            break;
+        }
+    }
 }
 
 static void pointer_button_handler(void *data, struct wl_pointer *pointer,
