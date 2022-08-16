@@ -615,7 +615,7 @@ void SurfaceImpl::_egl_update(bool hide)
     }
     glFlush();
 
-    glewInit();
+    // glewInit();
     // Below makes hang call eglSwapBuffers() in fill_function().
     // eglSwapBuffers(this->_egl_object.egl_display, this->_egl_object.egl_surface);
     //===================//
