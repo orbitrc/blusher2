@@ -575,7 +575,9 @@ void SurfaceImpl::update()
         child->update();
     }
 
-    this->_egl_update();
+    if (this->m_blSurface->_update_requested) {
+        this->_egl_update();
+    }
 
     this->_updating = false;
 }

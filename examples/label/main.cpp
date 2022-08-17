@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     label.paint();
 
     bl::Button button(window.root_view());
-    button.set_position(bl::Point(10, 10));
+    button.set_position(bl::Point(10, 20));
     button.update();
 
     window.root_view()->paint();

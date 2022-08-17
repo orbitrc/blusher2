@@ -12,6 +12,7 @@
 // Blusher
 #include <blusher/application.h>
 #include <blusher/pointer-event.h>
+#include <blusher/update-event.h>
 #include <blusher/view.h>
 
 namespace bl {
@@ -109,6 +110,12 @@ void EventDispatcher::loop()
                     view->pointer_move_event(event);
                     break;
                 }
+                case Event::Type::Update:
+                    View *view = std::get<0>(tuple);
+                    auto event = std::static_pointer_cast<UpdateEvent>(
+                        std::get<1>(tuple));
+                    view->update_event(event);
+                    break;
                 }
             }
         }

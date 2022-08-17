@@ -44,6 +44,7 @@ SOURCES += \
     src/event.cpp \
     src/pointer-event.cpp \
     src/resize-event.cpp \
+    src/update-event.cpp \
     src/output.cpp \
     src/pointer-state.cpp \
     src/application-impl.cpp \
@@ -95,6 +96,7 @@ HEADERS += \
     include/blusher/event.h \
     include/blusher/pointer-event.h \
     include/blusher/resize-event.h \
+    include/blusher/update-event.h \
     include/blusher/output.h \
     include/blusher/pointer-state.h \
     src/application-impl.h \

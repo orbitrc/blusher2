@@ -13,6 +13,7 @@ public:
         PointerRelease,
         PointerMove,
         Resize,
+        Update,
     };
 
 public:

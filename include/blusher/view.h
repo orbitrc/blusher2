@@ -14,6 +14,7 @@
 #include <blusher/rect.h>
 #include <blusher/image.h>
 #include <blusher/pointer-event.h>
+#include <blusher/update-event.h>
 
 namespace bl {
 
@@ -91,6 +92,7 @@ protected:
     virtual void pointer_click_event(std::shared_ptr<PointerEvent> event);
     virtual void pointer_double_click_event(std::shared_ptr<PointerEvent> event);
     virtual void pointer_move_event(std::shared_ptr<PointerEvent> event);
+    virtual void update_event(std::shared_ptr<UpdateEvent> event);
 
 private:
     ViewImpl *_impl;

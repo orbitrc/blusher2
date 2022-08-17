@@ -222,4 +222,9 @@ void View::pointer_move_event(std::shared_ptr<PointerEvent> event)
     (void)event;
 }
 
+void View::update_event(std::shared_ptr<UpdateEvent> event)
+{
+    (void)event;
+}
+
 } // namespace bl
