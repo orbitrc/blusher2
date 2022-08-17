@@ -4,6 +4,8 @@
 // Blusher
 #include <blusher/view.h>
 #include <blusher/surface.h>
+#include <blusher/application.h>
+#include <blusher/wayland/wl-display.h>
 
 #include "view-impl.h"
 
@@ -163,6 +165,10 @@ void View::update()
         return;
     }
     this->_surface->request_update();
+
+    // Update event.
+    auto event = std::make_shared<UpdateEvent>();
+    app->event_dispatcher()->post_event(this, event);
 }
 
 void View::paint()
@@ -225,6 +231,8 @@ void View::pointer_move_event(std::shared_ptr<PointerEvent> event)
 void View::update_event(std::shared_ptr<UpdateEvent> event)
 {
     (void)event;
+    fprintf(stderr, "[LOG] View::update_event()\n");
+    WlDisplay::instance()->dispatch();
 }
 
 } // namespace bl

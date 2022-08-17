@@ -59,7 +59,9 @@ WlRegistry WlDisplay::get_registry()
 
 void WlDisplay::dispatch()
 {
+    fprintf(stderr, "[LOG] WlDisplay::dispatch()\n");
     wl_display_dispatch(this->_wl_display);
+    fprintf(stderr, "[LOG] WlDisplay::dispatch() done.\n");
 }
 
 void WlDisplay::roundtrip()
