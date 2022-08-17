@@ -127,6 +127,10 @@ View* Surface::root_view()
     return this->_impl->rootView();
 }
 
+void Surface::process_pointer()
+{
+}
+
 void Surface::request_update()
 {
     this->_update_requested = true;

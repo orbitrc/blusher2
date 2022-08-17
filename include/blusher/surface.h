@@ -14,7 +14,6 @@
 #include <blusher/wayland/wl-surface.h>
 #include <blusher/wayland/wl-subsurface.h>
 
-#include "color.h"
 #include "signal.h"
 #include "pointer-event.h"
 
@@ -81,6 +80,8 @@ public:
     uint32_t width() const;
 
     View* root_view();
+
+    void process_pointer();
 
     void request_update();
 
