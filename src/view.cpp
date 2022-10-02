@@ -145,6 +145,11 @@ void View::set_surface(Surface *surface)
     this->_surface = surface;
 }
 
+const Image* View::image()
+{
+    return this->_impl->image();
+}
+
 void View::update()
 {
     // Paint first if not painted.

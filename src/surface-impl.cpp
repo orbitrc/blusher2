@@ -98,6 +98,7 @@ int init_program(std::shared_ptr<bl::gl::Program> program)
 
 static void texture_function(
         GLuint program_object,
+        pr::Vector<bl::View*> views,
         const bl::Image& image,
         uint64_t width, uint64_t height)
 {
@@ -176,32 +177,42 @@ static void texture_function(
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glEnableVertexAttribArray(2);
 
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_RGBA,
-        image.width(),      // width.
-        image.height(),     // height.
-        0,
-        GL_RGBA,
-        GL_UNSIGNED_BYTE,
-        rgba32_image.data()
-    );
-    glGenerateMipmap(GL_TEXTURE_2D);
+    GLuint *textures = new GLuint[views.length()];
+    bl::View *view = nullptr;
 
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+    glGenTextures(views.length(), textures);
+    for (uint32_t i = 0; i < views.length(); ++i) {
+        view = views[i];
+
+        bl::Image rgba32_image = view->image()->converted(bl::Image::Format::Rgba32);
+
+        glBindTexture(GL_TEXTURE_2D, textures[i]);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_RGBA,
+            image.width(),      // width.
+            image.height(),     // height.
+            0,
+            GL_RGBA,
+            GL_UNSIGNED_BYTE,
+            rgba32_image.data()
+        );
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glBindTexture(GL_TEXTURE_2D, textures[i]);
+        glBindVertexArray(vao);
+        glViewport(view->x(), view->y(), view->width(), view->height());
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+    }
 
     // Free resources.
-    glDeleteTextures(1, &texture);
+    glDeleteTextures(views.length(), textures);
+    delete[] textures;
     glDeleteBuffers(3, vbo);
     glDeleteBuffers(1, &ebo);
     glDeleteBuffers(1, &vao);
@@ -394,6 +405,11 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
 View* SurfaceImpl::rootView()
 {
     return this->m_rootView;
+}
+
+void SurfaceImpl::appendView(View *view)
+{
+    this->m_views.push(view);
 }
 
 void SurfaceImpl::paint()
@@ -633,6 +649,7 @@ void SurfaceImpl::_egl_update(bool hide)
     uint64_t height = !hide ? this->height() : 0;
     texture_function(
         this->_program->id(),
+        this->m_views,
         *this->m_rootView->_impl->m_composedImage,
         width, height
     );

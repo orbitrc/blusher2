@@ -64,6 +64,7 @@ public:
     void setSize(uint32_t width, uint32_t height);
 
     View* rootView();
+    void appendView(View* view);
 
     void paint();
 
@@ -126,6 +127,7 @@ private:
     bool m_visible;
 
     View *m_rootView;
+    pr::Vector<View*> m_views;
 
     bool _updating;
 

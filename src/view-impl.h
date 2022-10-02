@@ -41,6 +41,8 @@ public:
 
     void appendChild(View *view);
 
+    const Image* image();
+
 signals:
     void colorChanged();
 

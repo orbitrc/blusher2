@@ -81,6 +81,8 @@ public:
 
     View* root_view();
 
+    void append_view(View *view);
+
     void process_pointer();
 
     void request_update();

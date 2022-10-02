@@ -15,9 +15,12 @@ int main(int argc, char *argv[])
     view.paint();
     view.update();
 
+    desktop_surface.append_view(&view);
+
     // surface.set_color(bl::Color::from_rgba(100, 100, 100, 100));
     desktop_surface.show();
 
+    /*
     bl::Surface subsurface(&desktop_surface);
     subsurface.set_geometry(25, 25, 150, 150);
 
@@ -27,6 +30,7 @@ int main(int argc, char *argv[])
     view2.update();
 
     subsurface.show();
+    */
 
     return app.exec();
 }

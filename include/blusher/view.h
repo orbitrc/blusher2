@@ -77,6 +77,8 @@ public:
     /// DO NOT USE THIS MANUALLY YET!
     void set_surface(Surface *surface);
 
+    const Image* image();
+
     void update();
 
     virtual void paint();

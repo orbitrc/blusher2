@@ -127,6 +127,11 @@ View* Surface::root_view()
     return this->_impl->rootView();
 }
 
+void Surface::append_view(View *view)
+{
+    this->_impl->appendView(view);
+}
+
 void Surface::process_pointer()
 {
 }

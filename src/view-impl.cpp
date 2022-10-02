@@ -144,6 +144,11 @@ void ViewImpl::appendChild(View *view)
     this->update();
 }
 
+const Image* ViewImpl::image()
+{
+    return this->m_composedImage;
+}
+
 //=================
 // Private Slots
 //=================
