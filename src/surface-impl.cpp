@@ -206,7 +206,10 @@ static void texture_function(
 
         glBindTexture(GL_TEXTURE_2D, textures[i]);
         glBindVertexArray(vao);
-        glViewport(view->x(), view->y(), view->width(), view->height());
+        GLint viewport_y = height
+            - (view->y())
+            - (view->height());
+        glViewport(view->x(), viewport_y, view->width(), view->height());
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
     }
 
