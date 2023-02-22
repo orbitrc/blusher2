@@ -17,13 +17,13 @@ int main(int argc, char *argv[])
     window.show();
     // surface.show();
 
-    bl::View view(window.root_view().get());
+    // bl::View view(window.root_view().get());
     // window.root_view()->update();
-    view.set_color(bl::Color::from_rgb(255, 0, 0));
+    // view.set_color(bl::Color::from_rgb(255, 0, 0));
     fprintf(stderr, "-- update view\n");
-    view.update();
+    // view.update();
     fprintf(stderr, "-- update view done.\n");
-    window.root_view()->update();
+    // window.root_view()->update();
 
     return app.exec();
 }
