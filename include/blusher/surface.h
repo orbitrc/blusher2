@@ -55,8 +55,10 @@ public:
 
     Surface* parent();
 
+    /// Deprecated: Subsurface.
     void place_above(Surface *surface);
 
+    /// Deprecated: Subsurface.
     void place_below(Surface *surface);
 
     void set_geometry(double x, double y, double width, double height);

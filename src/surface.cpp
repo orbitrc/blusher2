@@ -245,12 +245,17 @@ void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
     auto root_view = this->_impl->rootView();
     View *view = root_view->child_at(Point(x, y));
     if (view != nullptr) {
-        fprintf(stderr, "view found. send event to %p\n", view);
+        View *last_view = view;
+        View *child_view = last_view;
+        while (child_view != nullptr) {
+            child_view = child_view->child_at(Point(x, y));
+            last_view = child_view != nullptr ? child_view : last_view;
+        }
         // TODO: Fix x, y position!
         auto event = std::make_shared<PointerEvent>(Event::Type::PointerPress,
             button, x, y);
 
-        app->event_dispatcher()->post_event(view, event);
+        app->event_dispatcher()->post_event(last_view, event);
     }
 }
 
