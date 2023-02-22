@@ -28,7 +28,7 @@ public:
     void close();
 
     /// Sets window geomtry hint for a compositor.
-    void set_geometry_hint(const Rect& geomtry);
+    void set_geometry_hint(const Rect& geometry);
 
     /// Move if role is toplevel. If the role is popup, do nothing.
     void toplevel_move();
