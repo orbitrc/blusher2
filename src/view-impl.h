@@ -5,6 +5,7 @@
 #include <QObject>
 
 // Blusher
+#include <blusher/view.h>
 #include <blusher/color.h>
 #include <blusher/image.h>
 
@@ -35,7 +36,12 @@ public:
     void setHeight(double height);
     void setSize(double width, double height);
 
+    View::FillType fill_type() const;
+    void set_fill_type(View::FillType fill_type);
+
     void fill(const Color& color);
+
+    Color color() const;
 
     void drawImage(uint64_t x, uint64_t y, const Image& image);
 
@@ -55,6 +61,10 @@ private:
     double m_height;
 
     View *m_view;
+
+    View::FillType _fill_type;
+
+    Color _color;
 
     Image *m_image;
     Image *m_composedImage;

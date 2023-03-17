@@ -33,6 +33,11 @@ class View
     friend ViewImpl;
     friend EventDispatcher;
 public:
+    enum class FillType {
+        Color       = 0,
+        Image       = 1,
+    };
+
     enum class State {
         /// State is normal.
         Normal = 0,
@@ -61,11 +66,17 @@ public:
     void set_height(double height);
     void set_size(const Size& size);
 
+    FillType fill_type() const;
+    void set_fill_type(FillType fill_type);
+
     Rect geometry() const;
 
     View::State state() const;
 
     void fill(const Color& color);
+
+    /// Color of this view. Only valid when FillType::Color.
+    Color color() const;
 
     void draw_image(const Point& pos, const Image& image);
 

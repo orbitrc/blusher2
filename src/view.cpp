@@ -92,6 +92,16 @@ void View::set_size(const Size &size)
     this->_impl->setSize(size.width(), size.height());
 }
 
+View::FillType View::fill_type() const
+{
+    return this->_impl->fill_type();
+}
+
+void View::set_fill_type(FillType fill_type)
+{
+    this->_impl->set_fill_type(fill_type);
+}
+
 Rect View::geometry() const
 {
     return Rect(this->x(), this->y(), this->width(), this->height());
@@ -107,6 +117,11 @@ void View::fill(const Color& color)
     this->_impl->fill(color);
 
     this->_painted = false;
+}
+
+Color View::color() const
+{
+    return this->_impl->color();
 }
 
 void View::draw_image(const Point& pos, const Image& image)

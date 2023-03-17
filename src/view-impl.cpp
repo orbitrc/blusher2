@@ -15,6 +15,8 @@ ViewImpl::ViewImpl(QObject *parent)
     this->m_width = 10.0;
     this->m_height = 10.0;
 
+    this->_fill_type = View::FillType::Color;
+
     this->m_image = new Image(this->m_width, this->m_height);
     this->m_image->fill(Color::from_rgba(0, 0, 0, 0));
 
@@ -128,9 +130,26 @@ void ViewImpl::setSize(double width, double height)
     }
 }
 
+View::FillType ViewImpl::fill_type() const
+{
+    return this->_fill_type;
+}
+
+void ViewImpl::set_fill_type(View::FillType fill_type)
+{
+    this->_fill_type = fill_type;
+}
+
 void ViewImpl::fill(const Color& color)
 {
     this->m_image->fill(color);
+
+    this->_color = color;
+}
+
+Color ViewImpl::color() const
+{
+    return this->_color;
 }
 
 void ViewImpl::drawImage(uint64_t x, uint64_t y, const Image& image)
