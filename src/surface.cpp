@@ -86,6 +86,11 @@ void Surface::set_geometry(double x, double y, double width, double height)
     this->_impl->setSize(width, height);
 }
 
+void Surface::set_size(uint32_t width, uint32_t height)
+{
+    this->_impl->setSize(width, height);
+}
+
 void Surface::show()
 {
     this->_impl->show();

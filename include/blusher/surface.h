@@ -63,6 +63,8 @@ public:
 
     void set_geometry(double x, double y, double width, double height);
 
+    void set_size(uint32_t width, uint32_t height);
+
     void show();
 
     void hide();
