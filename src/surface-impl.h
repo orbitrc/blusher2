@@ -115,8 +115,22 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
 
 private:
+    //===============
+    // Set Uniforms
+    //===============
+
+    /// Set uniform variable `fillType`.
+    void _set_uniform_fillType(View::FillType fill_type);
+    /// Set uniform variable `fillColor`.
+    void _set_uniform_fillColor(Color color);
+    /// Set uniform texture.
+    void _set_uniform_textureIn();
+
+private:
     void _init_program();
+    /// Using `_recursive` itself.
     void _recursive(View *view, GLuint *vao, GLuint *vbo);
+    /// Using `_recursive`.
     void _draw_frame();
     void _egl_update(bool hide = false);
 

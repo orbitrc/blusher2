@@ -527,6 +527,33 @@ void SurfaceImpl::update()
 // Private Slots
 //=================
 
+//===========================
+// Private Methods(Uniforms)
+//===========================
+
+void SurfaceImpl::_set_uniform_fillType(View::FillType fill_type)
+{
+    glUniform1i(
+        glGetUniformLocation(this->_program->id(), "fillType"),
+        static_cast<int>(fill_type)
+    );
+}
+
+void SurfaceImpl::_set_uniform_fillColor(Color color)
+{
+    float colour[4] = {
+        (float)color.red_f(),
+        (float)color.green_f(),
+        (float)color.blue_f(),
+        (float)color.alpha_f(),
+    };
+    glUniform4fv(
+        glGetUniformLocation(this->_program->id(), "fillColor"),
+        1,
+        colour
+    );
+}
+
 //==================
 // Private Methods
 //==================
@@ -593,23 +620,10 @@ void SurfaceImpl::_recursive(View *view, GLuint *vao, GLuint *vbo)
         glEnableVertexAttribArray(1);
 
         // Set uniforms.
-        glUniform1i(
-            glGetUniformLocation(this->_program->id(), "fillType"),
-            static_cast<int>(child->fill_type())
-        );
+        this->_set_uniform_fillType(child->fill_type());
 
         if (child->fill_type() == View::FillType::Color) {
-            float color[4] = {
-                (float)child->color().red_f(),
-                (float)child->color().green_f(),
-                (float)child->color().blue_f(),
-                (float)child->color().alpha_f(),
-            };
-            glUniform4fv(
-                glGetUniformLocation(this->_program->id(), "fillColor"),
-                1,
-                color
-            );
+            this->_set_uniform_fillColor(child->color());
         } else if (child->fill_type() == View::FillType::Image) {
             // TODO: Texture.
         }

@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     view_blue.fill(bl::Color::from_rgb(0, 0, 255));
 
     bl::View view_inner(&view_blue);
-    view_inner.set_size({30, 30});
+    view_inner.set_size({50, 50});
     view_inner.set_position({10, 10});
     view_inner.fill(bl::Color::from_rgb(0, 255, 0));
 
