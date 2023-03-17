@@ -8,6 +8,8 @@
 
 namespace bl {
 
+class Window;
+
 //===============
 // Button
 //===============
@@ -55,19 +57,23 @@ protected:
 // Title Bar
 //================
 
-class TitleBar : public Surface
+class TitleBar : public View
 {
 public:
-    TitleBar(Surface *parent);
+    TitleBar(View *parent);
 
     Surface* body();
     void set_body(Surface *surface);
+
+    Window* window();
+    void set_window(Window *window);
 
 protected:
     void pointer_press_event(std::shared_ptr<PointerEvent> event) override;
 
 private:
     Surface *_body;
+    Window *_window;
 
     TitleBarView *_main_view;
 

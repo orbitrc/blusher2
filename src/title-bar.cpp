@@ -11,6 +11,7 @@
 #include <blusher/window.h>
 #include <blusher/color.h>
 #include <blusher/point.h>
+#include <blusher/size.h>
 #include <blusher/svg.h>
 #include <blusher/resource.h>
 
@@ -20,25 +21,25 @@ namespace bl {
 // Title Bar
 //================
 
-TitleBar::TitleBar(Surface *parent)
-    : Surface(parent)
+TitleBar::TitleBar(View *parent)
+    : View(parent)
 {
-    fprintf(stderr, "TitleBar::TitleBar() - parent width: %d\n", parent->width());
+    fprintf(stderr, "TitleBar::TitleBar() - parent width: %d\n", (int)parent->width());
     this->set_debug_id("WindowTitleBar"_S);
-    this->set_geometry(0, 0, parent->width(), 30);
+    this->set_position(Point(0, 0));
+    this->set_size(Size(parent->width(), 30));
 
     // Initialize.
     this->_body = nullptr;
+    this->_window = nullptr;
     this->_main_view = nullptr;
 
-    // Add main view.
-    TitleBarView *v = new TitleBarView(this->root_view());
-    this->_main_view = v;
-    this->_main_view->set_size(Size(this->width(), this->height()));
-    this->_main_view->fill(Color::from_rgb(0xc0, 0xc0, 0xc0));
+    // Set main view.
+    this->set_size(Size(this->width(), this->height()));
+    this->fill(Color::from_rgb(0xc0, 0xc0, 0xc0));
 
     // Add buttons.
-    TitleBarButton *close_button = new TitleBarButton(this->root_view());
+    TitleBarButton *close_button = new TitleBarButton(this);
     close_button->set_type(TitleBarButton::Type::Close);
     close_button->set_position(Point(5, 2));
 }
@@ -53,13 +54,30 @@ void TitleBar::set_body(Surface *surface)
     this->_body = surface;
 }
 
+Window* TitleBar::window()
+{
+    return this->_window;
+}
+
+void TitleBar::set_window(Window *window)
+{
+    this->_window = window;
+}
+
 //===============
 // Events
 //===============
 
 void TitleBar::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    return Surface::pointer_press_event(event);
+    if (event->button() == PointerButton::Left) {
+        fprintf(stderr, "TitleBar::pointer_press_event() - Button::Left\n");
+        DesktopSurface *window =
+            static_cast<DesktopSurface*>(this->window());
+        window->toplevel_move();
+    }
+
+    return View::pointer_press_event(event);
 }
 
 //==================
@@ -78,14 +96,6 @@ TitleBarView::TitleBarView(View *parent)
 
 void TitleBarView::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    if (event->button() == PointerButton::Left) {
-        fprintf(stderr, "TitleBarView::pointer_press_event() - Button::Left\n");
-        TitleBar *title_bar_surface = static_cast<TitleBar*>(this->surface());
-        DesktopSurface *body =
-            static_cast<DesktopSurface*>(title_bar_surface->body());
-        body->toplevel_move();
-    }
-
     return View::pointer_press_event(event);
 }
 
@@ -97,6 +107,8 @@ TitleBarButton::TitleBarButton(View *parent)
     : View(parent)
 {
     this->_close_image = nullptr;
+
+    this->set_debug_id("Title bar button"_S);
 
     this->set_width(26);
     this->set_height(26);
@@ -127,7 +139,7 @@ void TitleBarButton::pointer_enter_event(std::shared_ptr<PointerEvent> event)
     this->fill(Color::from_rgb(150, 0, 0));
     this->update();
 
-    static_cast<TitleBar*>(this->surface())->body()->request_update();
+    static_cast<Surface*>(this->surface())->request_update();
 
     return View::pointer_enter_event(event);
 }
@@ -139,7 +151,7 @@ void TitleBarButton::pointer_leave_event(std::shared_ptr<PointerEvent> event)
     this->draw_image(Point(0, 0), *this->_close_image);
     this->update();
 
-    static_cast<TitleBar*>(this->surface())->body()->request_update();
+    static_cast<Surface*>(this->surface())->request_update();
 
     return View::pointer_leave_event(event);
 }
@@ -155,9 +167,8 @@ void TitleBarButton::pointer_click_event(std::shared_ptr<PointerEvent> event)
 {
     fprintf(stderr, "Title bar button clicked.\n");
     if (this->_type == TitleBarButton::Type::Close) {
-        auto title_bar_surface = static_cast<TitleBar*>(this->surface());
-        auto body = title_bar_surface->body();
-        static_cast<DesktopSurface*>(body)->close();
+        auto desktop_surface = static_cast<DesktopSurface*>(this->surface());
+        desktop_surface->close();
     }
 
     return View::pointer_click_event(event);

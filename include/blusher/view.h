@@ -81,6 +81,10 @@ public:
 
     virtual void paint();
 
+    pr::String debug_id() const;
+
+    void set_debug_id(const pr::String& debug_id);
+
 protected:
     //===============
     // Events
@@ -104,6 +108,7 @@ private:
     /// If manually called paint method, then set this true. Otherwise set this
     /// false so it will be painted in next update.
     bool _painted;
+    pr::String _debug_id;
 };
 
 } // namespace bl

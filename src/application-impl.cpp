@@ -502,7 +502,7 @@ int ApplicationImpl::exec()
         for (auto surface: app->surfaces()) {
             surface->update();
         }
-        fprintf(stderr, "[DEBUG] wl_display_dispatch()\n");
+        // fprintf(stderr, "[DEBUG] wl_display_dispatch()\n");
         result = wl_display_dispatch(app_impl->display()->c_ptr());
         if (app->desktop_surfaces().length() == 0) {
             fprintf(stderr, "All desktop surfaces gone. Quit.\n");

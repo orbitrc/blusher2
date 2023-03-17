@@ -35,6 +35,12 @@ public:
 
     void set_title(const pr::String& title);
 
+    uint32_t width() const;
+
+    uint32_t height() const;
+
+    View* body_view();
+
 private:
     void update_decoration();
     void update_resize();
@@ -45,11 +51,11 @@ protected:
     void resize_event(std::shared_ptr<ResizeEvent> event) override;
 
 private:
-    Surface *_decoration;
+    View *_decoration;
     Resize *_resize;
-    Surface *_border;
+    View *_border;
     TitleBar *_title_bar;
-    Surface *_body;
+    View *_body;
     pr::String _title;
 };
 
@@ -67,15 +73,18 @@ public:
 //=================
 // Window Resize
 //=================
-class Resize : public Surface
+class Resize : public View
 {
 public:
-    Resize(Surface *parent);
+    Resize(View *parent);
 
     XdgToplevel::ResizeEdge resize_edge(const Point& pos) const;
 
     Surface* body();
     void set_body(Surface *surface);
+
+    Window* window();
+    void set_window(Window *window);
 
     uint32_t resize_corner_size() const;
 
@@ -94,6 +103,7 @@ protected:
 
 private:
     Surface *_body;
+    Window *_window;
 
     ResizeView *_main_view;
 };

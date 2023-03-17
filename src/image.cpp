@@ -314,6 +314,10 @@ void Image::resize(uint64_t width, uint64_t height, Image::Scale scale)
         // Create new image canvas.
         uint8_t *new_data = (uint8_t*)malloc(
             ((sizeof(uint8_t) * 4) * (target_width * target_height)));
+        if (new_data == NULL) {
+            fprintf(stderr, "NEW DATA NULL!!\n");
+            return;
+        }
 
         // Fill transparent pixels.
         uint32_t *pixel = (uint32_t*)new_data;

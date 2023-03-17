@@ -178,6 +178,16 @@ void View::paint()
     this->_painted = true;
 }
 
+pr::String View::debug_id() const
+{
+    return this->_debug_id;
+}
+
+void View::set_debug_id(const pr::String& debug_id)
+{
+    this->_debug_id = debug_id;
+}
+
 //=================
 // Events
 //=================
@@ -185,6 +195,12 @@ void View::paint()
 void View::pointer_enter_event(std::shared_ptr<PointerEvent> event)
 {
     (void)event;
+    if (this->_debug_id == ""_S) {
+        fprintf(stderr, "View::pointer_enter_event() - %p\n", this);
+    } else {
+        fprintf(stderr, "View::pointer_enter_event() - %s\n",
+            this->debug_id().c_str());
+    }
 }
 
 void View::pointer_leave_event(std::shared_ptr<PointerEvent> event)
@@ -194,14 +210,44 @@ void View::pointer_leave_event(std::shared_ptr<PointerEvent> event)
 
 void View::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    (void)event;
+    auto x = event->x();
+    auto y = event->y();
+
+    View *child = this->child_at({x, y});
+    if (child != nullptr) {
+        auto child_x = x - child->x();
+        auto child_y = y - child->y();
+        auto evt = std::make_shared<PointerEvent>(Event::Type::PointerPress,
+            event->button(), child_x, child_y);
+        app->event_dispatcher()->post_event(child, evt);
+        return;
+    }
+
     this->_state = View::State::Active;
-    fprintf(stderr, "View::pointer_press_event() - state now %d. %p\n",
-        (int)this->_state, this);
+    if (this->_debug_id == ""_S) {
+        fprintf(stderr, "View::pointer_press_event() - state now %d. %p\n",
+            (int)this->_state, this);
+    } else {
+        fprintf(stderr, "View::pointer_press_event() - state now %d. %s\n",
+            (int)this->_state, this->_debug_id.c_str());
+    }
 }
 
 void View::pointer_release_event(std::shared_ptr<PointerEvent> event)
 {
+    auto x = event->x();
+    auto y = event->y();
+
+    View *child = this->child_at({x, y});
+    if (child != nullptr) {
+        auto child_x = x - child->x();
+        auto child_y = y - child->y();
+        auto evt = std::make_shared<PointerEvent>(Event::Type::PointerRelease,
+            event->button(), child_x, child_y);
+        app->event_dispatcher()->post_event(child, evt);
+        return;
+    }
+
     fprintf(stderr,
         "View::pointer_release_event() - State: %d. %p\n",
         (int)this->_state, this);
@@ -225,7 +271,18 @@ void View::pointer_double_click_event(std::shared_ptr<PointerEvent> event)
 
 void View::pointer_move_event(std::shared_ptr<PointerEvent> event)
 {
-    (void)event;
+    auto x = event->x();
+    auto y = event->y();
+    View *child = this->child_at(Point(x, y));
+    if (child != nullptr) {
+        auto child_x = x - child->x();
+        auto child_y = y - child->y();
+        auto evt = std::make_shared<PointerEvent>(Event::Type::PointerMove,
+            event->button(), child_x, child_y);
+        app->event_dispatcher()->post_event(child, evt);
+        return;
+    }
+    fprintf(stderr, "POINTER MOVE %s\n", this->debug_id().c_str());
 }
 
 void View::update_event(std::shared_ptr<UpdateEvent> event)

@@ -26,28 +26,41 @@ Window::Window()
     this->_decoration = nullptr;
     this->_title = "Application"_S;
 
+    // Init decoration.
+    this->_decoration = new View(this->root_view());
+    this->_decoration->set_debug_id("Decoration"_S);
+
+    // Init resize.
+    this->_resize = new Resize(this->_decoration);
+    this->_resize->set_window(this);
+    this->_resize->set_position(Point(20, 20));
+    this->_resize->set_debug_id("Resize"_S);
+
+    // Init border.
+    this->_border = new View(this->_resize);
+    this->_border->set_debug_id("Border"_S);
+
     // Init body.
-    this->_body = static_cast<Surface*>(this);
+    this->_body = new View(this->_border);
+    this->_body->set_position(Point(1, 1));
+    this->_body->set_size(Size(300, 300));
+    this->_body->fill(Color::from_rgb(255, 255, 255));
     this->_body->set_debug_id("WindowBody"_S);
+    this->_body->paint();
 
-    this->_body->set_geometry(0, 0, 200, 200);
-    this->_body->root_view()->fill(Color::from_rgb(255, 255, 255));
-
-    this->_title_bar = new TitleBar(this->_body);
+    this->_title_bar = new TitleBar(this->_border);
     this->_title_bar->set_body(this);
+    this->_title_bar->set_window(this);
 
-    this->_border = new Surface(this->_body);
-    this->_border->set_debug_id("WindowBorder"_S);
-    this->_border->place_below(this->_body);
+    this->set_geometry(0, 0, 300, 300);
 
-    this->_resize = new Resize(this->_body);
-    this->_resize->set_debug_id("WindowResize"_S);
-    this->_resize->set_body(this);
-    this->_resize->place_below(this->_border);
+//    this->_border->place_below(this->_body);
 
+    /*
     this->_decoration = new Surface(this->_body);
     this->_decoration->set_debug_id("WindowShadow"_S);
     this->_decoration->place_below(this->_resize);
+    */
 
     // Init title bar.
     this->update_title_bar();
@@ -60,6 +73,8 @@ Window::Window()
 
     // Init decoration.
     this->update_decoration();
+
+    this->request_update();
 }
 
 //===================
@@ -68,15 +83,13 @@ Window::Window()
 
 void Window::show()
 {
-    this->_body->show();
+//    this->_body->show();
 
-    this->_title_bar->show();
+//    this->_title_bar->show();
 
-    this->_border->show();
+//    this->_border->show();
 
-    this->_resize->show();
-
-    this->_decoration->show();
+//    this->_resize->show();
 
     // Set geometry hint.
     this->set_geometry_hint(Rect(0, 0, this->width(), this->height()));
@@ -103,56 +116,76 @@ void Window::set_title(const pr::String& title)
     }
 }
 
+uint32_t Window::width() const
+{
+    return DesktopSurface::width() - BLUSHER_SHADOW_WIDTH;
+}
+
+uint32_t Window::height() const
+{
+    return DesktopSurface::height() - BLUSHER_SHADOW_WIDTH;
+}
+
 //====================
 // Private Methods
 //====================
 
 void Window::update_decoration()
 {
+    /*
     this->_decoration->set_geometry(
         0 - BLUSHER_SHADOW_WIDTH,
         0 - BLUSHER_TITLE_BAR_HEIGHT - BLUSHER_SHADOW_WIDTH,
         this->width() + (BLUSHER_SHADOW_WIDTH * 2),
         this->height() + (BLUSHER_SHADOW_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
-    this->_decoration->root_view()->fill(Color::from_rgba(0, 0, 0, 100));
-    this->_decoration->root_view()->paint();
+    */
+    this->_decoration->set_width(DesktopSurface::width());
+    this->_decoration->set_height(DesktopSurface::height());
+    this->_decoration->fill(Color::from_rgba(0, 0, 0, 100));
+    this->_decoration->paint();
+    this->_decoration->update();
 }
 
 void Window::update_resize()
 {
+    /*
     this->_resize->set_geometry(
         0 - BLUSHER_RESIZE_WIDTH,
         0 - BLUSHER_TITLE_BAR_HEIGHT - BLUSHER_RESIZE_WIDTH,
         this->width() + (BLUSHER_RESIZE_WIDTH * 2),
         this->height() + (BLUSHER_RESIZE_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
-    this->_resize->root_view()->fill(Color::from_rgba(255, 0, 0, 100));
-    this->_resize->root_view()->paint();
+    */
+    this->_resize->set_position(Point(40, 40));
+    this->_resize->set_size(Size(this->width() - 20, this->height() - 20));
+    this->_resize->fill(Color::from_rgba(255, 0, 0, 100));
+    this->_resize->paint();
+    this->_resize->update();
 }
 
 void Window::update_border()
 {
+    /*
     this->_border->set_geometry(
         0 - BLUSHER_BORDER_WIDTH,
         0 - BLUSHER_TITLE_BAR_HEIGHT - BLUSHER_BORDER_WIDTH,
         this->width() + (BLUSHER_BORDER_WIDTH * 2),
         this->height() + (BLUSHER_BORDER_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
-    this->_border->root_view()->fill(Color::from_rgb(0, 0, 0));
-    this->_border->root_view()->paint();
+    */
+    this->_border->set_position(Point(BLUSHER_RESIZE_WIDTH, BLUSHER_RESIZE_WIDTH));
+    this->_border->set_size(Size(100, 100));
+    this->_border->fill(Color::from_rgb(0, 0, 0));
+    this->_border->paint();
 }
 
 void Window::update_title_bar()
 {
-    this->_title_bar->set_geometry(
-        0,
-        -BLUSHER_TITLE_BAR_HEIGHT,
-        this->width(),
-        BLUSHER_TITLE_BAR_HEIGHT
-    );
-    this->_title_bar->root_view()->fill(Color::from_rgb(100, 100, 100));
-    this->_title_bar->root_view()->paint();
+    this->_title_bar->set_position(Point(1, 1));
+    this->_title_bar->set_size(Size(this->width(), BLUSHER_TITLE_BAR_HEIGHT));
+    this->_title_bar->fill(Color::from_rgb(100, 100, 100));
+    this->_title_bar->paint();
 }
 
 //===============
@@ -163,8 +196,8 @@ void Window::resize_event(std::shared_ptr<ResizeEvent> event)
 {
     (void)event;
     // Update body.
-    this->_body->root_view()->fill(Color::from_rgb(255, 255, 255));
-    this->_body->root_view()->paint();
+    this->_body->fill(Color::from_rgb(255, 255, 255));
+    this->_body->paint();
 
     if (this->_border != nullptr) {
         this->update_border();
@@ -193,17 +226,17 @@ ResizeView::ResizeView(View *parent)
 
 Resize* ResizeView::resize_surface() const
 {
-    return static_cast<Resize*>(const_cast<ResizeView*>(this)->surface());
+    return nullptr; // static_cast<Resize*>(const_cast<ResizeView*>(this)->surface());
 }
 
 //===============
 // Resize
 //===============
 
-Resize::Resize(Surface *parent)
-    : Surface(parent)
+Resize::Resize(View *parent)
+    : View(parent)
 {
-    this->_main_view = new ResizeView(this->root_view());
+    // this->_main_view = new ResizeView(this->root_view());
 }
 
 XdgToplevel::ResizeEdge Resize::resize_edge(const Point& pos) const
@@ -239,6 +272,16 @@ Surface* Resize::body()
 void Resize::set_body(Surface *surface)
 {
     this->_body = surface;
+}
+
+Window* Resize::window()
+{
+    return this->_window;
+}
+
+void Resize::set_window(Window *window)
+{
+    this->_window = window;
 }
 
 uint32_t Resize::resize_corner_size() const
@@ -334,14 +377,15 @@ Rect Resize::_bottom_right_rect() const
 void Resize::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
     if (event->button() == PointerButton::Left) {
-        if (this->_body != nullptr) {
-            DesktopSurface *body = static_cast<DesktopSurface*>(this->_body);
+        if (this->_window != nullptr) {
+            DesktopSurface *window = static_cast<DesktopSurface*>(this->_window);
             auto edge = this->resize_edge(Point(event->x(), event->y()));
-            body->toplevel_resize(edge);
+            fprintf(stderr, " - Resize pointer_press_event. edge: %d\n", (int)edge);
+            window->toplevel_resize(edge);
         }
     }
 
-    return Surface::pointer_press_event(event);
+    return View::pointer_press_event(event);
 }
 
 } // namespace bl
