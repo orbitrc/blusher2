@@ -131,6 +131,11 @@ void View::draw_image(const Point& pos, const Image& image)
     this->_painted = false;
 }
 
+pr::Vector<View*> View::children() const
+{
+    return this->_children;
+}
+
 View* View::child_at(const Point &pos)
 {
     // Return nullptr if position is out of this view.

@@ -18,9 +18,7 @@ wayland-protocols/stable/xdg-shell.h:
 wayland-protocols/stable/xdg-shell.c:
 	wayland-scanner public-code $(WAYLAND_PROTOCOLS_STABLE_DIR)/xdg-shell/xdg-shell.xml wayland-protocols/stable/xdg-shell.c
 
-resources: $(BLUSHER_RESOURCES_A)
-
-$(BLUSHER_RESOURCES_A):
+resources:
 	bin/blusher rcc resources/resources.brc
 
 clean:
@@ -29,3 +27,5 @@ clean:
 	rm resources/*.cpp
 	rm resources/*.o
 	rm resources/*.a
+
+.PHONY: resources

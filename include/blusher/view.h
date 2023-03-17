@@ -80,6 +80,8 @@ public:
 
     void draw_image(const Point& pos, const Image& image);
 
+    pr::Vector<View*> children() const;
+
     View* child_at(const Point& pos);
 
     /// Get surface of this view.

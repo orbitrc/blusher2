@@ -2,6 +2,7 @@
 
 // C
 #include <assert.h>
+#include <string.h>
 #include <stdio.h>
 
 // Unix
@@ -19,6 +20,7 @@
 
 // Blusher
 #include <blusher/application.h>
+#include <blusher/resource.h>
 #ifdef emit
 #undef emit
 #endif
@@ -45,84 +47,28 @@
 // EGL/OpenGL
 //=================
 
-int init_program(std::shared_ptr<bl::gl::Program> program)
-{
-    GLbyte vertex_shader_str[] =
-        "#version 330 core      \n"
-        ""
-        "layout (location = 0) in vec3 aPos; \n"
-        "layout (location = 1) in vec3 aColor; \n"
-        "layout (location = 2) in vec2 aTexCoord; \n"
-        "out vec3 ourColor; \n"
-        "out vec2 TexCoord; \n"
-        "void main()                         \n"
-        "{                                   \n"
-        "    gl_Position = vec4(aPos, 1.0);  \n"
-        "    ourColor = aColor;              \n"
-        "    TexCoord = aTexCoord;           \n"
-        "}                                   \n";
-
-    GLbyte fragment_shader_str[] =
-        "#version 330 core          \n"
-        ""
-        "precision mediump float;   \n"
-        ""
-        "out vec4 fragColor;        \n"
-        ""
-        "in vec3 ourColor;        \n"
-        "in vec2 TexCoord;        \n"
-        ""
-        "uniform sampler2D ourTexture; \n"
-        ""
-        "void main()              \n"
-        "{                        \n"
-        "    fragColor = texture(ourTexture, TexCoord); \n"
-        "}                        \n";
-
-    using namespace bl::gl;
-
-    auto vertex_shader = std::make_shared<Shader>(Shader::Type::Vertex);
-    auto fragment_shader = std::make_shared<Shader>(Shader::Type::Fragment);
-
-    vertex_shader->compile((const char*)vertex_shader_str);
-    fragment_shader->compile((const char*)fragment_shader_str);
-
-    program->attach_shader(vertex_shader);
-    program->attach_shader(fragment_shader);
-
-    // Link the program.
-    program->link();
-
-    return 1;
-}
+GLuint indices[] = {
+    0, 1, 3,    // First triangle
+    1, 2, 3,    // Second triangle
+};
+GLfloat vertices[] = {
+    -1.0f, -1.0f,  0.0f,    // Top right
+    -1.0f,  1.0f,  0.0f,    // Bottom right
+     1.0f,  1.0f,  0.0f,    // Bottom left
+     1.0f, -1.0f,  0.0f,    // Top left
+};
+GLfloat tex_coord[] = {
+    0.0f, 1.0f,
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+};
 
 static void texture_function(
         GLuint program_object,
         const bl::Image& image,
         uint64_t width, uint64_t height)
 {
-    GLfloat vertices[] = {
-        -1.0f, -1.0f,  0.0f,    // Top right
-        -1.0f,  1.0f,  0.0f,    // Bottom right
-         1.0f,  1.0f,  0.0f,    // Bottom left
-         1.0f, -1.0f,  0.0f,    // Top left
-    };
-    GLfloat colors[] = {
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-    };
-    GLfloat tex_coord[] = {
-        0.0f, 1.0f,
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-    };
-    GLuint indices[] = {
-        0, 1, 3,    // First triangle
-        1, 2, 3,    // Second triangle
-    };
-
     /*
     fprintf(stderr, "[LOG] texture_function() - width height: %ldx%ld\n",
         width, height);
@@ -154,8 +100,8 @@ static void texture_function(
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
         GL_STATIC_DRAW);
 
-    GLuint vbo[3];
-    glGenBuffers(3, vbo);
+    GLuint vbo[2];
+    glGenBuffers(2, vbo);
 
     // Position attribute.
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
@@ -163,18 +109,13 @@ static void texture_function(
         GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glEnableVertexAttribArray(0);
-    // Color attribute.
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors,
-        GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    glEnableVertexAttribArray(1);
+
     // Texture coord attribute.
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(tex_coord), tex_coord,
         GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray(1);
 
     GLuint texture;
     glGenTextures(1, &texture);
@@ -202,7 +143,7 @@ static void texture_function(
 
     // Free resources.
     glDeleteTextures(1, &texture);
-    glDeleteBuffers(3, vbo);
+    glDeleteBuffers(2, vbo);
     glDeleteBuffers(1, &ebo);
     glDeleteBuffers(1, &vao);
 }
@@ -590,6 +531,137 @@ void SurfaceImpl::update()
 // Private Methods
 //==================
 
+void SurfaceImpl::_init_program()
+{
+    using namespace bl::gl;
+
+    auto vertex_shader = std::make_shared<Shader>(Shader::Type::Vertex);
+    auto fragment_shader = std::make_shared<Shader>(Shader::Type::Fragment);
+
+    // Append null character to the end.
+    auto vert = app->resource()->data("/io.orbitrc.blusher/shaders/shader.vert");
+    auto frag = app->resource()->data("/io.orbitrc.blusher/shaders/shader.frag");
+
+    char *vertex_shader_str = new char[vert->size() + 1];
+    char *fragment_shader_str = new char[frag->size() + 1];
+
+    strncpy(vertex_shader_str, (char*)vert->data(), vert->size());
+    vertex_shader_str[vert->size()] = '\0';
+    strncpy(fragment_shader_str, (char*)frag->data(), frag->size());
+    fragment_shader_str[frag->size()] = '\0';
+
+    // Compile.
+    vertex_shader->compile((const char*)vertex_shader_str);
+    fragment_shader->compile((const char*)fragment_shader_str);
+
+    // Free.
+    delete[] vertex_shader_str;
+    delete[] fragment_shader_str;
+
+    // Attach shaders.
+    this->_program->attach_shader(vertex_shader);
+    this->_program->attach_shader(fragment_shader);
+
+    // Link the program.
+    this->_program->link();
+}
+
+void SurfaceImpl::_draw_frame()
+{
+    // Set the surface viewport.
+    glViewport(
+        0, 0,
+        this->width(), this->height()
+    );
+
+    // Clear the color buffer.
+    glClearColor(0.5, 0.5, 0.5, 0.8);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Use the program object.
+    glUseProgram(this->_program->id());
+
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    GLuint ebo;
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+        GL_STATIC_DRAW);
+
+    GLuint vbo[2];
+    glGenBuffers(2, vbo);
+
+    for (auto& view: this->m_rootView->children()) {
+        glBindVertexArray(vao);
+
+        // Position attribute.
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+        glBufferData(GL_ARRAY_BUFFER,
+            sizeof(vertices),
+            vertices,
+            GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glEnableVertexAttribArray(0);
+
+        // Texture coord attribute.
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+        glBufferData(GL_ARRAY_BUFFER,
+            sizeof(tex_coord),
+            tex_coord,
+            GL_STATIC_DRAW);
+
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glEnableVertexAttribArray(1);
+
+        // Set uniforms.
+        glUniform1i(
+            glGetUniformLocation(this->_program->id(), "fillType"),
+            static_cast<int>(view->fill_type())
+        );
+
+        if (view->fill_type() == View::FillType::Color) {
+            float color[4] = {
+                (float)view->color().red_f(),
+                (float)view->color().green_f(),
+                (float)view->color().blue_f(),
+                (float)view->color().alpha_f(),
+            };
+            glUniform4fv(
+                glGetUniformLocation(this->_program->id(), "fillColor"),
+                1,
+                color
+            );
+        } else if (view->fill_type() == View::FillType::Image) {
+            // TODO: Texture.
+        }
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glBindVertexArray(vao);
+
+        int viewport_x = view->x();
+        int viewport_y = this->height()
+            - (view->y())
+            - (view->height() * 1 /*this->scale() */);
+        fprintf(stderr, " - viewport y: %d\n", viewport_y);
+        glViewport(viewport_x, viewport_y,
+            view->width(), view->height());
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+    }
+
+    this->swapBuffers();
+
+    // Free.
+    glDeleteBuffers(2, vbo);
+    glDeleteBuffers(1, &ebo);
+    glDeleteBuffers(1, &vao);
+}
+
 void SurfaceImpl::_egl_update(bool hide)
 {
     // Re-create EGL window surface.
@@ -623,25 +695,35 @@ void SurfaceImpl::_egl_update(bool hide)
     //===================//
     if (this->_program->vertex_shader() == nullptr &&
             this->_program->fragment_shader() == nullptr) {
+        this->_init_program();
+        /*
         if (init_program(this->_program) == 0) {
             fprintf(stderr, "Error init program!\n");
             // exit(1);
             return;
         }
+        */
     }
     uint64_t width = !hide ? this->width() : 0;
     uint64_t height = !hide ? this->height() : 0;
+    (void)width;
+    (void)height;
+    /*
     texture_function(
         this->_program->id(),
         *this->m_rootView->_impl->m_composedImage,
         width, height
     );
+    */
+    this->_draw_frame();
 
     if (this->m_blSurface->_update_requested) {
+        /*
         fprintf(stderr, "[DEBUG] swapBuffers() - surface id: %s\n",
             this->m_blSurface->debug_id().c_str());
         this->swapBuffers();
         fprintf(stderr, "[DEBUG] swapBuffers() done.\n");
+        */
     }
 
     this->makeCurrent(true);

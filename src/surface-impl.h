@@ -115,6 +115,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
 
 private:
+    void _init_program();
+    void _draw_frame();
     void _egl_update(bool hide = false);
 
 private:

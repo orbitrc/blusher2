@@ -3,5 +3,7 @@
     <file>hydrogen-close.svg</file>
     <file>hydrogen-button.svg</file>
     <file>sample.png</file>
+    <file>shaders/shader.vert</file>
+    <file>shaders/shader.frag</file>
   </resource>
 </brc>
