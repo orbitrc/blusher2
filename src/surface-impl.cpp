@@ -566,6 +566,74 @@ void SurfaceImpl::_init_program()
     this->_program->link();
 }
 
+void SurfaceImpl::_recursive(View *view, GLuint *vao, GLuint *vbo)
+{
+    for (auto& child: view->children()) {
+        fprintf(stderr, " - recursive: View: %p\n", child);
+        glBindVertexArray(*vao);
+
+        // Position attribute.
+        glBindBuffer(GL_ARRAY_BUFFER, (vbo)[0]);
+        glBufferData(GL_ARRAY_BUFFER,
+            sizeof(vertices),
+            vertices,
+            GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glEnableVertexAttribArray(0);
+
+        // Texture coord attribute.
+        glBindBuffer(GL_ARRAY_BUFFER, (vbo)[1]);
+        glBufferData(GL_ARRAY_BUFFER,
+            sizeof(tex_coord),
+            tex_coord,
+            GL_STATIC_DRAW);
+
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glEnableVertexAttribArray(1);
+
+        // Set uniforms.
+        glUniform1i(
+            glGetUniformLocation(this->_program->id(), "fillType"),
+            static_cast<int>(child->fill_type())
+        );
+
+        if (child->fill_type() == View::FillType::Color) {
+            float color[4] = {
+                (float)child->color().red_f(),
+                (float)child->color().green_f(),
+                (float)child->color().blue_f(),
+                (float)child->color().alpha_f(),
+            };
+            glUniform4fv(
+                glGetUniformLocation(this->_program->id(), "fillColor"),
+                1,
+                color
+            );
+        } else if (child->fill_type() == View::FillType::Image) {
+            // TODO: Texture.
+        }
+
+        glBindVertexArray(*vao);
+
+        int parent_x = view->x();
+        int parent_y = view->y();
+
+        int viewport_x = parent_x + child->x();
+        int viewport_y = this->height()
+            - (parent_y + child->y())
+            - (child->height() * 1 /*this->scale() */);
+        glViewport(viewport_x, viewport_y,
+            child->width(), child->height());
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+
+        // Call recursive.
+        if (child->children().length() != 0) {
+            this->_recursive(child, vao, vbo);
+        }
+    }
+}
+
 void SurfaceImpl::_draw_frame()
 {
     // Set the surface viewport.
@@ -581,6 +649,10 @@ void SurfaceImpl::_draw_frame()
     // Use the program object.
     glUseProgram(this->_program->id());
 
+    // Alpha channel blend.
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     GLuint vao;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -594,64 +666,7 @@ void SurfaceImpl::_draw_frame()
     GLuint vbo[2];
     glGenBuffers(2, vbo);
 
-    for (auto& view: this->m_rootView->children()) {
-        glBindVertexArray(vao);
-
-        // Position attribute.
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-        glBufferData(GL_ARRAY_BUFFER,
-            sizeof(vertices),
-            vertices,
-            GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(0);
-
-        // Texture coord attribute.
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-        glBufferData(GL_ARRAY_BUFFER,
-            sizeof(tex_coord),
-            tex_coord,
-            GL_STATIC_DRAW);
-
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(1);
-
-        // Set uniforms.
-        glUniform1i(
-            glGetUniformLocation(this->_program->id(), "fillType"),
-            static_cast<int>(view->fill_type())
-        );
-
-        if (view->fill_type() == View::FillType::Color) {
-            float color[4] = {
-                (float)view->color().red_f(),
-                (float)view->color().green_f(),
-                (float)view->color().blue_f(),
-                (float)view->color().alpha_f(),
-            };
-            glUniform4fv(
-                glGetUniformLocation(this->_program->id(), "fillColor"),
-                1,
-                color
-            );
-        } else if (view->fill_type() == View::FillType::Image) {
-            // TODO: Texture.
-        }
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glBindVertexArray(vao);
-
-        int viewport_x = view->x();
-        int viewport_y = this->height()
-            - (view->y())
-            - (view->height() * 1 /*this->scale() */);
-        glViewport(viewport_x, viewport_y,
-            view->width(), view->height());
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
-    }
+    this->_recursive(this->m_rootView, &vao, vbo);
 
     this->swapBuffers();
 

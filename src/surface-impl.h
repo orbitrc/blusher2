@@ -116,6 +116,7 @@ protected:
 
 private:
     void _init_program();
+    void _recursive(View *view, GLuint *vao, GLuint *vbo);
     void _draw_frame();
     void _egl_update(bool hide = false);
 

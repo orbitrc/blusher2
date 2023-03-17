@@ -9,6 +9,8 @@ in vec2 texCoord;
 uniform int fillType;
 uniform sampler2D textureIn;
 uniform vec4 fillColor;
+uniform vec2 parentPosition;
+uniform vec2 parentSize;
 
 #define BL_FILL_TYPE_COLOR      0
 #define BL_FILL_TYPE_TEXTURE    1
