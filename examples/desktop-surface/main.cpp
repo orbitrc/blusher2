@@ -17,6 +17,11 @@ int main(int argc, char *argv[])
     view.paint();
     view.update();
 
+    bl::View view_blue(desktop_surface.root_view());
+    view_blue.set_size({50, 50});
+    view_blue.set_position({50, 50});
+    view_blue.fill(bl::Color::from_rgb(0, 0, 255));
+
     desktop_surface.show();
 
     return app.exec();

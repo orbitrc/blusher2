@@ -648,7 +648,6 @@ void SurfaceImpl::_draw_frame()
         int viewport_y = this->height()
             - (view->y())
             - (view->height() * 1 /*this->scale() */);
-        fprintf(stderr, " - viewport y: %d\n", viewport_y);
         glViewport(viewport_x, viewport_y,
             view->width(), view->height());
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
