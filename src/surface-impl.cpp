@@ -660,6 +660,8 @@ void SurfaceImpl::_recursive(View *view,
 
         if (!valid_geometry.has_value()) {
             valid_geometry_local = child->geometry();
+            // Set valid geometry as all zeros. It means no limit(not clip).
+            // Child of root view not need to clip.
             this->_set_uniform_validGeometry({0.0, 0.0, 0.0, 0.0});
         } else {
             this->_set_uniform_validGeometry(valid_geometry_local.value());
@@ -737,6 +739,7 @@ void SurfaceImpl::_draw_frame()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glEnableVertexAttribArray(1);
 
+    // Set uniform resolution as the surface's size.
     this->_set_uniform_resolution(this->m_rootView->geometry().size());
     this->_recursive(this->m_rootView, std::nullopt);
 
