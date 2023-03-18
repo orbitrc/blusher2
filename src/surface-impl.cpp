@@ -554,6 +554,54 @@ void SurfaceImpl::_set_uniform_fillColor(Color color)
     );
 }
 
+void SurfaceImpl::_set_uniform_textureIn()
+{}
+
+void SurfaceImpl::_set_uniform_parentPosition(Point position)
+{
+    float pos[2] = {(float)position.x(), (float)position.y()};
+    glUniform2fv(
+        glGetUniformLocation(this->_program->id(), "parentPosition"),
+        1,
+        pos
+    );
+}
+
+void SurfaceImpl::_set_uniform_parentSize(Size size)
+{
+    float siz[2] = {(float)size.width(), (float)size.height()};
+    glUniform2fv(
+        glGetUniformLocation(this->_program->id(), "parentSize"),
+        1,
+        siz
+    );
+}
+
+void SurfaceImpl::_set_uniform_resolution(Size size)
+{
+    float siz[2] = {(float)size.width(), (float)size.height()};
+    glUniform2fv(
+        glGetUniformLocation(this->_program->id(), "resolution"),
+        1,
+        siz
+    );
+}
+
+void SurfaceImpl::_set_uniform_validGeometry(Rect geometry)
+{
+    float geo[4] = {
+        (float)geometry.x(),
+        (float)geometry.y(),
+        (float)geometry.width(),
+        (float)geometry.height()
+    };
+    glUniform4fv(
+        glGetUniformLocation(this->_program->id(), "validGeometry"),
+        1,
+        geo
+    );
+}
+
 //==================
 // Private Methods
 //==================
@@ -593,10 +641,11 @@ void SurfaceImpl::_init_program()
     this->_program->link();
 }
 
-void SurfaceImpl::_recursive(View *view, GLuint *vao, GLuint *vbo)
+void SurfaceImpl::_recursive(View *view, GLuint *vao, GLuint *vbo,
+        std::optional<Rect> valid_geometry)
 {
+    auto valid_geometry_local = valid_geometry;
     for (auto& child: view->children()) {
-        fprintf(stderr, " - recursive: View: %p\n", child);
         glBindVertexArray(*vao);
 
         // Position attribute.
@@ -628,6 +677,16 @@ void SurfaceImpl::_recursive(View *view, GLuint *vao, GLuint *vbo)
             // TODO: Texture.
         }
 
+        this->_set_uniform_parentPosition({view->x(), view->y()});
+        this->_set_uniform_parentSize(view->geometry().size());
+
+        if (!valid_geometry.has_value()) {
+            valid_geometry_local = child->geometry();
+            this->_set_uniform_validGeometry({0.0, 0.0, 0.0, 0.0});
+        } else {
+            this->_set_uniform_validGeometry(valid_geometry_local.value());
+        }
+
         glBindVertexArray(*vao);
 
         int parent_x = view->x();
@@ -643,7 +702,7 @@ void SurfaceImpl::_recursive(View *view, GLuint *vao, GLuint *vbo)
 
         // Call recursive.
         if (child->children().length() != 0) {
-            this->_recursive(child, vao, vbo);
+            this->_recursive(child, vao, vbo, valid_geometry_local);
         }
     }
 }
@@ -680,7 +739,8 @@ void SurfaceImpl::_draw_frame()
     GLuint vbo[2];
     glGenBuffers(2, vbo);
 
-    this->_recursive(this->m_rootView, &vao, vbo);
+    this->_set_uniform_resolution(this->m_rootView->geometry().size());
+    this->_recursive(this->m_rootView, &vao, vbo, std::nullopt);
 
     this->swapBuffers();
 

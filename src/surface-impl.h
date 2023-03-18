@@ -7,6 +7,7 @@
 // C++
 #include <functional>
 #include <memory>
+#include <optional>
 
 // Qt
 #include <QObject>
@@ -125,11 +126,20 @@ private:
     void _set_uniform_fillColor(Color color);
     /// Set uniform texture.
     void _set_uniform_textureIn();
+    /// Set uniform variable `parentPosition`.
+    void _set_uniform_parentPosition(Point position);
+    /// Set uniform variable `parentSize`.
+    void _set_uniform_parentSize(Size size);
+    /// Set uniform variable `resolution`.
+    void _set_uniform_resolution(Size size);
+    /// Set uniform variable `validGeometry`.
+    void _set_uniform_validGeometry(Rect geometry);
 
 private:
     void _init_program();
     /// Using `_recursive` itself.
-    void _recursive(View *view, GLuint *vao, GLuint *vbo);
+    void _recursive(View *view, GLuint *vao, GLuint *vbo,
+            std::optional<Rect> valid_geometry);
     /// Using `_recursive`.
     void _draw_frame();
     void _egl_update(bool hide = false);
