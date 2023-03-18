@@ -641,33 +641,11 @@ void SurfaceImpl::_init_program()
     this->_program->link();
 }
 
-void SurfaceImpl::_recursive(View *view, GLuint *vao, GLuint *vbo,
+void SurfaceImpl::_recursive(View *view,
         std::optional<Rect> valid_geometry)
 {
     auto valid_geometry_local = valid_geometry;
     for (auto& child: view->children()) {
-        glBindVertexArray(*vao);
-
-        // Position attribute.
-        glBindBuffer(GL_ARRAY_BUFFER, (vbo)[0]);
-        glBufferData(GL_ARRAY_BUFFER,
-            sizeof(vertices),
-            vertices,
-            GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(0);
-
-        // Texture coord attribute.
-        glBindBuffer(GL_ARRAY_BUFFER, (vbo)[1]);
-        glBufferData(GL_ARRAY_BUFFER,
-            sizeof(tex_coord),
-            tex_coord,
-            GL_STATIC_DRAW);
-
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(1);
-
         // Set uniforms.
         this->_set_uniform_fillType(child->fill_type());
 
@@ -687,8 +665,6 @@ void SurfaceImpl::_recursive(View *view, GLuint *vao, GLuint *vbo,
             this->_set_uniform_validGeometry(valid_geometry_local.value());
         }
 
-        glBindVertexArray(*vao);
-
         int parent_x = view->x();
         int parent_y = view->y();
 
@@ -702,7 +678,7 @@ void SurfaceImpl::_recursive(View *view, GLuint *vao, GLuint *vbo,
 
         // Call recursive.
         if (child->children().length() != 0) {
-            this->_recursive(child, vao, vbo, valid_geometry_local);
+            this->_recursive(child, valid_geometry_local);
         }
     }
 }
@@ -739,8 +715,30 @@ void SurfaceImpl::_draw_frame()
     GLuint vbo[2];
     glGenBuffers(2, vbo);
 
+    glBindVertexArray(vao);
+
+    // Position attribute.
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER,
+        sizeof(vertices),
+        vertices,
+        GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // Texture coord attribute.
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER,
+        sizeof(tex_coord),
+        tex_coord,
+        GL_STATIC_DRAW);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray(1);
+
     this->_set_uniform_resolution(this->m_rootView->geometry().size());
-    this->_recursive(this->m_rootView, &vao, vbo, std::nullopt);
+    this->_recursive(this->m_rootView, std::nullopt);
 
     this->swapBuffers();
 

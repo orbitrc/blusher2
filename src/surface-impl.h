@@ -138,7 +138,7 @@ private:
 private:
     void _init_program();
     /// Using `_recursive` itself.
-    void _recursive(View *view, GLuint *vao, GLuint *vbo,
+    void _recursive(View *view,
             std::optional<Rect> valid_geometry);
     /// Using `_recursive`.
     void _draw_frame();
