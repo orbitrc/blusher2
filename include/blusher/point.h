@@ -19,6 +19,8 @@ private:
     double _y;
 };
 
+Point operator+(const Point& p1, const Point& p2);
+
 } // namespace bl
 
 #endif // _BL_POINT_H

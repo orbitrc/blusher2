@@ -642,7 +642,8 @@ void SurfaceImpl::_init_program()
 }
 
 void SurfaceImpl::_recursive(View *view,
-        std::optional<Rect> valid_geometry)
+        std::optional<Rect> valid_geometry,
+        Point relative_position)
 {
     auto valid_geometry_local = valid_geometry;
     for (auto& child: view->children()) {
@@ -667,8 +668,8 @@ void SurfaceImpl::_recursive(View *view,
             this->_set_uniform_validGeometry(valid_geometry_local.value());
         }
 
-        int parent_x = view->x();
-        int parent_y = view->y();
+        int parent_x = relative_position.x();
+        int parent_y = relative_position.y();
 
         int viewport_x = parent_x + child->x();
         int viewport_y = this->height()
@@ -680,7 +681,8 @@ void SurfaceImpl::_recursive(View *view,
 
         // Call recursive.
         if (child->children().length() != 0) {
-            this->_recursive(child, valid_geometry_local);
+            this->_recursive(child, valid_geometry_local,
+                relative_position + Point(child->x(), child->y()));
         }
     }
 }
@@ -741,7 +743,7 @@ void SurfaceImpl::_draw_frame()
 
     // Set uniform resolution as the surface's size.
     this->_set_uniform_resolution(this->m_rootView->geometry().size());
-    this->_recursive(this->m_rootView, std::nullopt);
+    this->_recursive(this->m_rootView, std::nullopt, {0.0, 0.0});
 
     this->swapBuffers();
 

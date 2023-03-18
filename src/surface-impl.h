@@ -139,7 +139,8 @@ private:
     void _init_program();
     /// Using `_recursive` itself.
     void _recursive(View *view,
-            std::optional<Rect> valid_geometry);
+            std::optional<Rect> valid_geometry,
+            Point relative_position);
     /// Using `_recursive`.
     void _draw_frame();
     void _egl_update(bool hide = false);
