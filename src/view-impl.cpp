@@ -161,6 +161,11 @@ void ViewImpl::drawImage(uint64_t x, uint64_t y, const Image& image)
     this->m_image->add(image, x, y);
 }
 
+const Image& ViewImpl::image() const
+{
+    return *this->m_image;
+}
+
 void ViewImpl::appendChild(View *view)
 {
     (void)view;

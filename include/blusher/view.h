@@ -80,6 +80,10 @@ public:
 
     void draw_image(const Point& pos, const Image& image);
 
+    /// Get the underlying image of this view.
+    /// Only Valid when FillType::Image.
+    const Image& image() const;
+
     pr::Vector<View*> children() const;
 
     View* child_at(const Point& pos);

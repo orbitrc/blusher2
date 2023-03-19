@@ -36,7 +36,6 @@
 #include <blusher/gl/shader.h>
 
 #include "application-impl.h"
-#include "view-impl.h"
 #include "egl-utils.h"
 
 //================
@@ -63,90 +62,6 @@ GLfloat tex_coord[] = {
     1.0f, 0.0f,
     1.0f, 1.0f,
 };
-
-static void texture_function(
-        GLuint program_object,
-        const bl::Image& image,
-        uint64_t width, uint64_t height)
-{
-    /*
-    fprintf(stderr, "[LOG] texture_function() - width height: %ldx%ld\n",
-        width, height);
-    */
-
-    // Convert image format.
-    bl::Image rgba32_image = image.converted(bl::Image::Format::Rgba32);
-
-    // Set the viewport.
-    glViewport(
-        0, 0,
-        width, height
-    );
-
-    // Clear the color buffer.
-    glClearColor(0.5, 0.5, 0.5, 0.8);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Use the program object.
-    glUseProgram(program_object);
-
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    GLuint ebo;
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-        GL_STATIC_DRAW);
-
-    GLuint vbo[2];
-    glGenBuffers(2, vbo);
-
-    // Position attribute.
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
-        GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // Texture coord attribute.
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(tex_coord), tex_coord,
-        GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    glEnableVertexAttribArray(1);
-
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_RGBA,
-        image.width(),      // width.
-        image.height(),     // height.
-        0,
-        GL_RGBA,
-        GL_UNSIGNED_BYTE,
-        rgba32_image.data()
-    );
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
-
-    // Free resources.
-    glDeleteTextures(1, &texture);
-    glDeleteBuffers(2, vbo);
-    glDeleteBuffers(1, &ebo);
-    glDeleteBuffers(1, &vao);
-}
 
 namespace bl {
 
@@ -554,8 +469,32 @@ void SurfaceImpl::_set_uniform_fillColor(Color color)
     );
 }
 
-void SurfaceImpl::_set_uniform_textureIn()
-{}
+void SurfaceImpl::_set_uniform_textureIn(const Image& image)
+{
+    auto rgba32_image = image.converted(Image::Format::Rgba32);
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGBA,
+        image.width(),      // width.
+        image.height(),     // height.
+        0,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        rgba32_image.data()
+    );
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+}
 
 void SurfaceImpl::_set_uniform_parentPosition(Point position)
 {
@@ -653,7 +592,7 @@ void SurfaceImpl::_recursive(View *view,
         if (child->fill_type() == View::FillType::Color) {
             this->_set_uniform_fillColor(child->color());
         } else if (child->fill_type() == View::FillType::Image) {
-            // TODO: Texture.
+            this->_set_uniform_textureIn(child->image());
         }
 
         this->_set_uniform_parentPosition({view->x(), view->y()});

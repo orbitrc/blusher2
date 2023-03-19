@@ -45,6 +45,8 @@ public:
 
     void drawImage(uint64_t x, uint64_t y, const Image& image);
 
+    const Image& image() const;
+
     void appendChild(View *view);
 
 signals:

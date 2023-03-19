@@ -131,6 +131,11 @@ void View::draw_image(const Point& pos, const Image& image)
     this->_painted = false;
 }
 
+const Image& View::image() const
+{
+    return this->_impl->image();
+}
+
 pr::Vector<View*> View::children() const
 {
     return this->_children;

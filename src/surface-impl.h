@@ -125,7 +125,7 @@ private:
     /// Set uniform variable `fillColor`.
     void _set_uniform_fillColor(Color color);
     /// Set uniform texture.
-    void _set_uniform_textureIn();
+    void _set_uniform_textureIn(const Image& image);
     /// Set uniform variable `parentPosition`.
     void _set_uniform_parentPosition(Point position);
     /// Set uniform variable `parentSize`.
