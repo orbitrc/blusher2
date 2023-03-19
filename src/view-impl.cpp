@@ -154,6 +154,10 @@ Color ViewImpl::color() const
 
 void ViewImpl::drawImage(uint64_t x, uint64_t y, const Image& image)
 {
+    if (this->fill_type() != View::FillType::Image) {
+        fprintf(stderr, "[WARN] View - fill_type is not Image.\n");
+        return;
+    }
     this->m_image->add(image, x, y);
 }
 
