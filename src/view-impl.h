@@ -18,7 +18,6 @@ class View;
 class ViewImpl : public QObject
 {
     Q_OBJECT
-    friend SurfaceImpl;
     friend View;
 public:
     ViewImpl(QObject *parent = nullptr);
