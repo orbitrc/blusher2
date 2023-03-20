@@ -42,15 +42,11 @@ namespace bl {
 
 class Surface;
 
-class SurfaceImpl : public QObject
+class SurfaceImpl
 {
-    Q_OBJECT
-
 public:
 
-public:
-
-    SurfaceImpl(Surface *surface, QObject *parent = nullptr);
+    SurfaceImpl(Surface *surface);
     ~SurfaceImpl();
 
     uint32_t x() const;
@@ -103,11 +99,11 @@ public:
     //==================
     struct wl_surface* wlSurface() const;
 
-public slots:
+public:
     void update();
 
 protected:
-    bool event(QEvent *event) override;
+    bool event(QEvent *event);
     void exposeEvent(QExposeEvent *event);
 
 private:

@@ -65,8 +65,7 @@ GLfloat tex_coord[] = {
 
 namespace bl {
 
-SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
-    : QObject(parent)
+SurfaceImpl::SurfaceImpl(Surface *surface)
 {
     this->m_x = 0;
     this->m_y = 0;
@@ -97,10 +96,12 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     this->_shm_data_size = 0;
 
     if (this->isToplevel() != true) {
+        /*
         this->_wl_subsurface = app_impl->subcompositor()->get_subsurface(
             this->m_blSurface->wl_surface(),
             static_cast<SurfaceImpl*>(this->parent())->m_blSurface->wl_surface()
         );
+        */
     }
 
     //============
@@ -267,7 +268,7 @@ void SurfaceImpl::show()
         // wl_surface_attach(this->_surface, this->_buffer, 0, 0);
         const_cast<WlSurface&>(this->m_blSurface->wl_surface()).commit();
 
-        if (this->parent() != nullptr) {
+        if (this->m_blSurface->parent() != nullptr) {
             const_cast<WlSurface&>(this->m_blSurface->parent()->wl_surface()).commit();
         }
 
@@ -276,7 +277,7 @@ void SurfaceImpl::show()
 
         QRegion q_region;
         QExposeEvent event(q_region);
-        QCoreApplication::sendEvent(this, &event);
+        // QCoreApplication::sendEvent(this, &event);
     }
 }
 
@@ -312,12 +313,12 @@ void SurfaceImpl::placeBelow(SurfaceImpl *surface_impl)
 
 bool SurfaceImpl::toplevel() const
 {
-    return this->parent() == nullptr;
+    return false; // this->parent() == nullptr;
 }
 
 bool SurfaceImpl::isToplevel() const
 {
-    return this->parent() == nullptr;
+    return false; // this->parent() == nullptr;
 }
 
 Surface* SurfaceImpl::surface()
@@ -770,7 +771,7 @@ bool SurfaceImpl::event(QEvent *event)
         this->paint();
     }
 
-    return QObject::event(event);
+    return false; // QObject::event(event);
 }
 
 void SurfaceImpl::exposeEvent(QExposeEvent *event)

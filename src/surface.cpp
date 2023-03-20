@@ -27,7 +27,7 @@ Surface::Surface(Surface *parent)
     this->_wl_subsurface = nullptr;
 
     if (parent != nullptr) {
-        this->_impl = new SurfaceImpl(this, parent->_impl);
+        this->_impl = new SurfaceImpl(this);
         this->_type = Surface::Type::Subsurface;
     } else {
         this->_impl = new SurfaceImpl(this);
