@@ -7,8 +7,7 @@
 
 namespace bl {
 
-ViewImpl::ViewImpl(QObject *parent)
-    : QObject(parent)
+ViewImpl::ViewImpl()
 {
     this->m_x = 0.0;
     this->m_y = 0.0;
@@ -22,11 +21,6 @@ ViewImpl::ViewImpl(QObject *parent)
 
     this->m_composedImage = new Image(this->m_width, this->m_height);
     this->m_composedImage->fill(Color::from_rgba(0, 0, 0, 0));
-
-    QObject::connect(this, &ViewImpl::colorChanged,
-                     this, [this]() {
-        this->update();
-    });
 }
 
 ViewImpl::~ViewImpl()

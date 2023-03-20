@@ -53,6 +53,7 @@ public:
 
 public:
     View(View *parent = nullptr);
+    ~View();
 
     double x() const;
     double y() const;

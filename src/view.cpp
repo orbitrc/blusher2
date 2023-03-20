@@ -13,11 +13,7 @@ namespace bl {
 
 View::View(View *parent)
 {
-    if (parent != nullptr) {
-        this->_impl = new ViewImpl(parent->_impl);
-    } else {
-        this->_impl = new ViewImpl();
-    }
+    this->_impl = new ViewImpl();
 
     this->_parent = parent;
 
@@ -40,6 +36,11 @@ View::View(View *parent)
 
     this->_state = View::State::Normal;
     this->_painted = false;
+}
+
+View::~View()
+{
+    delete this->_impl;
 }
 
 double View::x() const

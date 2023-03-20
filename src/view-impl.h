@@ -1,9 +1,6 @@
 #ifndef VIEW_IMPL_H
 #define VIEW_IMPL_H
 
-// Qt
-#include <QObject>
-
 // Blusher
 #include <blusher/view.h>
 #include <blusher/color.h>
@@ -15,12 +12,11 @@ class SurfaceImpl;
 
 class View;
 
-class ViewImpl : public QObject
+class ViewImpl
 {
-    Q_OBJECT
     friend View;
 public:
-    ViewImpl(QObject *parent = nullptr);
+    ViewImpl();
     ~ViewImpl();
 
     double x() const;
@@ -48,10 +44,7 @@ public:
 
     void appendChild(View *view);
 
-signals:
-    void colorChanged();
-
-private slots:
+private:
     /// Resize composed image and compose it's children views.
     void update();
 
