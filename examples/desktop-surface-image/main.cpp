@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
     bl::Image image("brc:/io.orbitrc.blusher/sample.png"_S);
 
     bl::View image_view(&view);
+    image_view.set_position({10, 10});
     image_view.set_size({150, 150});
     image_view.set_fill_type(bl::View::FillType::Image);
     image_view.draw_image({0, 0}, image);

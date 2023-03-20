@@ -267,6 +267,12 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
 
     // View.
     auto root_view = this->_impl->rootView();
+
+    app->event_dispatcher()->post_event(root_view, event);
+    return;
+
+    // Do below on the root view.
+
     View *view = root_view->child_at(Point(x, y));
     if (view != nullptr) {
         // Send pointer enter event to view.

@@ -307,7 +307,9 @@ void View::pointer_move_event(std::shared_ptr<PointerEvent> event)
         app->event_dispatcher()->post_event(child, evt);
         return;
     }
-    fprintf(stderr, "POINTER MOVE %s\n", this->debug_id().c_str());
+    fprintf(stderr, "POINTER MOVE %s - (%f, %f)\n",
+        this->debug_id().c_str(),
+        x, y);
 }
 
 void View::update_event(std::shared_ptr<UpdateEvent> event)
