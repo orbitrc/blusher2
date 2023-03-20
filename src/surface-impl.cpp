@@ -783,19 +783,4 @@ void SurfaceImpl::exposeEvent(QExposeEvent *event)
 //    }
 }
 
-void SurfaceImpl::mouseMoveEvent(QMouseEvent *event)
-{
-    (void)event;
-}
-
-void SurfaceImpl::mousePressEvent(QMouseEvent *event)
-{
-    (void)event;
-}
-
-void SurfaceImpl::mouseReleaseEvent(QMouseEvent *event)
-{
-    (void)event;
-}
-
 } // namespace bl

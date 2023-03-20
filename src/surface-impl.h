@@ -106,14 +106,9 @@ public:
 public slots:
     void update();
 
-private slots:
-
 protected:
     bool event(QEvent *event) override;
     void exposeEvent(QExposeEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     //===============
