@@ -25,7 +25,6 @@ class DesktopSurface;
 
 class Application
 {
-    friend class ApplicationImpl;
 public:
     Application(int argc, char *argv[]);
     ~Application();
