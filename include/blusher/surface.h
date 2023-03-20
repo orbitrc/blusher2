@@ -126,7 +126,6 @@ protected:
     //===============
 
 private:
-    void on_clicked();
     void pointer_enter_handler();
     void pointer_leave_handler();
     void pointer_press_handler(uint32_t impl_button, double x, double y);

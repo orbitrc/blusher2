@@ -200,14 +200,6 @@ void Surface::resize_event(std::shared_ptr<ResizeEvent> event)
     (void)event;
 }
 
-//=================
-// Private Slots
-//=================
-
-void Surface::on_clicked()
-{
-}
-
 //==================
 // Private Methods
 //==================
