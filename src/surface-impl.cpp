@@ -74,8 +74,6 @@ SurfaceImpl::SurfaceImpl(Surface *surface, QObject *parent)
     this->m_height = 100.0;
 
     // Initialize.
-    this->_toplevel_maximized = false;
-
     this->_wl_subsurface = nullptr;
 
     this->m_blSurface = surface;

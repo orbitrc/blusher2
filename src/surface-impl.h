@@ -176,11 +176,6 @@ private:
     int _shm_fd;
     void *_shm_data;
     uint64_t _shm_data_size;
-
-    //===========================
-    // Toplevel surface states
-    //===========================
-    bool _toplevel_maximized;
 };
 
 } // namespace bl
