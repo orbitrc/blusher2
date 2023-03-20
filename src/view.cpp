@@ -25,7 +25,7 @@ View::View(View *parent)
     }
 
     // View reference for ViewImpl.
-    this->_impl->m_view = this;
+    this->_impl->_view = this;
 
     // Initialize.
     if (parent != nullptr) {
@@ -297,20 +297,7 @@ void View::pointer_double_click_event(std::shared_ptr<PointerEvent> event)
 
 void View::pointer_move_event(std::shared_ptr<PointerEvent> event)
 {
-    auto x = event->x();
-    auto y = event->y();
-    View *child = this->child_at(Point(x, y));
-    if (child != nullptr) {
-        auto child_x = x - child->x();
-        auto child_y = y - child->y();
-        auto evt = std::make_shared<PointerEvent>(Event::Type::PointerMove,
-            event->button(), child_x, child_y);
-        app->event_dispatcher()->post_event(child, evt);
-        return;
-    }
-    fprintf(stderr, "POINTER MOVE %s - (%f, %f)\n",
-        this->debug_id().c_str(),
-        x, y);
+    this->_impl->process_pointer_move_event(event);
 }
 
 void View::update_event(std::shared_ptr<UpdateEvent> event)

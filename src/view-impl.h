@@ -1,6 +1,9 @@
 #ifndef VIEW_IMPL_H
 #define VIEW_IMPL_H
 
+// C++
+#include <memory.h>
+
 // Blusher
 #include <blusher/view.h>
 #include <blusher/color.h>
@@ -44,6 +47,8 @@ public:
 
     void appendChild(View *view);
 
+    void process_pointer_move_event(std::shared_ptr<PointerEvent>);
+
 private:
     /// Resize composed image and compose it's children views.
     void update();
@@ -54,7 +59,7 @@ private:
     double m_width;
     double m_height;
 
-    View *m_view;
+    View *_view;
 
     View::FillType _fill_type;
 

@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include <blusher/view.h>
+#include <blusher/application.h>
 
 namespace bl {
 
@@ -53,7 +54,7 @@ void ViewImpl::setX(double x)
     if (this->m_x != x) {
         this->m_x = x;
 
-        this->m_view->update();
+        this->_view->update();
     }
 }
 
@@ -62,7 +63,7 @@ void ViewImpl::setY(double y)
     if (this->m_y != y) {
         this->m_y = y;
 
-        this->m_view->update();
+        this->_view->update();
     }
 }
 
@@ -79,7 +80,7 @@ void ViewImpl::setPosition(double x, double y)
     }
 
     if (old_x != x || old_y != y) {
-        this->m_view->update();
+        this->_view->update();
     }
 }
 
@@ -166,6 +167,25 @@ void ViewImpl::appendChild(View *view)
     this->update();
 }
 
+void ViewImpl::process_pointer_move_event(
+        std::shared_ptr<PointerEvent> event)
+{
+    auto x = event->x();
+    auto y = event->y();
+    View *child = this->_view->child_at(Point(x, y));
+    if (child != nullptr) {
+        auto child_x = x - child->x();
+        auto child_y = y - child->y();
+        auto evt = std::make_shared<PointerEvent>(Event::Type::PointerMove,
+            event->button(), child_x, child_y);
+        app->event_dispatcher()->post_event(child, evt);
+        return;
+    }
+    fprintf(stderr, "POINTER MOVE %s - (%f, %f)\n",
+        this->_view->debug_id().c_str(),
+        x, y);
+}
+
 //=================
 // Private Slots
 //=================
@@ -181,7 +201,7 @@ void ViewImpl::update()
     }
     this->m_composedImage->fill(Color::from_rgba(0, 0, 0, 0));
     this->m_composedImage->add(*this->m_image, 0, 0);
-    for (auto& child: this->m_view->_children) {
+    for (auto& child: this->_view->_children) {
         this->m_composedImage->add(*(child->_impl->m_composedImage),
             child->x(), child->y());
     }
