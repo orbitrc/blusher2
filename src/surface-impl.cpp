@@ -12,22 +12,13 @@
 // libinput
 #include <linux/input.h>
 
-// Qt
-#include <QResizeEvent>
-
 // Primer
 #include <primer/vector.h>
 
 // Blusher
 #include <blusher/application.h>
 #include <blusher/resource.h>
-#ifdef emit
-#undef emit
-#endif
 #include <blusher/surface.h>
-#ifndef emit
-#define emit Q_EMIT
-#endif
 #include <blusher/utils.h>
 #include <blusher/image.h>
 #include <blusher/view.h>
@@ -275,8 +266,8 @@ void SurfaceImpl::show()
         fprintf(stderr, "EGL and OpenGL\n");
         this->m_blSurface->request_update();
 
-        QRegion q_region;
-        QExposeEvent event(q_region);
+        // QRegion q_region;
+        // QExposeEvent event(q_region);
         // QCoreApplication::sendEvent(this, &event);
     }
 }
@@ -764,6 +755,7 @@ void SurfaceImpl::_egl_update(bool hide)
 // Events
 //===========
 
+/*
 bool SurfaceImpl::event(QEvent *event)
 {
     if (event->type() == QEvent::Expose) {
@@ -783,5 +775,6 @@ void SurfaceImpl::exposeEvent(QExposeEvent *event)
 //        this->paint();
 //    }
 }
+*/
 
 } // namespace bl

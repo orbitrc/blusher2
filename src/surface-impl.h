@@ -9,11 +9,6 @@
 #include <memory>
 #include <optional>
 
-// Qt
-#include <QObject>
-#include <QExposeEvent>
-#include <QMouseEvent>
-
 // Wayland
 #include <wayland-client.h>
 #include <wayland-egl.h>
@@ -103,8 +98,10 @@ public:
     void update();
 
 protected:
+    /*
     bool event(QEvent *event);
     void exposeEvent(QExposeEvent *event);
+    */
 
 private:
     //===============
