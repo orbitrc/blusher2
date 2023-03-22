@@ -8,6 +8,8 @@
 
 namespace bl {
 
+View* ViewImpl::_pointer_entered_view = nullptr;
+
 ViewImpl::ViewImpl()
 {
     this->m_x = 0.0;
@@ -181,6 +183,14 @@ void ViewImpl::process_pointer_move_event(
         app->event_dispatcher()->post_event(child, evt);
         return;
     }
+    // Pointer enter event.
+    if (this->_view != ViewImpl::_pointer_entered_view) {
+        auto evt = std::make_shared<PointerEvent>(Event::Type::PointerEnter,
+            event->button(), 0, 0);
+        app->event_dispatcher()->post_event(this->_view, evt);
+        ViewImpl::_pointer_entered_view = this->_view;
+    }
+
     fprintf(stderr, "POINTER MOVE %s - (%f, %f)\n",
         this->_view->debug_id().c_str(),
         x, y);

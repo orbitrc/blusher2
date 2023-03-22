@@ -67,6 +67,8 @@ private:
 
     Image *m_image;
     Image *m_composedImage;
+
+    static View *_pointer_entered_view;
 };
 
 } // namespace bl
