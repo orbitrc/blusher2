@@ -183,12 +183,26 @@ void ViewImpl::process_pointer_move_event(
         app->event_dispatcher()->post_event(child, evt);
         return;
     }
-    // Pointer enter event.
+    // Pointer enter/leave event.
     if (this->_view != ViewImpl::_pointer_entered_view) {
-        auto evt = std::make_shared<PointerEvent>(Event::Type::PointerEnter,
-            event->button(), 0, 0);
-        app->event_dispatcher()->post_event(this->_view, evt);
-        ViewImpl::_pointer_entered_view = this->_view;
+        auto leave_view = ViewImpl::_pointer_entered_view;
+        // Enter event.
+        {
+            auto evt = std::make_shared<PointerEvent>(Event::Type::PointerEnter,
+                event->button(), 0, 0);
+            app->event_dispatcher()->post_event(this->_view, evt);
+            ViewImpl::_pointer_entered_view = this->_view;
+        }
+        // Leave event.
+        {
+            if (leave_view == nullptr) {
+                return;
+            }
+            auto evt = std::make_shared<PointerEvent>(Event::Type::PointerLeave,
+                event->button(), 0, 0);
+            app->event_dispatcher()->post_event(
+                leave_view, evt);
+        }
     }
 
     fprintf(stderr, "POINTER MOVE %s - (%f, %f)\n",

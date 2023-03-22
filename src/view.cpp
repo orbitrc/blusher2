@@ -232,6 +232,12 @@ void View::pointer_enter_event(std::shared_ptr<PointerEvent> event)
 void View::pointer_leave_event(std::shared_ptr<PointerEvent> event)
 {
     (void)event;
+    if (this->_debug_id == ""_S) {
+        fprintf(stderr, "View::pointer_leave_event() - %p\n", this);
+    } else {
+        fprintf(stderr, "View::pointer_leave_event() - %s\n",
+            this->debug_id().c_str());
+    }
 }
 
 void View::pointer_press_event(std::shared_ptr<PointerEvent> event)
