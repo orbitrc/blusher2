@@ -74,6 +74,9 @@ public:
 
     pr::Vector<Surface*> children() const;
 
+    View* entered_view() const;
+    void set_entered_view(View *view);
+
     void callPointerEnterHandler();
     void callPointerLeaveHandler();
     void callPointerPressHandler(uint32_t button, double x, double y);
@@ -146,6 +149,9 @@ private:
     bool _updating;
 
     Surface *m_blSurface;
+
+    /// Currently pointer entered view.
+    View *_entered_view;
 
     //=================
     // Wayland client

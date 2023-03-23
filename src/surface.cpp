@@ -226,6 +226,11 @@ void Surface::pointer_leave_handler()
         button, 0, 0);
 
     this->pointer_leave_event(event);
+
+    // Send leave event to last entered view.
+    View *entered_view = this->entered_view();
+    this->set_entered_view(nullptr);
+    app->event_dispatcher()->post_event(entered_view, event);
 }
 
 void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
@@ -339,6 +344,17 @@ void Surface::resize_handler(int32_t width, int32_t height,
         std::make_shared<ResizeEvent>(size, old_size);
 
     this->resize_event(event);
+}
+
+
+View* Surface::entered_view() const
+{
+    return this->_impl->entered_view();
+}
+
+void Surface::set_entered_view(View *view)
+{
+    this->_impl->set_entered_view(view);
 }
 
 } // namespace bl

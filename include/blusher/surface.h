@@ -108,6 +108,13 @@ public:
     std::shared_ptr<WlSubsurface> wl_subsurface();
 
 public:
+    /// Pointer entered view. For Surface and View internal only.
+    View* entered_view() const;
+
+    /// Set pointer entered view. For Surface and View internal only.
+    void set_entered_view(View *view);
+
+public:
     Signal<> color_changed;
     Signal<> clicked;
 

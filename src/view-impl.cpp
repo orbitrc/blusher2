@@ -5,10 +5,9 @@
 
 #include <blusher/view.h>
 #include <blusher/application.h>
+#include <blusher/surface.h>
 
 namespace bl {
-
-View* ViewImpl::_pointer_entered_view = nullptr;
 
 ViewImpl::ViewImpl()
 {
@@ -184,14 +183,14 @@ void ViewImpl::process_pointer_move_event(
         return;
     }
     // Pointer enter/leave event.
-    if (this->_view != ViewImpl::_pointer_entered_view) {
-        auto leave_view = ViewImpl::_pointer_entered_view;
+    if (this->_view != this->_view->surface()->entered_view()) {
+        auto leave_view = this->_view->surface()->entered_view();
         // Enter event.
         {
             auto evt = std::make_shared<PointerEvent>(Event::Type::PointerEnter,
                 event->button(), 0, 0);
             app->event_dispatcher()->post_event(this->_view, evt);
-            ViewImpl::_pointer_entered_view = this->_view;
+            this->_view->surface()->set_entered_view(this->_view);
         }
         // Leave event.
         {

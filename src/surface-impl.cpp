@@ -68,6 +68,8 @@ SurfaceImpl::SurfaceImpl(Surface *surface)
 
     this->m_blSurface = surface;
 
+    this->_entered_view = nullptr;
+
     this->m_visible = false;
 
     this->m_rootView = new View();
@@ -749,6 +751,16 @@ void SurfaceImpl::_egl_update(bool hide)
     this->makeCurrent(true);
 
     this->m_blSurface->_update_requested = false;
+}
+
+View* SurfaceImpl::entered_view() const
+{
+    return this->_entered_view;
+}
+
+void SurfaceImpl::set_entered_view(View *view)
+{
+    this->_entered_view = view;
 }
 
 //===========
