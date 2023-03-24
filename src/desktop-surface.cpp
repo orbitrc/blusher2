@@ -110,7 +110,7 @@ DesktopSurface::DesktopSurface(DesktopSurface::Role role,
     // Wait for the surface to be configured.
     app_impl->display()->roundtrip();
 
-    this->_xdg_surface->set_window_geometry(0, 0, 200, 200);
+    // this->_xdg_surface->set_window_geometry(0, 0, 200, 200);
 
     if (parent == nullptr) {
         //
@@ -188,7 +188,7 @@ void DesktopSurface::toplevel_restore()
 
 void DesktopSurface::set_size(uint32_t width, uint32_t height)
 {
-    this->_xdg_surface->set_window_geometry(0, 0, width, height);
+    // this->_xdg_surface->set_window_geometry(0, 0, width, height);
 
     Surface::set_size(width, height);
 }
