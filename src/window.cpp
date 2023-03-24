@@ -56,6 +56,12 @@ Window::Window()
     this->_title_bar->set_window(this);
 
     this->set_geometry(0, 0, 300, 300);
+    this->set_geometry_hint(Rect(
+        BLUSHER_SHADOW_WIDTH - BLUSHER_BORDER_WIDTH,
+        BLUSHER_SHADOW_WIDTH - BLUSHER_BORDER_WIDTH,
+        this->width(),
+        this->height()
+    ));
 
 //    this->_border->place_below(this->_body);
 
@@ -95,7 +101,7 @@ void Window::show()
 //    this->_resize->show();
 
     // Set geometry hint.
-    this->set_geometry_hint(Rect(0, 0, this->width(), this->height()));
+    // this->set_geometry_hint(Rect(0, 0, this->width(), this->height()));
 }
 
 void Window::move()
@@ -246,7 +252,10 @@ void Window::resize_event(std::shared_ptr<ResizeEvent> event)
     this->_body->set_size(this->_body_size());
 
     // Update geometry hint.
-    this->set_geometry_hint(Rect(0, 0, this->width(), this->height()));
+    this->set_geometry_hint(Rect(
+        BLUSHER_SHADOW_WIDTH - BLUSHER_BORDER_WIDTH,
+        BLUSHER_SHADOW_WIDTH - BLUSHER_BORDER_WIDTH,
+        this->width(), this->height()));
 
     return Surface::resize_event(event);
 }

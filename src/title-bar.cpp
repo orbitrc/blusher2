@@ -108,6 +108,8 @@ TitleBarButton::TitleBarButton(View *parent)
 {
     this->_close_image = nullptr;
 
+    this->set_fill_type(View::FillType::Image);
+
     this->set_debug_id("Title bar button"_S);
 
     this->set_width(26);

@@ -36,10 +36,8 @@ static void xdg_toplevel_configure_handler(void *data,
     // assert(xdg_toplevel == surface_impl->_xdg_toplevel);
 
     (void)xdg_toplevel;
-    /*
     fprintf(stderr, "[LOG] xdg_toplevel_configure_handler - size: %dx%d\n",
         width, height);
-    */
     // TODO: implement
 
     pr::Vector<bl::XdgToplevel::State> states_v =
