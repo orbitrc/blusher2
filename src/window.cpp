@@ -144,7 +144,6 @@ void Window::update_decoration()
     this->_decoration->set_height(DesktopSurface::height());
     this->_decoration->fill(Color::from_rgba(0, 0, 0, 100));
     this->_decoration->paint();
-    this->_decoration->update();
 }
 
 void Window::update_resize()
@@ -161,7 +160,6 @@ void Window::update_resize()
     this->_resize->set_size(Size(this->width() - 20, this->height() - 20));
     this->_resize->fill(Color::from_rgba(255, 0, 0, 100));
     this->_resize->paint();
-    this->_resize->update();
 }
 
 void Window::update_border()
