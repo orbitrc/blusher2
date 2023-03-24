@@ -27,6 +27,8 @@ public:
 
     void close();
 
+    const Rect& geometry_hint() const;
+
     /// Sets window geomtry hint for a compositor.
     void set_geometry_hint(const Rect& geometry);
 
@@ -51,6 +53,8 @@ private:
 
     DesktopSurface::Role _role;
     DesktopSurface *_parent;
+
+    Rect _geometry_hint;
 
     bool _toplevel_maximized;
 };

@@ -51,8 +51,15 @@ static void xdg_toplevel_configure_handler(void *data,
         }
         if (desktop_surface->width() != static_cast<uint32_t>(width) ||
                 desktop_surface->height() != static_cast<uint32_t>(height)) {
-            // fprintf(stderr, "Resizing...\n");
-            desktop_surface->set_size(width, height);
+            auto hint = desktop_surface->geometry_hint();
+            if (hint.x() == 0 && hint.y() == 0 &&
+                    hint.width() == 0 && hint.height() == 0) {
+                desktop_surface->set_size(width, height);
+            } else {
+                auto width_diff = desktop_surface->width() - hint.width();
+                auto height_diff = desktop_surface->height() - hint.height();
+                desktop_surface->set_size(width + width_diff, height + height_diff);
+            }
             // surface->update();
         }
     }
@@ -78,6 +85,7 @@ namespace bl {
 
 DesktopSurface::DesktopSurface(DesktopSurface::Role role,
         DesktopSurface *parent)
+    : _geometry_hint{0, 0, 0, 0}
 {
     // Initialize.
     this->_xdg_surface = nullptr;
@@ -137,9 +145,15 @@ void DesktopSurface::close()
     app->remove_desktop_surface(this);
 }
 
+const Rect& DesktopSurface::geometry_hint() const
+{
+    return this->_geometry_hint;
+}
+
 void DesktopSurface::set_geometry_hint(const Rect& geometry)
 {
     if (this->_xdg_surface != nullptr) {
+        this->_geometry_hint = geometry;
         this->_xdg_surface->set_window_geometry(
             geometry.x(),
             geometry.y(),
