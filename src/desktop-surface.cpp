@@ -51,10 +51,10 @@ static void xdg_toplevel_configure_handler(void *data,
         if (width == 0 && height == 0) {
             return;
         }
-        if (desktop_surface->width() != width ||
-                desktop_surface->height() != height) {
+        if (desktop_surface->width() != static_cast<uint32_t>(width) ||
+                desktop_surface->height() != static_cast<uint32_t>(height)) {
             // fprintf(stderr, "Resizing...\n");
-            desktop_surface->set_geometry(0, 0, width, height);
+            desktop_surface->set_size(width, height);
             // surface->update();
         }
     }
@@ -186,6 +186,13 @@ void DesktopSurface::toplevel_restore()
     if (this->_role == DesktopSurface::Role::Toplevel) {
         this->_xdg_toplevel->unset_maximized();
     }
+}
+
+void DesktopSurface::set_size(uint32_t width, uint32_t height)
+{
+    this->_xdg_surface->set_window_geometry(0, 0, width, height);
+
+    Surface::set_size(width, height);
 }
 
 } // namespace bl

@@ -42,6 +42,8 @@ public:
     /// Restore from maximized toplevel. If the role is popup, do nothing.
     void toplevel_restore();
 
+    void set_size(uint32_t width, uint32_t height);
+
 private:
     std::shared_ptr<XdgSurface> _xdg_surface;
     std::shared_ptr<XdgToplevel> _xdg_toplevel;
