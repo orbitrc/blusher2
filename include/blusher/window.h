@@ -35,8 +35,10 @@ public:
 
     void set_title(const pr::String& title);
 
+    /// Width of this window. The shadow and resize area are not included.
     uint32_t width() const;
 
+    /// Height of this window. The shadow and resize area are not included.
     uint32_t height() const;
 
     View* body_view();
@@ -46,6 +48,8 @@ private:
     void update_resize();
     void update_border();
     void update_title_bar();
+
+    Size _body_size() const;
 
 protected:
     void resize_event(std::shared_ptr<ResizeEvent> event) override;

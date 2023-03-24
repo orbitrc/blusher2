@@ -42,12 +42,15 @@ Window::Window()
 
     // Init body.
     this->_body = new View(this->_border);
-    this->_body->set_position(Point(1, 1));
+    this->_body->set_position(Point(
+        BLUSHER_BORDER_WIDTH,
+        BLUSHER_BORDER_WIDTH + BLUSHER_TITLE_BAR_HEIGHT));
     this->_body->set_size(Size(300, 300));
     this->_body->fill(Color::from_rgb(255, 255, 255));
     this->_body->set_debug_id("WindowBody"_S);
     this->_body->paint();
 
+    // Init title bar.
     this->_title_bar = new TitleBar(this->_border);
     this->_title_bar->set_body(this);
     this->_title_bar->set_window(this);
@@ -65,11 +68,11 @@ Window::Window()
     // Init title bar.
     this->update_title_bar();
 
-    // Init border.
-    this->update_border();
-
     // Init resize.
     this->update_resize();
+
+    // Init border.
+    this->update_border();
 
     // Init decoration.
     this->update_decoration();
@@ -118,12 +121,16 @@ void Window::set_title(const pr::String& title)
 
 uint32_t Window::width() const
 {
-    return DesktopSurface::width() - BLUSHER_SHADOW_WIDTH;
+    return DesktopSurface::width()
+        - (BLUSHER_SHADOW_WIDTH * 2)
+        + (BLUSHER_BORDER_WIDTH * 2);
 }
 
 uint32_t Window::height() const
 {
-    return DesktopSurface::height() - BLUSHER_SHADOW_WIDTH;
+    return DesktopSurface::height()
+        - (BLUSHER_SHADOW_WIDTH * 2)
+        + (BLUSHER_BORDER_WIDTH * 2);
 }
 
 //====================
@@ -156,8 +163,16 @@ void Window::update_resize()
         this->height() + (BLUSHER_RESIZE_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
     */
-    this->_resize->set_position(Point(40, 40));
-    this->_resize->set_size(Size(this->width() - 20, this->height() - 20));
+    this->_resize->set_position(Point(
+        BLUSHER_SHADOW_WIDTH - BLUSHER_RESIZE_WIDTH,
+        BLUSHER_SHADOW_WIDTH - BLUSHER_RESIZE_WIDTH));
+    float width = DesktopSurface::width()
+        - (BLUSHER_SHADOW_WIDTH * 2)
+        + (BLUSHER_RESIZE_WIDTH * 2);
+    float height = DesktopSurface::height()
+        - (BLUSHER_SHADOW_WIDTH * 2)
+        + (BLUSHER_RESIZE_WIDTH * 2);
+    this->_resize->set_size(Size(width, height));
     this->_resize->fill(Color::from_rgba(255, 0, 0, 100));
     this->_resize->paint();
 }
@@ -172,8 +187,17 @@ void Window::update_border()
         this->height() + (BLUSHER_BORDER_WIDTH * 2) + BLUSHER_TITLE_BAR_HEIGHT
     );
     */
-    this->_border->set_position(Point(BLUSHER_RESIZE_WIDTH, BLUSHER_RESIZE_WIDTH));
-    this->_border->set_size(Size(100, 100));
+    // Border is child of the resize.
+    this->_border->set_position(Point(
+        BLUSHER_RESIZE_WIDTH - BLUSHER_BORDER_WIDTH,
+        BLUSHER_RESIZE_WIDTH - BLUSHER_BORDER_WIDTH));
+    float width = this->_resize->width()
+        - (BLUSHER_RESIZE_WIDTH * 2)
+        + (BLUSHER_BORDER_WIDTH * 2);
+    float height = this->_resize->height()
+        - (BLUSHER_RESIZE_WIDTH * 2)
+        + (BLUSHER_BORDER_WIDTH * 2);
+    this->_border->set_size(Size(width, height));
     this->_border->fill(Color::from_rgb(0, 0, 0));
     this->_border->paint();
 }
@@ -181,9 +205,21 @@ void Window::update_border()
 void Window::update_title_bar()
 {
     this->_title_bar->set_position(Point(1, 1));
-    this->_title_bar->set_size(Size(this->width(), BLUSHER_TITLE_BAR_HEIGHT));
+    this->_title_bar->set_size(Size(
+        this->width() - (BLUSHER_BORDER_WIDTH * 2),
+        BLUSHER_TITLE_BAR_HEIGHT));
     this->_title_bar->fill(Color::from_rgb(100, 100, 100));
     this->_title_bar->paint();
+}
+
+Size Window::_body_size() const
+{
+    float width = this->width() - (BLUSHER_BORDER_WIDTH * 2);
+    float height = this->height()
+        - (BLUSHER_BORDER_WIDTH * 2)
+        - BLUSHER_TITLE_BAR_HEIGHT;
+
+    return Size(width, height);
 }
 
 //===============
@@ -193,19 +229,21 @@ void Window::update_title_bar()
 void Window::resize_event(std::shared_ptr<ResizeEvent> event)
 {
     (void)event;
-    // Update body.
-    this->_body->fill(Color::from_rgb(255, 255, 255));
-    this->_body->paint();
 
-    if (this->_border != nullptr) {
-        this->update_border();
-    }
     if (this->_resize != nullptr) {
         this->update_resize();
+    }
+    if (this->_border != nullptr) {
+        this->update_border();
     }
     if (this->_decoration != nullptr) {
         this->update_decoration();
     }
+    if (this->_title_bar != nullptr) {
+        this->update_title_bar();
+    }
+    // Update body.
+    this->_body->set_size(this->_body_size());
 
     // Update geometry hint.
     this->set_geometry_hint(Rect(0, 0, this->width(), this->height()));
