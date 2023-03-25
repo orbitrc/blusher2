@@ -88,22 +88,14 @@ void ViewImpl::setPosition(double x, double y)
 void ViewImpl::setWidth(double width)
 {
     if (this->m_width != width) {
-        this->m_width = width;
-
-        this->m_image->resize(width, this->m_height);
-
-        this->update();
+        this->setSize(width, this->m_height);
     }
 }
 
 void ViewImpl::setHeight(double height)
 {
     if (this->m_height != height) {
-        this->m_height = height;
-
-        this->m_image->resize(this->m_width, height);
-
-        this->update();
+        this->setSize(this->m_width, height);
     }
 }
 
@@ -120,7 +112,9 @@ void ViewImpl::setSize(double width, double height)
     }
 
     if (old_width != width || old_height != height) {
-        this->m_image->resize(this->m_width, this->m_height);
+        if (this->_fill_type == View::FillType::Image) {
+            this->m_image->resize(this->m_width, this->m_height);
+        }
 
         this->update();
     }
