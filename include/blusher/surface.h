@@ -103,7 +103,7 @@ public:
     //=================
     // Wayland Access
     //=================
-    const WlSurface& wl_surface() const;
+    std::shared_ptr<WlSurface> wl_surface() const;
 
     std::shared_ptr<WlSubsurface> wl_subsurface();
 
@@ -143,7 +143,6 @@ private:
 
 private:
     SurfaceImpl *_impl;
-    WlSurface _wl_surface;
     std::shared_ptr<WlSubsurface> _wl_subsurface;
 
     Surface *_parent;

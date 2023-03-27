@@ -20,7 +20,6 @@
 namespace bl {
 
 Surface::Surface(Surface *parent)
-    : _wl_surface(app->wl_compositor()->create_surface())
 {
     fprintf(stderr, "Surface::Surface() - parent: %p\n", parent);
     this->_type = Surface::Type::Normal;
@@ -161,9 +160,9 @@ std::shared_ptr<PointerState> Surface::pointer_state()
     return this->_pointer_state;
 }
 
-const WlSurface& Surface::wl_surface() const
+std::shared_ptr<WlSurface> Surface::wl_surface() const
 {
-    return this->_wl_surface;
+    return this->_impl->wl_surface();
 }
 
 std::shared_ptr<WlSubsurface> Surface::wl_subsurface()

@@ -1,6 +1,8 @@
 #ifndef _BL_WL_COMPOSITOR_H
 #define _BL_WL_COMPOSITOR_H
 
+#include <memory>
+
 #include <wayland-client.h>
 
 #include <blusher/wayland/wl-surface.h>
@@ -21,7 +23,7 @@ public:
 
     struct wl_compositor* c_ptr();
 
-    WlSurface create_surface();
+    std::shared_ptr<WlSurface> create_surface();
 
     /// Returns singleton instance.
     static WlCompositor* instance();

@@ -137,8 +137,7 @@ static void pointer_enter_handler(void *data, struct wl_pointer *pointer,
     // New pointer state (per surface).
     // Find surface by wl_surface.
     for (auto surface: bl::app->surfaces()) {
-        struct wl_surface *c_ptr =
-            const_cast<bl::WlSurface&>(surface->wl_surface()).c_ptr();
+        struct wl_surface *c_ptr = surface->wl_surface()->c_ptr();
         if (c_ptr == wl_surface) {
             surface->pointer_state()->x = wl_fixed_to_double(sx);
             surface->pointer_state()->y = wl_fixed_to_double(sy);
@@ -190,8 +189,7 @@ static void pointer_motion_handler(void *data, struct wl_pointer *pointer,
     // Pointer state.
     struct wl_surface *wl_surface = bl::app_impl->pointer_state.wl_surface;
     for (auto surface: bl::app->surfaces()) {
-        struct wl_surface *c_ptr =
-            const_cast<bl::WlSurface&>(surface->wl_surface()).c_ptr();
+        struct wl_surface *c_ptr = surface->wl_surface()->c_ptr();
         if (c_ptr == wl_surface) {
             surface->pointer_state()->x = x;
             surface->pointer_state()->y = y;

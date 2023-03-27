@@ -58,6 +58,8 @@ namespace bl {
 
 SurfaceImpl::SurfaceImpl(Surface *surface)
 {
+    this->_wl_surface = app->wl_compositor()->create_surface();
+
     this->m_x = 0;
     this->m_y = 0;
     this->m_width = 100.0;
@@ -104,8 +106,9 @@ SurfaceImpl::SurfaceImpl(Surface *surface)
         (EGLNativeDisplayType)WlDisplay::instance()->c_ptr());
     this->_context = std::make_shared<gl::Context>(display);
 
+    fprintf(stderr, "[DEBUG] wl_surface: %p\n", this->_wl_surface->c_ptr());
     this->_egl_window = wl_egl_window_create(
-        const_cast<WlSurface&>(this->surface()->wl_surface()).c_ptr(),
+        this->_wl_surface->c_ptr(),
         this->width(), this->height());
 
     this->_egl_surface = eglCreateWindowSurface(
@@ -259,10 +262,10 @@ void SurfaceImpl::show()
             this->width(), this->height());
 
         // wl_surface_attach(this->_surface, this->_buffer, 0, 0);
-        const_cast<WlSurface&>(this->m_blSurface->wl_surface()).commit();
+        this->_wl_surface->commit();
 
         if (this->m_blSurface->parent() != nullptr) {
-            const_cast<WlSurface&>(this->m_blSurface->parent()->wl_surface()).commit();
+            this->m_blSurface->parent()->wl_surface()->commit();
         }
 
         fprintf(stderr, "EGL and OpenGL\n");
@@ -292,7 +295,7 @@ void SurfaceImpl::placeAbove(SurfaceImpl *surface_impl)
 {
     if (this->_wl_subsurface != nullptr) {
         this->_wl_subsurface->place_above(
-            surface_impl->surface()->wl_surface());
+            *surface_impl->surface()->wl_surface());
     }
 }
 
@@ -300,7 +303,7 @@ void SurfaceImpl::placeBelow(SurfaceImpl *surface_impl)
 {
     if (this->_wl_subsurface != nullptr) {
         this->_wl_subsurface->place_below(
-            surface_impl->surface()->wl_surface());
+            *surface_impl->surface()->wl_surface());
     }
 }
 
@@ -400,10 +403,15 @@ void SurfaceImpl::callResizeHandler(int32_t width, int32_t height,
 //==================
 // Wayland objects
 //==================
+
+std::shared_ptr<WlSurface> SurfaceImpl::wl_surface() const
+{
+    return this->_wl_surface;
+}
+
 struct wl_surface* SurfaceImpl::wlSurface() const
 {
-    return const_cast<WlSurface&>(
-        this->m_blSurface->wl_surface()).c_ptr();
+    return this->m_blSurface->wl_surface()->c_ptr();
 }
 
 

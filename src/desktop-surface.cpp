@@ -99,8 +99,7 @@ DesktopSurface::DesktopSurface(DesktopSurface::Role role,
     //=============
     // XDG shell
     //=============
-    this->_xdg_surface = app->xdg_wm_base()->get_xdg_surface(
-        const_cast<WlSurface&>(Surface::wl_surface()));
+    this->_xdg_surface = app->xdg_wm_base()->get_xdg_surface(*Surface::wl_surface());
     this->_xdg_surface->add_listener(xdg_surface_listener);
 
     if (this->_role == DesktopSurface::Role::Toplevel) {
@@ -114,7 +113,7 @@ DesktopSurface::DesktopSurface(DesktopSurface::Role role,
     }
 
     // Signal that the surface is ready to be configured.
-    const_cast<WlSurface&>(Surface::wl_surface()).commit();
+    Surface::wl_surface()->commit();
     // Wait for the surface to be configured.
     app_impl->display()->roundtrip();
 

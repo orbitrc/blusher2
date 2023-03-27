@@ -324,7 +324,7 @@ public:
         // EGL/OpenGL
         //================
         init_egl(&this->_egl_object);
-        this->_egl_window = wl_egl_window_create(this->_surface.c_ptr(),
+        this->_egl_window = wl_egl_window_create(this->_surface->c_ptr(),
             24, 24);
         this->_egl_object.egl_surface = eglCreateWindowSurface(
             this->_egl_object.egl_display, this->_egl_object.egl_config,
@@ -356,13 +356,13 @@ public:
 
     struct wl_surface* wl_surface()
     {
-        return this->_surface.c_ptr();
+        return this->_surface->c_ptr();
     }
 
 private:
     Cursor *_cursor;
 
-    WlSurface _surface;
+    std::shared_ptr<WlSurface> _surface;
 
     Image *_image;
 

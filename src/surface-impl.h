@@ -95,6 +95,8 @@ public:
     //==================
     // Wayland objects
     //==================
+    std::shared_ptr<WlSurface> wl_surface() const;
+
     struct wl_surface* wlSurface() const;
 
 public:
@@ -156,6 +158,7 @@ private:
     //=================
     // Wayland client
     //=================
+    std::shared_ptr<WlSurface> _wl_surface;
     std::shared_ptr<WlSubsurface> _wl_subsurface;
     struct wl_callback *_frame_callback;
 

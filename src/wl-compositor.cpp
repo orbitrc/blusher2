@@ -30,13 +30,13 @@ struct wl_compositor* WlCompositor::c_ptr()
     return this->_wl_compositor;
 }
 
-WlSurface WlCompositor::create_surface()
+std::shared_ptr<WlSurface> WlCompositor::create_surface()
 {
     struct wl_surface *wl_surface =
         wl_compositor_create_surface(this->_wl_compositor);
     assert(wl_surface != NULL);
 
-    WlSurface surface(wl_surface);
+    auto surface = std::make_shared<WlSurface>(wl_surface);
 
     return surface;
 }
