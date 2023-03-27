@@ -11,8 +11,6 @@
 // Blusher
 #include <blusher/resize-event.h>
 #include <blusher/pointer-state.h>
-#include <blusher/wayland/wl-surface.h>
-#include <blusher/wayland/wl-subsurface.h>
 
 #include "signal.h"
 #include "pointer-event.h"
@@ -22,6 +20,9 @@ namespace bl {
 class View;
 
 class SurfaceImpl;
+
+class WlSurface;
+class WlSubsurface;
 
 class Surface
 {

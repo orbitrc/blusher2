@@ -23,15 +23,10 @@
 // Blusher
 #include <blusher/wayland/wl-surface.h>
 #include <blusher/wayland/wl-subsurface.h>
-#include <blusher/wayland/xdg-surface.h>
-#include <blusher/wayland/xdg-toplevel.h>
 #include <blusher/gl/context.h>
 #include <blusher/gl/program.h>
 #include <blusher/color.h>
 #include <blusher/view.h>
-
-// Wayland protocols
-#include <wayland-protocols/stable/xdg-shell.h>
 
 namespace bl {
 
