@@ -7,7 +7,8 @@ BLUSHER_RESOURCES_A=resources/libresources.a
 default:
 	mkdir -p build
 	cd build && $(QMAKE) ../blusher.pro -spec linux-g++ && make qmake_all
-	cd build && make -j8
+	cd build && make -j$(shell nproc)
+
 
 wayland-protocols: wayland-protocols/stable/xdg-shell.h wayland-protocols/stable/xdg-shell.c
 	ls
