@@ -104,6 +104,82 @@ static const bl::XdgWmBase::Listener xdg_wm_base_listener =
 // Keyboard
 //=============
 
+static void keyboard_keymap_handler(void *data,
+        struct wl_keyboard *wl_keyboard,
+        uint32_t format,
+        int32_t fd,
+        uint32_t size)
+{
+}
+
+static void keyboard_enter_handler(void *data,
+        struct wl_keyboard *wl_keyboard,
+        uint32_t serial,
+        struct wl_surface *wl_surface,
+        struct wl_array *keys)
+{
+}
+
+static void keyboard_leave_handler(void *data,
+        struct wl_keyboard *wl_keyboard,
+        uint32_t serial,
+        struct wl_surface *wl_surface)
+{
+}
+
+static void keyboard_key_handler(void *data,
+        struct wl_keyboard *wl_keyboard,
+        uint32_t serial,
+        uint32_t time,
+        uint32_t key,
+        uint32_t state)
+{
+    (void)data;
+    (void)wl_keyboard;
+    (void)serial;
+    (void)time;
+    fprintf(stderr, "[LOG] keyboard_key_handler - key: %d, state: %d\n",
+        key, state);
+}
+
+static void keyboard_modifiers_handler(void *data,
+        struct wl_keyboard *wl_keyboard,
+        uint32_t serial,
+        uint32_t mods_depressed,
+        uint32_t mods_latched,
+        uint32_t mods_locked,
+        uint32_t group)
+{
+    (void)data;
+    (void)wl_keyboard;
+    (void)serial;
+    (void)mods_depressed;
+    (void)mods_latched;
+    (void)mods_locked;
+    (void)group;
+}
+
+static void keyboard_repeat_info_handler(void *data,
+        struct wl_keyboard *wl_keyboard,
+        int32_t rate,
+        int32_t delay)
+{
+    (void)data;
+    (void)wl_keyboard;
+    fprintf(stderr,
+        "[LOG] keyboard_repeat_info_handler: rate: %d, delay: %d\n",
+        rate, delay);
+}
+
+static const bl::WlKeyboard::Listener keyboard_listener =
+    bl::WlKeyboard::Listener(
+        keyboard_keymap_handler,
+        keyboard_enter_handler,
+        keyboard_leave_handler,
+        keyboard_key_handler,
+        keyboard_modifiers_handler,
+        keyboard_repeat_info_handler
+    );
 
 //=============
 // Pointer
@@ -317,10 +393,13 @@ static void seat_capabilities_handler(void *data, struct wl_seat *seat,
         application_impl->setPointer(wl_pointer);
         application_impl->pointer()->add_listener(
             pointer_listener, (void*)application_impl);
-    } else if (caps & WL_SEAT_CAPABILITY_KEYBOARD &&
+    }
+    if (caps & WL_SEAT_CAPABILITY_KEYBOARD &&
             application_impl->keyboard() == nullptr) {
         auto wl_keyboard = application_impl->seat()->get_keyboard();
         application_impl->setKeyboard(wl_keyboard);
+        application_impl->keyboard()->add_listener(
+            keyboard_listener, (void*)application_impl);
     }
 }
 
