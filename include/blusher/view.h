@@ -28,8 +28,6 @@ class EventDispatcher;
 
 class View
 {
-    friend Surface;
-    friend SurfaceImpl;
     friend ViewImpl;
     friend EventDispatcher;
 public:

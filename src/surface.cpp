@@ -274,63 +274,6 @@ void Surface::pointer_move_handler(uint32_t impl_button, double x, double y)
 
     app->event_dispatcher()->post_event(root_view, event);
     return;
-
-    // Do below on the root view.
-
-    View *view = root_view->child_at(Point(x, y));
-    if (view != nullptr) {
-        // Send pointer enter event to view.
-        if (this->_current_view != view) {
-            // Send pointer leave event to previous view.
-            if (this->_current_view != nullptr) {
-                auto event = std::make_shared<PointerEvent>(
-                    Event::Type::PointerLeave,
-                    PointerButton::None, x, y);
-
-                app->event_dispatcher()->post_event(this->_current_view, event);
-            }
-            this->_current_view = view;
-
-            auto event = std::make_shared<PointerEvent>(
-                Event::Type::PointerEnter,
-                PointerButton::None, x, y);
-
-            app->event_dispatcher()->post_event(view, event);
-        }
-
-        // TODO: Fix x, y position!
-        auto event = std::make_shared<PointerEvent>(Event::Type::PointerMove,
-            button, x, y);
-
-        app->event_dispatcher()->post_event(view, event);
-    } else {
-        // Send pointer leave event if leaved, and send pointer enter event
-        // to the root view.
-        {
-            if (this->_current_view != nullptr) {
-                auto event = std::make_shared<PointerEvent>(
-                    Event::Type::PointerLeave,
-                    PointerButton::None, x, y);
-
-                this->_current_view->pointer_leave_event(event);
-            }
-            if (this->_current_view != root_view) {
-                this->_current_view = root_view;
-
-                auto event = std::make_shared<PointerEvent>(
-                    Event::Type::PointerEnter,
-                    PointerButton::None, x, y);
-
-                app->event_dispatcher()->post_event(root_view, event);
-            }
-        }
-
-        auto event = std::make_shared<PointerEvent>(
-            Event::Type::PointerMove,
-            button, x, y);
-
-        app->event_dispatcher()->post_event(root_view, event);
-    }
 }
 
 void Surface::resize_handler(int32_t width, int32_t height,
