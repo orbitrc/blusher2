@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include <sys/mman.h>
+
 #include <linux/input.h>
 
 #include <QEnterEvent>
@@ -110,6 +112,19 @@ static void keyboard_keymap_handler(void *data,
         int32_t fd,
         uint32_t size)
 {
+    (void)data;
+    (void)wl_keyboard;
+    (void)fd;
+    (void)size;
+    fprintf(stderr,
+        "[LOG] keyboard_keymap_handler - format: %d, fd: %d, size: %d\n",
+        format, fd, size);
+    char *keymap_string = (char*)mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
+    if (keymap_string == MAP_FAILED) {
+        fprintf(stderr, "[WARN] Map failed!\n");
+        return;
+    }
+    munmap(keymap_string, size);
 }
 
 static void keyboard_enter_handler(void *data,
@@ -118,6 +133,13 @@ static void keyboard_enter_handler(void *data,
         struct wl_surface *wl_surface,
         struct wl_array *keys)
 {
+    (void)data;
+    (void)wl_keyboard;
+    (void)serial;
+    (void)wl_surface;
+    (void)keys;
+    fprintf(stderr, "[LOG] keyboard_enter_handler - wl_surface: %p\n",
+        wl_surface);
 }
 
 static void keyboard_leave_handler(void *data,
@@ -125,6 +147,11 @@ static void keyboard_leave_handler(void *data,
         uint32_t serial,
         struct wl_surface *wl_surface)
 {
+    (void)data;
+    (void)wl_keyboard;
+    (void)serial;
+    fprintf(stderr, "[LOG] keyboard_leave_handler - wl_surface: %p\n",
+        wl_surface);
 }
 
 static void keyboard_key_handler(void *data,

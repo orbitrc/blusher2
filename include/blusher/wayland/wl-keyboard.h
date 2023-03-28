@@ -66,6 +66,17 @@ public:
     };
 
 public:
+    enum class KeymapFormat {
+        NoKeymap = 0,
+        XkbV1 = 1,
+    };
+
+    enum class KeyState {
+        Released = WL_KEYBOARD_KEY_STATE_RELEASED,
+        Pressed = WL_KEYBOARD_KEY_STATE_PRESSED,
+    };
+
+public:
     WlKeyboard(struct wl_keyboard *wl_keyboard);
 
     ~WlKeyboard();
