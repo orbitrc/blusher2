@@ -229,6 +229,9 @@ void Surface::pointer_leave_handler()
     // Send leave event to last entered view.
     View *entered_view = this->entered_view();
     this->set_entered_view(nullptr);
+    if (entered_view == nullptr) {
+        return;
+    }
     app->event_dispatcher()->post_event(entered_view, event);
 }
 
