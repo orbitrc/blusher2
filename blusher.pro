@@ -71,6 +71,9 @@ SOURCES += \
     src/shader.cpp \
     src/program.cpp \
     src/button.cpp \
+    src/xkb/xkb_context.cpp \
+    src/xkb/xkb_keymap.cpp \
+    src/xkb/xkb_state.cpp \
     wayland-protocols/stable/xdg-shell.c
 
 HEADERS += \
@@ -122,6 +125,9 @@ HEADERS += \
     include/blusher/gl/shader.h \
     include/blusher/gl/program.h \
     include/blusher/controls/button.h \
+    include/blusher/xkb/context.h \
+    include/blusher/xkb/keymap.h \
+    include/blusher/xkb/state.h \
     src/egl-utils.h
 
 # Examples
