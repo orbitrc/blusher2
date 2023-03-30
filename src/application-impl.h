@@ -17,6 +17,7 @@
 #include <blusher/wayland/wl-keyboard.h>
 #include <blusher/wayland/wl-output.h>
 #include <blusher/wayland/xdg-wm-base.h>
+#include <blusher/xkb/state.h>
 #include <blusher/cursor.h>
 
 // Wayland protocols
@@ -97,6 +98,9 @@ public:
     void setXdgWmBase(std::shared_ptr<XdgWmBase> xdg_wm_base);
 
 
+    std::shared_ptr<xkb::State> xkb_state();
+    void set_xkb_state(std::shared_ptr<xkb::State> state);
+
     bool addSurfaceImpl(SurfaceImpl*);
     bool removeSurfaceImpl(SurfaceImpl*);
     SurfaceImpl* surfaceImplForWlSurface(struct wl_surface*);
@@ -125,6 +129,8 @@ private:
     std::shared_ptr<XdgWmBase> _xdg_wm_base;
 
     std::vector<SurfaceImpl*> _surface_impl_list;
+
+    std::shared_ptr<xkb::State> _xkb_state;
 
 public:
     Cursor *_cursor;

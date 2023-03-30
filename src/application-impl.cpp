@@ -112,18 +112,25 @@ static void keyboard_keymap_handler(void *data,
         int32_t fd,
         uint32_t size)
 {
-    (void)data;
     (void)wl_keyboard;
     (void)fd;
     (void)size;
+    bl::ApplicationImpl *app_impl = static_cast<bl::ApplicationImpl*>(data);
     fprintf(stderr,
         "[LOG] keyboard_keymap_handler - format: %d, fd: %d, size: %d\n",
         format, fd, size);
+
     char *keymap_string = (char*)mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
     if (keymap_string == MAP_FAILED) {
         fprintf(stderr, "[WARN] Map failed!\n");
         return;
     }
+    auto ctx = std::shared_ptr<bl::xkb::Context>(new bl::xkb::Context());
+    auto keymap = std::shared_ptr<bl::xkb::Keymap>(
+        new bl::xkb::Keymap(ctx, keymap_string));
+    app_impl->set_xkb_state(
+        std::shared_ptr<bl::xkb::State>(new bl::xkb::State(keymap)));
+
     munmap(keymap_string, size);
 }
 
@@ -161,12 +168,16 @@ static void keyboard_key_handler(void *data,
         uint32_t key,
         uint32_t state)
 {
-    (void)data;
     (void)wl_keyboard;
     (void)serial;
     (void)time;
-    fprintf(stderr, "[LOG] keyboard_key_handler - key: %d, state: %d\n",
-        key, state);
+    auto app_impl = static_cast<bl::ApplicationImpl*>(data);
+
+    auto keysym = app_impl->xkb_state()->keycode_to_keysym(key + 8);
+    fprintf(stderr,
+        "[LOG] keyboard_key_handler - key: %d, state: %d, keysym: %d\n",
+        key, state, static_cast<uint32_t>(keysym));
+    fprintf(stderr, "[DEBUG] Shift is %d\n", app_impl->xkb_state()->is_mod_active("Shift"_S));
 }
 
 static void keyboard_modifiers_handler(void *data,
@@ -177,13 +188,15 @@ static void keyboard_modifiers_handler(void *data,
         uint32_t mods_locked,
         uint32_t group)
 {
-    (void)data;
     (void)wl_keyboard;
     (void)serial;
-    (void)mods_depressed;
-    (void)mods_latched;
-    (void)mods_locked;
-    (void)group;
+    auto app_impl = static_cast<bl::ApplicationImpl*>(data);
+    fprintf(stderr, "[LOG] keyboard_modifiers_handler\n");
+
+    app_impl->xkb_state()->update(mods_depressed,
+        mods_latched,
+        mods_locked,
+        group);
 }
 
 static void keyboard_repeat_info_handler(void *data,
@@ -558,6 +571,8 @@ ApplicationImpl::ApplicationImpl(int argc, char *argv[])
     this->pointer_state.pressed_y = 0;
     this->pointer_state.static_click_count = 0;
 
+    this->_xkb_state = nullptr;
+
     // Toy cursor. Change this later.
     this->_cursor = nullptr;
 
@@ -730,6 +745,16 @@ void ApplicationImpl::setXdgWmBase(std::shared_ptr<XdgWmBase> xdg_wm_base)
     this->_xdg_wm_base = xdg_wm_base;
 }
 
+
+std::shared_ptr<xkb::State> ApplicationImpl::xkb_state()
+{
+    return this->_xkb_state;
+}
+
+void ApplicationImpl::set_xkb_state(std::shared_ptr<xkb::State> state)
+{
+    this->_xkb_state = state;
+}
 
 bool ApplicationImpl::addSurfaceImpl(SurfaceImpl *impl)
 {

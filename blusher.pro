@@ -8,7 +8,9 @@ CONFIG += link_pkgconfig
 
 INCLUDEPATH += ./include
 
-LIBS += -lwayland-client -lwayland-egl -lEGL -lGL -lGLEW \
+LIBS += -lwayland-client -lwayland-egl \
+    -lxkbcommon \
+    -lEGL -lGL -lGLEW \
     -lprimer \
     -lblusher-svg \
     ../resources/libresources.a
@@ -74,6 +76,7 @@ SOURCES += \
     src/xkb/xkb_context.cpp \
     src/xkb/xkb_keymap.cpp \
     src/xkb/xkb_state.cpp \
+    src/xkb/xkb_keysym.cpp \
     wayland-protocols/stable/xdg-shell.c
 
 HEADERS += \
@@ -128,6 +131,7 @@ HEADERS += \
     include/blusher/xkb/context.h \
     include/blusher/xkb/keymap.h \
     include/blusher/xkb/state.h \
+    include/blusher/xkb/keysym.h \
     src/egl-utils.h
 
 # Examples
