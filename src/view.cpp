@@ -242,7 +242,13 @@ void View::pointer_leave_event(std::shared_ptr<PointerEvent> event)
 
 void View::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    this->_impl->process_pointer_press_event(event);
+    if (this->_parent == nullptr) {
+        this->_impl->process_pointer_press_event(event);
+        return;
+    }
+
+    fprintf(stderr, "View::pointer_press_event - %s (%f, %f)\n",
+        this->debug_id().c_str(), event->x(), event->y());
 }
 
 void View::pointer_release_event(std::shared_ptr<PointerEvent> event)

@@ -9,6 +9,8 @@
 
 namespace bl {
 
+ViewImpl::PointerEventComposition ViewImpl::pointer_press_composition = {};
+
 ViewImpl::ViewImpl()
 {
     this->m_x = 0.0;
@@ -168,23 +170,29 @@ void ViewImpl::process_pointer_press_event(
     auto x = event->x();
     auto y = event->y();
 
-    this->_view->_state = View::State::Active;
-    if (this->_view->_debug_id == ""_S) {
-        fprintf(stderr, "View::pointer_press_event() - state now %d. %p\n",
-            (int)this->_view->_state, this->_view);
-    } else {
-        fprintf(stderr, "View::pointer_press_event() - state now %d. %s\n",
-            (int)this->_view->_state, this->_view->_debug_id.c_str());
-    }
-
     View *child = this->_view->child_at({x, y});
     if (child != nullptr) {
         auto child_x = x - child->x();
         auto child_y = y - child->y();
         auto evt = std::make_shared<PointerEvent>(Event::Type::PointerPress,
             event->button(), child_x, child_y);
-        app->event_dispatcher()->post_event(child, evt);
-        return;
+        ViewImpl::pointer_press_composition.push({child, evt});
+        child->_impl->process_pointer_press_event(evt);
+    } else {
+        while (ViewImpl::pointer_press_composition.length() > 0) {
+            auto idx = ViewImpl::pointer_press_composition.length() - 1;
+            auto pair = ViewImpl::pointer_press_composition.remove(idx);
+            app->event_dispatcher()->post_event(pair.first, pair.second);
+
+            if (pair.second->propagation() == false) {
+                // Clear event composition.
+                while (ViewImpl::pointer_press_composition.length() > 0) {
+                    auto idx = ViewImpl::pointer_press_composition.length() - 1;
+                    ViewImpl::pointer_press_composition.remove(idx);
+                }
+                break;
+            }
+        }
     }
 }
 

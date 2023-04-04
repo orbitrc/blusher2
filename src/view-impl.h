@@ -19,6 +19,10 @@ class ViewImpl
 {
     friend View;
 public:
+    using PointerEventComposition =
+        pr::Vector<std::pair<View*, std::shared_ptr<PointerEvent>>>;
+
+public:
     ViewImpl();
     ~ViewImpl();
 
@@ -68,6 +72,8 @@ private:
 
     Image *m_image;
     Image *m_composedImage;
+
+    static PointerEventComposition pointer_press_composition;
 };
 
 } // namespace bl
