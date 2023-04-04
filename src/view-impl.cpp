@@ -162,6 +162,32 @@ void ViewImpl::appendChild(View *view)
     this->update();
 }
 
+void ViewImpl::process_pointer_press_event(
+        std::shared_ptr<PointerEvent> event)
+{
+    auto x = event->x();
+    auto y = event->y();
+
+    this->_view->_state = View::State::Active;
+    if (this->_view->_debug_id == ""_S) {
+        fprintf(stderr, "View::pointer_press_event() - state now %d. %p\n",
+            (int)this->_view->_state, this->_view);
+    } else {
+        fprintf(stderr, "View::pointer_press_event() - state now %d. %s\n",
+            (int)this->_view->_state, this->_view->_debug_id.c_str());
+    }
+
+    View *child = this->_view->child_at({x, y});
+    if (child != nullptr) {
+        auto child_x = x - child->x();
+        auto child_y = y - child->y();
+        auto evt = std::make_shared<PointerEvent>(Event::Type::PointerPress,
+            event->button(), child_x, child_y);
+        app->event_dispatcher()->post_event(child, evt);
+        return;
+    }
+}
+
 void ViewImpl::process_pointer_move_event(
         std::shared_ptr<PointerEvent> event)
 {

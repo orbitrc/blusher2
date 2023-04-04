@@ -47,6 +47,7 @@ public:
 
     void appendChild(View *view);
 
+    void process_pointer_press_event(std::shared_ptr<PointerEvent>);
     void process_pointer_move_event(std::shared_ptr<PointerEvent>);
 
 private:
