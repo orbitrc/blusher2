@@ -206,4 +206,11 @@ void DesktopSurface::set_size(uint32_t width, uint32_t height)
     Surface::set_size(width, height);
 }
 
+void DesktopSurface::show()
+{
+    fprintf(stderr, "[DEBUG] DesktopSurface::show()\n");
+    Surface::request_update();
+    Surface::update();
+}
+
 } // namespace bl

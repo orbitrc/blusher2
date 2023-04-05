@@ -21,7 +21,7 @@ struct wl_surface* WlSurface::c_ptr()
 
 void WlSurface::commit()
 {
-    fprintf(stderr, "WlSurface::commit() - %p\n", this->_wl_surface);
+    // fprintf(stderr, "WlSurface::commit() - %p\n", this->_wl_surface);
     wl_surface_commit(this->_wl_surface);
 }
 

@@ -240,6 +240,8 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
     } else {
         fprintf(stderr, "[WARN] SurfaceImpl::setSize() - surface is null!\n");
     }
+
+    this->update();
 }
 
 View* SurfaceImpl::rootView()
@@ -342,6 +344,7 @@ std::shared_ptr<gl::Context> SurfaceImpl::context()
 
 void SurfaceImpl::swapBuffers()
 {
+    fprintf(stderr, "[DEBUG] SurfaceImpl::swapBuffers()\n");
     eglSwapBuffers(this->_context->egl_display(), this->_egl_surface);
 }
 
@@ -431,9 +434,12 @@ void SurfaceImpl::update()
         child->update();
     }
 
+    fprintf(stderr, "[DEBUG] SurfaceImpl::update - _update_requested: %d\n",
+        this->m_blSurface->_update_requested);
     if (this->m_blSurface->_update_requested) {
         this->_egl_update();
     }
+    this->_wl_surface->commit();
 
     this->_updating = false;
 }
@@ -694,21 +700,7 @@ void SurfaceImpl::_draw_frame()
 
 void SurfaceImpl::_egl_update(bool hide)
 {
-    // Re-create EGL window surface.
-    /*
-    EGLBoolean destroyed = eglDestroySurface(this->_context->egl_display(),
-        this->_egl_surface);
-    if (!destroyed) {
-        fprintf(stderr, "[WARN] EGL surface not destroyed!\n");
-        return;
-    }
-    this->_egl_surface = eglCreateWindowSurface(
-        this->_context->egl_display(),
-        this->_context->egl_config(),
-        this->_egl_window,
-        NULL
-    );
-    */
+    (void)hide;
 
     this->makeCurrent();
     EGLint err = eglGetError();
@@ -719,7 +711,6 @@ void SurfaceImpl::_egl_update(bool hide)
     }
     glFlush();
 
-    // glewInit();
     // Below makes hang call eglSwapBuffers() in fill_function().
     // eglSwapBuffers(this->_egl_object.egl_display, this->_egl_object.egl_surface);
     //===================//
@@ -734,26 +725,12 @@ void SurfaceImpl::_egl_update(bool hide)
         }
         */
     }
-    uint64_t width = !hide ? this->width() : 0;
-    uint64_t height = !hide ? this->height() : 0;
-    (void)width;
-    (void)height;
-    /*
-    texture_function(
-        this->_program->id(),
-        *this->m_rootView->_impl->m_composedImage,
-        width, height
-    );
-    */
+
+    fprintf(stderr, "[DEBUG] SurfaceImpl::_egl_update - draw_frame\n");
     this->_draw_frame();
 
     if (this->m_blSurface->_update_requested) {
-        /*
-        fprintf(stderr, "[DEBUG] swapBuffers() - surface id: %s\n",
-            this->m_blSurface->debug_id().c_str());
-        this->swapBuffers();
-        fprintf(stderr, "[DEBUG] swapBuffers() done.\n");
-        */
+        ;
     }
 
     this->makeCurrent(true);
