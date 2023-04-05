@@ -694,22 +694,6 @@ void SurfaceImpl::_draw_frame()
 
 void SurfaceImpl::_egl_update(bool hide)
 {
-    // Re-create EGL window surface.
-    /*
-    EGLBoolean destroyed = eglDestroySurface(this->_context->egl_display(),
-        this->_egl_surface);
-    if (!destroyed) {
-        fprintf(stderr, "[WARN] EGL surface not destroyed!\n");
-        return;
-    }
-    this->_egl_surface = eglCreateWindowSurface(
-        this->_context->egl_display(),
-        this->_context->egl_config(),
-        this->_egl_window,
-        NULL
-    );
-    */
-
     this->makeCurrent();
     EGLint err = eglGetError();
     if (err != EGL_SUCCESS) {
@@ -719,7 +703,6 @@ void SurfaceImpl::_egl_update(bool hide)
     }
     glFlush();
 
-    // glewInit();
     // Below makes hang call eglSwapBuffers() in fill_function().
     // eglSwapBuffers(this->_egl_object.egl_display, this->_egl_object.egl_surface);
     //===================//
@@ -734,27 +717,8 @@ void SurfaceImpl::_egl_update(bool hide)
         }
         */
     }
-    uint64_t width = !hide ? this->width() : 0;
-    uint64_t height = !hide ? this->height() : 0;
-    (void)width;
-    (void)height;
-    /*
-    texture_function(
-        this->_program->id(),
-        *this->m_rootView->_impl->m_composedImage,
-        width, height
-    );
-    */
-    this->_draw_frame();
 
-    if (this->m_blSurface->_update_requested) {
-        /*
-        fprintf(stderr, "[DEBUG] swapBuffers() - surface id: %s\n",
-            this->m_blSurface->debug_id().c_str());
-        this->swapBuffers();
-        fprintf(stderr, "[DEBUG] swapBuffers() done.\n");
-        */
-    }
+    this->_draw_frame();
 
     this->makeCurrent(true);
 
