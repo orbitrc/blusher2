@@ -23,8 +23,14 @@ public:
 
     void set_type(Event::Type type);
 
+    bool propagation() const;
+
+    void set_propagation(bool val);
+
 private:
     Event::Type _type;
+
+    bool _propagation;
 };
 
 } // namespace bl

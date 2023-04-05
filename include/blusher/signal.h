@@ -1,13 +1,12 @@
 #ifndef _BL_SIGNAL_H
 #define _BL_SIGNAL_H
 
-#include <vector>
+#include <memory>
 #include <functional>
 
-namespace bl {
+#include <primer/vector.h>
 
-class ConnectionImpl;
-class SignalImpl;
+namespace bl {
 
 template <typename... Args>
 class Signal {
@@ -16,29 +15,78 @@ public:
     {
         friend Signal;
 
+    private:
+        Connection(Signal *signal, std::function<void(Args...)>&& slot)
+        {
+            this->_signal = signal;
+            this->_slot = slot;
+        }
+
+        void call(Args... args)
+        {
+            this->_slot(args...);
+        }
+
     public:
-        Connection(ConnectionImpl *impl);
+        ~Connection()
+        {
+        }
+
+        bool disconnect()
+        {
+            if (this->_signal == nullptr) {
+                return false;
+            }
+            this->_signal = nullptr;
+            this->_slot = [](Args...){};
+
+            return true;
+        }
 
     private:
-        bool disconnect();
-
-    private:
-        ConnectionImpl *_impl;
-
         Signal<Args...> *_signal;
+        std::function<void(Args...)> _slot;
     };
 
 public:
-    Signal();
+    Signal()
+    {
+    }
 
-    void emit(Args... args);
+    ~Signal()
+    {
+    }
 
-    Connection connect(std::function<void(Args...)> slot);
+    std::shared_ptr<Connection> connect(std::function<void(Args...)>&& slot)
+    {
+        auto conn = std::shared_ptr<Connection>(
+            new Connection(this, std::move(slot)));
+
+        this->_connections.push(conn);
+
+        return conn;
+    }
+
+    template<typename T>
+    std::shared_ptr<Connection> connect(T *receiver,
+            void(T::* slot)(Args... args))
+    {
+        std::function<void(Args...)> f{[receiver, slot](Args... args){
+            (receiver->*slot)(std::forward<Args...>(args)...);
+        }};
+
+        return this->connect(std::move(f));
+    }
+
+    void emit(Args... args)
+    {
+        for (auto& conn: this->_connections) {
+            conn->call(args...);
+        }
+    }
 
 private:
-    SignalImpl *_impl;
-
-    std::vector<Connection> _connections;
+    pr::Vector<std::shared_ptr<Connection>> _connections;
 };
 
 } // namespace bl

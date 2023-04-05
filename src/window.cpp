@@ -139,6 +139,11 @@ uint32_t Window::height() const
         + (BLUSHER_BORDER_WIDTH * 2);
 }
 
+View* Window::body_view()
+{
+    return this->_body;
+}
+
 //====================
 // Private Methods
 //====================

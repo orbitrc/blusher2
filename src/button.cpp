@@ -25,7 +25,7 @@ Button::Button(View *parent)
     // Set background image view.
     this->_image_view = new View(this);
     this->_image_view->set_size(this->geometry().size());
-    this->_image_view->fill(Color::from_rgb(255, 0, 0));
+    this->_image_view->fill(Color::from_rgb(80, 80, 80));
     this->_image_view->paint();
 
     // Set text label.
@@ -57,23 +57,25 @@ void Button::paint()
 
 void Button::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    View::pointer_press_event(event);
-
-    this->paint();
+    this->_image_view->fill(Color::from_rgb(40, 40, 40));
     this->update();
+
+    View::pointer_press_event(event);
 }
 
 void Button::pointer_release_event(std::shared_ptr<PointerEvent> event)
 {
-    View::pointer_release_event(event);
-
-    this->paint();
+    this->_image_view->fill(Color::from_rgb(80, 80, 80));
     this->update();
+
+    View::pointer_release_event(event);
 }
 
 void Button::pointer_click_event(std::shared_ptr<PointerEvent> event)
 {
     fprintf(stderr, "[DEBUG] Button clicked!\n");
+
+    this->clicked.emit();
 
     return View::pointer_click_event(event);
 }

@@ -8,6 +8,7 @@
 #include <blusher/view.h>
 #include <blusher/pointer-event.h>
 #include <blusher/label.h>
+#include <blusher/signal.h>
 
 namespace bl {
 
@@ -18,6 +19,9 @@ public:
     ~Button();
 
     void paint() override;
+
+public:
+    Signal<> clicked;
 
 protected:
     void pointer_press_event(std::shared_ptr<PointerEvent> event) override;

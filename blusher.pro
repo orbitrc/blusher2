@@ -33,7 +33,6 @@ SOURCES += \
     src/window.cpp \
     src/title-bar.cpp \
     src/view.cpp \
-    src/signal.cpp \
     src/point.cpp \
     src/size.cpp \
     src/rect.cpp \
@@ -50,7 +49,6 @@ SOURCES += \
     src/output.cpp \
     src/pointer-state.cpp \
     src/application-impl.cpp \
-    src/signal-impl.cpp \
     src/surface-impl.cpp \
     src/view-impl.cpp \
     src/utils.cpp \
@@ -106,7 +104,6 @@ HEADERS += \
     include/blusher/output.h \
     include/blusher/pointer-state.h \
     src/application-impl.h \
-    src/signal-impl.h \
     src/surface-impl.h \
     src/view-impl.h \
     include/blusher/wayland/wl-display.h \

@@ -272,7 +272,6 @@ void View::pointer_release_event(std::shared_ptr<PointerEvent> event)
     if (this->_state == View::State::Active) {
         this->_state = View::State::Normal;
 
-        fprintf(stderr, "View::pointer_release_event() - post click event.\n");
         this->pointer_click_event(event);
     }
 }
@@ -280,6 +279,7 @@ void View::pointer_release_event(std::shared_ptr<PointerEvent> event)
 void View::pointer_click_event(std::shared_ptr<PointerEvent> event)
 {
     (void)event;
+    fprintf(stderr, "View::pointer_click_event\n");
 }
 
 void View::pointer_double_click_event(std::shared_ptr<PointerEvent> event)
