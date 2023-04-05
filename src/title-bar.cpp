@@ -141,7 +141,7 @@ void TitleBarButton::pointer_enter_event(std::shared_ptr<PointerEvent> event)
     this->fill(Color::from_rgb(150, 0, 0));
     this->update();
 
-    static_cast<Surface*>(this->surface())->request_update();
+    static_cast<Surface*>(this->surface())->update();
 
     return View::pointer_enter_event(event);
 }
@@ -153,7 +153,7 @@ void TitleBarButton::pointer_leave_event(std::shared_ptr<PointerEvent> event)
     this->draw_image(Point(0, 0), *this->_close_image);
     this->update();
 
-    static_cast<Surface*>(this->surface())->request_update();
+    static_cast<Surface*>(this->surface())->update();
 
     return View::pointer_leave_event(event);
 }
