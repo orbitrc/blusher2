@@ -296,7 +296,6 @@ void View::update_event(std::shared_ptr<UpdateEvent> event)
 {
     (void)event;
     fprintf(stderr, "[LOG] View::update_event()\n");
-    WlDisplay::instance()->dispatch();
 }
 
 } // namespace bl

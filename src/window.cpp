@@ -92,16 +92,7 @@ Window::Window()
 
 void Window::show()
 {
-//    this->_body->show();
-
-//    this->_title_bar->show();
-
-//    this->_border->show();
-
-//    this->_resize->show();
-
-    // Set geometry hint.
-    // this->set_geometry_hint(Rect(0, 0, this->width(), this->height()));
+    DesktopSurface::show();
 }
 
 void Window::move()

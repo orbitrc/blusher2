@@ -46,6 +46,8 @@ public:
 
     void set_size(uint32_t width, uint32_t height);
 
+    void show();
+
 private:
     std::shared_ptr<XdgSurface> _xdg_surface;
     std::shared_ptr<XdgToplevel> _xdg_toplevel;
