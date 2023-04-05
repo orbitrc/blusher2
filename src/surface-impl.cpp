@@ -54,6 +54,28 @@ GLfloat tex_coord[] = {
     1.0f, 1.0f,
 };
 
+static void frame_callback_handler(void *data,
+        struct wl_callback *wl_callback, uint32_t time);
+
+static const struct wl_callback_listener frame_callback_listener = {
+    .done = frame_callback_handler,
+};
+
+static void frame_callback_handler(void *data,
+        wl_callback *wl_callback, uint32_t time)
+{
+    bl::SurfaceImpl *surface_impl = static_cast<bl::SurfaceImpl*>(data);
+
+    wl_callback_destroy(wl_callback);
+    wl_callback = wl_surface_frame(surface_impl->wl_surface()->c_ptr());
+    wl_callback_add_listener(wl_callback, &frame_callback_listener, data);
+
+    // surface_impl->swapBuffers();
+    surface_impl->surface()->request_update();
+
+    surface_impl->wl_surface()->commit();
+}
+
 namespace bl {
 
 SurfaceImpl::SurfaceImpl(Surface *surface)
@@ -85,7 +107,9 @@ SurfaceImpl::SurfaceImpl(Surface *surface)
     //===============
     // Wayland
     //===============
-    this->_frame_callback = NULL;
+    this->_frame_callback = wl_surface_frame(this->_wl_surface->c_ptr());
+    wl_callback_add_listener(this->_frame_callback,
+        &frame_callback_listener, this);
 
     this->_shm_data = NULL;
     this->_shm_data_size = 0;
@@ -236,7 +260,7 @@ void SurfaceImpl::setSize(uint32_t width, uint32_t height)
 
     if (this->m_blSurface != nullptr) {
         // fprintf(stderr, "[LOG] SurfaceImpl::setSize() - update.\n");
-        this->m_blSurface->request_update();
+        // this->m_blSurface->request_update();
     } else {
         fprintf(stderr, "[WARN] SurfaceImpl::setSize() - surface is null!\n");
     }
@@ -437,7 +461,7 @@ void SurfaceImpl::update()
     fprintf(stderr, "[DEBUG] SurfaceImpl::update - _update_requested: %d\n",
         this->m_blSurface->_update_requested);
     if (this->m_blSurface->_update_requested) {
-        this->_egl_update();
+        this->_egl_update(true);
     }
     this->_wl_surface->commit();
 
@@ -690,7 +714,7 @@ void SurfaceImpl::_draw_frame()
     this->_set_uniform_resolution(this->m_rootView->geometry().size());
     this->_recursive(this->m_rootView, std::nullopt, {0.0, 0.0});
 
-    this->swapBuffers();
+    // this->swapBuffers();
 
     // Free.
     glDeleteBuffers(2, vbo);
@@ -698,10 +722,8 @@ void SurfaceImpl::_draw_frame()
     glDeleteBuffers(1, &vao);
 }
 
-void SurfaceImpl::_egl_update(bool hide)
+void SurfaceImpl::_egl_update(bool swap_buffers)
 {
-    (void)hide;
-
     this->makeCurrent();
     EGLint err = eglGetError();
     if (err != EGL_SUCCESS) {
@@ -728,6 +750,9 @@ void SurfaceImpl::_egl_update(bool hide)
 
     fprintf(stderr, "[DEBUG] SurfaceImpl::_egl_update - draw_frame\n");
     this->_draw_frame();
+    if (swap_buffers == true) {
+        this->swapBuffers();
+    }
 
     if (this->m_blSurface->_update_requested) {
         ;

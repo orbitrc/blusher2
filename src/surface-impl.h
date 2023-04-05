@@ -131,7 +131,7 @@ private:
             Point relative_position);
     /// Using `_recursive`.
     void _draw_frame();
-    void _egl_update(bool hide = false);
+    void _egl_update(bool swap_buffers = false);
 
 private:
     uint32_t m_x;
