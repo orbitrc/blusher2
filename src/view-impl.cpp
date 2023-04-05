@@ -182,6 +182,7 @@ void ViewImpl::process_pointer_press_event(
         while (ViewImpl::pointer_press_composition.length() > 0) {
             auto idx = ViewImpl::pointer_press_composition.length() - 1;
             auto pair = ViewImpl::pointer_press_composition.remove(idx);
+            pair.first->_state = View::State::Active;
             app->event_dispatcher()->post_event(pair.first, pair.second);
 
             if (pair.second->propagation() == false) {
