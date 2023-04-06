@@ -77,6 +77,8 @@ void TitleBar::pointer_press_event(std::shared_ptr<PointerEvent> event)
         window->toplevel_move();
     }
 
+    event->set_propagation(false);
+
     return View::pointer_press_event(event);
 }
 
@@ -161,6 +163,8 @@ void TitleBarButton::pointer_leave_event(std::shared_ptr<PointerEvent> event)
 void TitleBarButton::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
     fprintf(stderr, "Title bar button pressed.\n");
+
+    event->set_propagation(false);
 
     return View::pointer_press_event(event);
 }

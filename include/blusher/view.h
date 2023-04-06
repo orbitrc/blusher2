@@ -53,6 +53,8 @@ public:
     View(View *parent = nullptr);
     ~View();
 
+    View* parent() const;
+
     double x() const;
     double y() const;
     double width() const;

@@ -92,6 +92,21 @@ void EventDispatcher::loop()
                     auto event = std::static_pointer_cast<PointerEvent>(
                         std::get<1>(tuple));
                     view->pointer_press_event(event);
+                    // Event propagation.
+                    View *v = view->parent();
+                    double x = event->x() + view->x();
+                    double y = event->y() + view->y();
+                    while (v != nullptr) {
+                        event->set_x(x);
+                        event->set_y(y);
+                        if (!event->propagation()) {
+                            break;
+                        }
+                        v->pointer_press_event(event);
+                        x = event->x() + v->x();
+                        y = event->y() + v->y();
+                        v = v->parent();
+                    }
                     break;
                 }
                 case Event::Type::PointerRelease:

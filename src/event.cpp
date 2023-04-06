@@ -6,7 +6,7 @@ Event::Event(Event::Type type)
 {
     this->_type = type;
 
-    this->_propagation = false;
+    this->_propagation = true;
 }
 
 Event::Type Event::type() const

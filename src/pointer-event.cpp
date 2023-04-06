@@ -32,9 +32,19 @@ double PointerEvent::x() const
     return this->_x;
 }
 
+void PointerEvent::set_x(double x)
+{
+    this->_x = x;
+}
+
 double PointerEvent::y() const
 {
     return this->_y;
+}
+
+void PointerEvent::set_y(double y)
+{
+    this->_y = y;
 }
 
 uint64_t PointerEvent::time() const

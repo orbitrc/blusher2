@@ -167,34 +167,7 @@ void ViewImpl::appendChild(View *view)
 void ViewImpl::process_pointer_press_event(
         std::shared_ptr<PointerEvent> event)
 {
-    auto x = event->x();
-    auto y = event->y();
-
-    View *child = this->_view->child_at({x, y});
-    if (child != nullptr) {
-        auto child_x = x - child->x();
-        auto child_y = y - child->y();
-        auto evt = std::make_shared<PointerEvent>(Event::Type::PointerPress,
-            event->button(), child_x, child_y);
-        ViewImpl::pointer_press_composition.push({child, evt});
-        child->_impl->process_pointer_press_event(evt);
-    } else {
-        while (ViewImpl::pointer_press_composition.length() > 0) {
-            auto idx = ViewImpl::pointer_press_composition.length() - 1;
-            auto pair = ViewImpl::pointer_press_composition.remove(idx);
-            pair.first->_state = View::State::Active;
-            app->event_dispatcher()->post_event(pair.first, pair.second);
-
-            if (pair.second->propagation() == false) {
-                // Clear event composition.
-                while (ViewImpl::pointer_press_composition.length() > 0) {
-                    auto idx = ViewImpl::pointer_press_composition.length() - 1;
-                    ViewImpl::pointer_press_composition.remove(idx);
-                }
-                break;
-            }
-        }
-    }
+    (void)event;
 }
 
 void ViewImpl::process_pointer_move_event(

@@ -43,6 +43,11 @@ View::~View()
     delete this->_impl;
 }
 
+View* View::parent() const
+{
+    return this->_parent;
+}
+
 double View::x() const
 {
     return this->_impl->x();
@@ -242,10 +247,9 @@ void View::pointer_leave_event(std::shared_ptr<PointerEvent> event)
 
 void View::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
-    if (this->_parent == nullptr) {
-        this->_impl->process_pointer_press_event(event);
-        return;
-    }
+    (void)event;
+
+    this->_state = View::State::Active;
 
     fprintf(stderr, "View::pointer_press_event - %s (%f, %f)\n",
         this->debug_id().c_str(), event->x(), event->y());

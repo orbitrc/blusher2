@@ -19,8 +19,10 @@ public:
     PointerButton button() const;
 
     double x() const;
+    void set_x(double x);
 
     double y() const;
+    void set_y(double y);
 
     uint64_t time() const;
     void set_time(uint64_t time);

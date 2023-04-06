@@ -247,7 +247,21 @@ void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
 
     // View.
     auto root_view = this->_impl->rootView();
-    app->event_dispatcher()->post_event(root_view, event);
+    auto view = root_view->child_at({x, y});
+    double child_x = x - view->x();
+    double child_y = y - view->y();
+    while (true) {
+        View *child = view->child_at({child_x, child_y});
+        if (child == nullptr) {
+            break;
+        }
+        view = child;
+        child_x = child_x - view->x();
+        child_y = child_y - view->y();
+    }
+    event->set_x(child_x);
+    event->set_y(child_y);
+    app->event_dispatcher()->post_event(view, event);
 }
 
 void Surface::pointer_release_handler(uint32_t impl_button, double x, double y)
