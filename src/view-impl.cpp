@@ -9,8 +9,6 @@
 
 namespace bl {
 
-ViewImpl::PointerEventComposition ViewImpl::pointer_press_composition = {};
-
 ViewImpl::ViewImpl()
 {
     this->m_x = 0.0;
