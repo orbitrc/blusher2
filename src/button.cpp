@@ -9,6 +9,7 @@
 // Blusher
 #include <blusher/size.h>
 #include <blusher/color.h>
+#include <blusher/surface.h>
 
 namespace bl {
 
@@ -29,7 +30,7 @@ Button::Button(View *parent)
     this->_image_view->paint();
 
     // Set text label.
-    this->_label = new Label(this);
+    this->_label = new Label(this->_image_view);
     this->_label->set_text("Button"_S);
     this->_label->paint();
 }
@@ -58,7 +59,9 @@ void Button::paint()
 void Button::pointer_press_event(std::shared_ptr<PointerEvent> event)
 {
     this->_image_view->fill(Color::from_rgb(40, 40, 40));
-    this->update();
+    this->surface()->update();
+
+    event->set_propagation(false);
 
     View::pointer_press_event(event);
 }
@@ -66,7 +69,9 @@ void Button::pointer_press_event(std::shared_ptr<PointerEvent> event)
 void Button::pointer_release_event(std::shared_ptr<PointerEvent> event)
 {
     this->_image_view->fill(Color::from_rgb(80, 80, 80));
-    this->update();
+    this->surface()->update();
+
+    event->set_propagation(false);
 
     View::pointer_release_event(event);
 }

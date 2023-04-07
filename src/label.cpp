@@ -65,6 +65,7 @@ Label::Label(View *parent)
     : View(parent)
 {
     // View.
+    this->set_fill_type(View::FillType::Image);
     this->set_width(100);
     this->set_height(32);
 

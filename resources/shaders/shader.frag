@@ -42,6 +42,7 @@ void main()
         discardClip();
         fragColor = fillColor;
     } else if (fillType == BL_FILL_TYPE_TEXTURE) {
+        discardClip();
         fragColor = texture(textureIn, texCoord);
     } else {
         fragColor = vec4(0.0, 1.0, 0.0, 1.0);
