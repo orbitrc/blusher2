@@ -28,11 +28,13 @@ Button::Button(View *parent)
     this->_image_view->set_size(this->geometry().size());
     this->_image_view->fill(Color::from_rgb(80, 80, 80));
     this->_image_view->paint();
+    this->_image_view->set_debug_id("ButtonImageView"_S);
 
     // Set text label.
     this->_label = new Label(this->_image_view);
     this->_label->set_text("Button"_S);
     this->_label->paint();
+    this->_label->set_debug_id("ButtonLabel");
 }
 
 Button::~Button()

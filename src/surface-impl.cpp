@@ -616,6 +616,8 @@ void SurfaceImpl::_recursive(View *view,
 {
     auto valid_geometry_local = valid_geometry;
     for (auto& child: view->children()) {
+        // fprintf(stderr, " = recursive: %s\n", child->debug_id().c_str());
+
         // Set uniforms.
         this->_set_uniform_fillType(child->fill_type());
 
@@ -673,7 +675,9 @@ void SurfaceImpl::_draw_frame()
 
     // Alpha channel blend.
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
+        GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
