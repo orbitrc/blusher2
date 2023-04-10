@@ -49,6 +49,11 @@ public:
         Focus = 4,
     };
 
+    enum class ContentPolicy {
+        Fit,
+        BiggerContent,
+    };
+
 public:
     View(View *parent = nullptr);
     ~View();
@@ -70,7 +75,12 @@ public:
     FillType fill_type() const;
     void set_fill_type(FillType fill_type);
 
+    ContentPolicy content_policy() const;
+    void set_content_policy(ContentPolicy policy);
+
     Rect geometry() const;
+    Rect content_geometry() const;
+    void set_content_geometry(const Rect& geometry);
 
     View::State state() const;
 

@@ -108,9 +108,29 @@ void View::set_fill_type(FillType fill_type)
     this->_impl->set_fill_type(fill_type);
 }
 
+View::ContentPolicy View::content_policy() const
+{
+    return this->_impl->content_policy();
+}
+
+void View::set_content_policy(ContentPolicy policy)
+{
+    this->_impl->set_content_policy(policy);
+}
+
 Rect View::geometry() const
 {
     return Rect(this->x(), this->y(), this->width(), this->height());
+}
+
+Rect View::content_geometry() const
+{
+    return this->_impl->content_geometry();
+}
+
+void View::set_content_geometry(const Rect& geometry)
+{
+    this->_impl->set_content_geometry(geometry);
 }
 
 View::State View::state() const

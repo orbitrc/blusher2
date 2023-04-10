@@ -16,7 +16,11 @@ ViewImpl::ViewImpl()
     this->m_width = 10.0;
     this->m_height = 10.0;
 
+    this->_content_geometry = Rect(this->m_x, this->m_y,
+        this->m_width, this->m_height);
+
     this->_fill_type = View::FillType::Color;
+    this->_content_policy = View::ContentPolicy::Fit;
 
     this->m_image = new Image(this->m_width, this->m_height);
     this->m_image->fill(Color::from_rgba(0, 0, 0, 0));
@@ -120,6 +124,19 @@ void ViewImpl::setSize(double width, double height)
     }
 }
 
+Rect ViewImpl::content_geometry() const
+{
+    return this->_content_geometry;
+}
+
+void ViewImpl::set_content_geometry(const Rect& geometry)
+{
+    if (this->_content_policy == View::ContentPolicy::Fit) {
+        return;
+    }
+    this->_content_geometry = geometry;
+}
+
 View::FillType ViewImpl::fill_type() const
 {
     return this->_fill_type;
@@ -128,6 +145,16 @@ View::FillType ViewImpl::fill_type() const
 void ViewImpl::set_fill_type(View::FillType fill_type)
 {
     this->_fill_type = fill_type;
+}
+
+View::ContentPolicy ViewImpl::content_policy() const
+{
+    return this->_content_policy;
+}
+
+void ViewImpl::set_content_policy(View::ContentPolicy policy)
+{
+    this->_content_policy = policy;
 }
 
 void ViewImpl::fill(const Color& color)

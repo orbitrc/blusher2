@@ -9,6 +9,7 @@ namespace bl {
 class Rect
 {
 public:
+    Rect();
     Rect(double x, double y, double width, double height);
     Rect(const Point& pos, const Size& size);
 

@@ -2,6 +2,12 @@
 
 namespace bl {
 
+Rect::Rect()
+    : _pos(0.0, 0.0),
+    _size(0.0, 0.0)
+{
+}
+
 Rect::Rect(double x, double y, double width, double height)
     : _pos(x, y),
       _size(width, height)

@@ -34,8 +34,15 @@ public:
     void setHeight(double height);
     void setSize(double width, double height);
 
+    Rect content_geometry() const;
+    /// If content policy is Fit, do nothing.
+    void set_content_geometry(const Rect& geometry);
+
     View::FillType fill_type() const;
     void set_fill_type(View::FillType fill_type);
+
+    View::ContentPolicy content_policy() const;
+    void set_content_policy(View::ContentPolicy policy);
 
     void fill(const Color& color);
 
@@ -60,9 +67,12 @@ private:
     double m_width;
     double m_height;
 
+    Rect _content_geometry;
+
     View *_view;
 
     View::FillType _fill_type;
+    View::ContentPolicy _content_policy;
 
     Color _color;
 
