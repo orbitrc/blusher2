@@ -23,6 +23,11 @@ public:
     /// Returns true if this rect contains given point.
     bool contains(const Point& point);
 
+    /// Returns intersection of two rects.
+    Rect intersection(const Rect& other) const;
+
+    bool operator==(const Rect& other) const;
+
 private:
     Point _pos;
     Size _size;

@@ -1,5 +1,7 @@
 #include <blusher/rect.h>
 
+#include <math.h>
+
 namespace bl {
 
 Rect::Rect()
@@ -65,6 +67,51 @@ bool Rect::contains(const Point& point)
     }
 
     return false;
+}
+
+Rect Rect::intersection(const Rect& other) const
+{
+    double x1 = this->x();
+    double y1 = this->y();
+    double x2 = this->width() + x1;
+    double y2 = this->height() + y1;
+
+    double x3 = other.x();
+    double y3 = other.y();
+    double x4 = other.width() + x3;
+    double y4 = other.height() + y3;
+
+    if (x1 >= x4 || x2 <= x3 || y1 >= y4 || y2 <= y3) {
+        return Rect();
+    }
+
+    double x = fmax(x1, x3);
+    double y = fmax(y1, y3);
+
+    double min_x = fmin(x1, x3);
+    double min_y = fmin(y1, y3);
+
+    double distance_x = fmax(this->width(), other.width()) - fmax(x2, x4);
+    if (distance_x < 0) {
+        distance_x *= -1;
+    }
+    double width = distance_x - min_x;
+
+    double distance_y = fmax(this->height(), other.height()) - fmax(y2, y4);
+    if (distance_y < 0) {
+        distance_y *= -1;
+    }
+    double height = distance_y - min_y;
+
+    return Rect(x, y, width, height);
+}
+
+bool Rect::operator==(const Rect& other) const
+{
+    return this->x() == other.x() &&
+       this->y() == other.y() &&
+       this->width() == other.width() &&
+       this->height() == other.height();
 }
 
 } // namespace bl
