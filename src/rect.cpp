@@ -88,20 +88,42 @@ Rect Rect::intersection(const Rect& other) const
     double x = fmax(x1, x3);
     double y = fmax(y1, y3);
 
-    double min_x = fmin(x1, x3);
-    double min_y = fmin(y1, y3);
+    // Completely contains.
+    if ((x1 < x3 && y1 < y3 && x2 > x4 && y2 > y4) ||
+            (x3 < x1 && y1 > y3 && x2 < x4 && y2 < y4)) {
+        double width = fmin(this->width(), other.width());
+        double height = fmin(this->height(), other.height());
 
-    double distance_x = fmax(this->width(), other.width()) - fmax(x2, x4);
-    if (distance_x < 0) {
-        distance_x *= -1;
+        return Rect(x, y, width, height);
     }
-    double width = distance_x - min_x;
 
-    double distance_y = fmax(this->height(), other.height()) - fmax(y2, y4);
-    if (distance_y < 0) {
-        distance_y *= -1;
+    double width = 0; // distance_x - min_x;
+    // One width is in other.
+    if ((x3 <= x1 && x4 >= x2) || (x3 >= x1 && x4 <= x2)) {
+        width = fmin(this->width(), other.width());
+    } else {
+        if (x1 < x3) {
+            // This rect is left one.
+            width = x2 - x;
+        } else {
+            // Other rect is left one.
+            width = x4 - x;
+        }
     }
-    double height = distance_y - min_y;
+
+    double height = 0; // distance_y - min_y;
+    // One height is in other.
+    if ((y3 <= y1 && y4 >= y2) || (y3 >= y1 && y4 <= y2)) {
+        height = fmin(this->height(), other.height());
+    } else {
+        if (y1 < y3) {
+            // This rect is higher one.
+            height = y2 - y;
+        } else {
+            // Other rect is higher one.
+            height = y4 - y;
+        }
+    }
 
     return Rect(x, y, width, height);
 }
