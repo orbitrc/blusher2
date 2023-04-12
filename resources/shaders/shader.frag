@@ -21,19 +21,27 @@ uniform vec2 resolution;
 
 void discardClip()
 {
-    if (validGeometry.x == 0.0 && validGeometry.y == 0.0 &&
-            validGeometry.z == 0.0 && validGeometry.w == 0.0) {
+    if (validViewport.x == 0.0 && validViewport.y == 0.0 &&
+            validViewport.z == 0.0 && validViewport.w == 0.0) {
         return;
     }
 
-    vec2 limit = vec2(
-        (validGeometry.x + validGeometry.z) / resolution.x,
-        (validGeometry.y + validGeometry.w) / resolution.y
-    );
+    vec2 limitMin = vec2(
+        max(validViewport.x, viewport.x),
+        max(validViewport.y, viewport.y)
+    ) / resolution.xy;
+    vec2 limitMax = vec2(
+        validViewport.x + validViewport.z,
+        validViewport.y + validViewport.w
+    ) / resolution.xy;
 
-    vec2 coord = vec2(gl_FragCoord.x, resolution.y - gl_FragCoord.y) / resolution.xy;
+    vec2 coord = gl_FragCoord.xy / resolution.xy;
 
-    if (coord.x > limit.x || coord.y > limit.y) {
+    if (coord.x < limitMin.x || coord.y < limitMin.y) {
+        discard;
+    }
+
+    if (coord.x > limitMax.x || coord.y > limitMax.y) {
         discard;
     }
 }

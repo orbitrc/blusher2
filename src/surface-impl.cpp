@@ -641,10 +641,9 @@ void SurfaceImpl::_init_program()
 }
 
 void SurfaceImpl::_recursive(View *view,
-        std::optional<Rect> valid_geometry,
+        std::optional<Rect> valid_viewport,
         Point relative_position)
 {
-    auto valid_geometry_local = valid_geometry;
     for (auto& child: view->children()) {
         // fprintf(stderr, " = recursive: %s\n", child->debug_id().c_str());
 
@@ -659,15 +658,6 @@ void SurfaceImpl::_recursive(View *view,
 
         this->_set_uniform_parentPosition({view->x(), view->y()});
         this->_set_uniform_parentSize(view->geometry().size());
-
-        if (!valid_geometry.has_value()) {
-            valid_geometry_local = child->geometry();
-            // Set valid geometry as all zeros. It means no limit(not clip).
-            // Child of root view not need to clip.
-            this->_set_uniform_validGeometry({0.0, 0.0, 0.0, 0.0});
-        } else {
-            this->_set_uniform_validGeometry(valid_geometry_local.value());
-        }
 
         int parent_x = relative_position.x();
         int parent_y = relative_position.y();
@@ -684,13 +674,27 @@ void SurfaceImpl::_recursive(View *view,
         fprintf(stderr, "Viewport - %s: (%f, %f) %fx%f\n",
             child->debug_id().c_str(),
             viewport.x(), viewport.y(), viewport.width(), viewport.height());
+
+        if (!valid_viewport.has_value()) {
+            valid_viewport = view->geometry();
+            // Set valid geometry as all zeros. It means no limit(not clip).
+            // Child of root view not need to clip.
+            this->_set_uniform_validViewport({0.0, 0.0, 0.0, 0.0});
+        } else {
+            fprintf(stderr, "Valid viewport - %s: (%f, %f) %fx%f\n",
+                child->debug_id().c_str(),
+                valid_viewport.value().x(), valid_viewport.value().y(),
+                valid_viewport.value().width(), valid_viewport.value().height());
+            this->_set_uniform_validViewport(valid_viewport.value());
+        }
         glViewport(viewport.x(), viewport.y(),
             viewport.width(), viewport.height());
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
         // Call recursive.
         if (child->children().length() != 0) {
-            this->_recursive(child, valid_geometry_local,
+            this->_recursive(child,
+                valid_viewport.value().intersection(viewport),
                 relative_position + Point(child->x(), child->y()));
         }
     }

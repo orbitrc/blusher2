@@ -46,6 +46,10 @@ void rect_intersection()
     bl::Rect rect13(345.0, 306.0, 46.5, 125.5);
     bl::Rect rect14(293.0, 350.0, 147.0, 34.0);
     assert(rect13.intersection(rect14) == bl::Rect(345.0, 350.0, 46.5, 34.0));
+
+    bl::Rect rect15(50, 40, 210, 130);
+    bl::Rect rect16(40, 50, 190, 60);
+    assert(rect15.intersection(rect16) == bl::Rect(50, 50, 180, 60));
 }
 
 void rect_valid_viewport()
