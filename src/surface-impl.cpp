@@ -571,6 +571,36 @@ void SurfaceImpl::_set_uniform_validGeometry(Rect geometry)
     );
 }
 
+void SurfaceImpl::_set_uniform_validViewport(Rect viewport)
+{
+    float vp[4] = {
+        (float)viewport.x(),
+        (float)viewport.y(),
+        (float)viewport.width(),
+        (float)viewport.height()
+    };
+    glUniform4fv(
+        glGetUniformLocation(this->_program->id(), "validViewport"),
+        1,
+        vp
+    );
+}
+
+void SurfaceImpl::_set_uniform_viewport(Rect viewport)
+{
+    float vp[4] = {
+        (float)viewport.x(),
+        (float)viewport.y(),
+        (float)viewport.width(),
+        (float)viewport.height()
+    };
+    glUniform4fv(
+        glGetUniformLocation(this->_program->id(), "viewport"),
+        1,
+        vp
+    );
+}
+
 //==================
 // Private Methods
 //==================
@@ -646,8 +676,16 @@ void SurfaceImpl::_recursive(View *view,
         int viewport_y = this->height()
             - (parent_y + child->y())
             - (child->height() * 1 /*this->scale() */);
-        glViewport(viewport_x, viewport_y,
-            child->width(), child->height());
+        Rect viewport = Rect{
+            static_cast<double>(viewport_x), static_cast<double>(viewport_y),
+            child->width(), child->height()
+        };
+        this->_set_uniform_viewport(viewport);
+        fprintf(stderr, "Viewport - %s: (%f, %f) %fx%f\n",
+            child->debug_id().c_str(),
+            viewport.x(), viewport.y(), viewport.width(), viewport.height());
+        glViewport(viewport.x(), viewport.y(),
+            viewport.width(), viewport.height());
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
         // Call recursive.

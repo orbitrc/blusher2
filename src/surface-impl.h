@@ -122,6 +122,10 @@ private:
     void _set_uniform_resolution(Size size);
     /// Set uniform variable `validGeometry`.
     void _set_uniform_validGeometry(Rect geometry);
+    /// Set uniform variable `validViewport`.
+    void _set_uniform_validViewport(Rect viewport);
+    /// Set uniform variable `viewport`.
+    void _set_uniform_viewport(Rect viewport);
 
 private:
     void _init_program();

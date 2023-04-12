@@ -9,9 +9,11 @@ in vec2 texCoord;
 uniform int fillType;
 uniform sampler2D textureIn;
 uniform vec4 fillColor;
-uniform vec2 parentPosition;
-uniform vec2 parentSize;
+uniform vec2 parentPosition;    // Deprecated
+uniform vec2 parentSize;        // Deprecated
 uniform vec4 validGeometry;
+uniform vec4 validViewport;
+uniform vec4 viewport;
 uniform vec2 resolution;
 
 #define BL_FILL_TYPE_COLOR      0
