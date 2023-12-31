@@ -248,6 +248,9 @@ void Surface::pointer_press_handler(uint32_t impl_button, double x, double y)
     // View.
     auto root_view = this->_impl->rootView();
     auto view = root_view->child_at({x, y});
+    if (view == nullptr) {
+        return;
+    }
     double child_x = x - view->x();
     double child_y = y - view->y();
     while (true) {
