@@ -130,9 +130,16 @@ private:
 private:
     void _init_program();
     /// Using `_recursive` itself.
+    ///
+    /// \param view View.
+    /// \param valid_viewport Valid rectangular region for child clipping.
+    /// \param relative_position Relative position of view for making the
+    /// absolute position.
+    /// \param translation For bigger content views.
     void _recursive(View *view,
             std::optional<Rect> valid_viewport,
-            Point relative_position);
+            Point relative_position,
+            Point translation);
     /// Using `_recursive`.
     void _draw_frame();
     void _egl_update(bool swap_buffers = false);

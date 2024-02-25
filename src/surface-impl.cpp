@@ -642,7 +642,8 @@ void SurfaceImpl::_init_program()
 
 void SurfaceImpl::_recursive(View *view,
         std::optional<Rect> valid_viewport,
-        Point relative_position)
+        Point relative_position,
+        Point translation)
 {
     for (auto& child: view->children()) {
         // fprintf(stderr, " = recursive: %s\n", child->debug_id().c_str());
@@ -695,7 +696,8 @@ void SurfaceImpl::_recursive(View *view,
         if (child->children().length() != 0) {
             this->_recursive(child,
                 valid_viewport.value().intersection(viewport),
-                relative_position + Point(child->x(), child->y()));
+                relative_position + Point(child->x(), child->y()),
+                {0, 0});
         }
     }
 }
@@ -758,7 +760,7 @@ void SurfaceImpl::_draw_frame()
 
     // Set uniform resolution as the surface's size.
     this->_set_uniform_resolution(this->m_rootView->geometry().size());
-    this->_recursive(this->m_rootView, std::nullopt, {0.0, 0.0});
+    this->_recursive(this->m_rootView, std::nullopt, {0.0, 0.0}, {0.0, 0.0});
 
     // this->swapBuffers();
 

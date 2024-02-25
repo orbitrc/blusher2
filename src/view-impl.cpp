@@ -231,9 +231,11 @@ void ViewImpl::process_pointer_move_event(
         }
     }
 
+    /*
     fprintf(stderr, "POINTER MOVE %s - (%f, %f)\n",
         this->_view->debug_id().c_str(),
         x, y);
+    */
 }
 
 //=================
